@@ -81,7 +81,7 @@ export function chooseAnchors(graph: Graph, start: number, center: Point, radius
     let best: number | undefined;
     let bestScore = Infinity;
     for (const [id, point] of graph.nodes) {
-      if (!graph.edges.has(id) || anchors.includes(id)) continue;
+      if (!(graph.edges.get(id)?.length) || anchors.includes(id)) continue;
       const [x, y] = xy(point, center);
       const radial = Math.hypot(x, y);
       if (radial < radius * 0.5 || radial > radius * 1.5 || angleDelta(Math.atan2(y, x), angle) > Math.PI / 8) continue;
@@ -92,6 +92,53 @@ export function chooseAnchors(graph: Graph, start: number, center: Point, radius
     anchors.push(best);
   }
   return anchors;
+}
+
+// Prune physical dead ends before choosing anchors: a nearest ideal point on a
+// cul-de-sac cannot support a loop without an immediate U-turn. Geometry stays
+// untouched; this only narrows the candidate network.
+export function loopCore(graph: Graph): Graph {
+  const neighbors = new Map<number, Set<number>>();
+  for (const [from, edges] of graph.edges) for (const edge of edges) {
+    if (!neighbors.has(from)) neighbors.set(from, new Set());
+    if (!neighbors.has(edge.to)) neighbors.set(edge.to, new Set());
+    neighbors.get(from)!.add(edge.to); neighbors.get(edge.to)!.add(from);
+  }
+  const pending = [...neighbors].filter(([, adjacent]) => adjacent.size < 2).map(([id]) => id);
+  const removed = new Set<number>();
+  while (pending.length) {
+    const id = pending.pop()!;
+    if (removed.has(id)) continue;
+    removed.add(id);
+    for (const next of neighbors.get(id) ?? []) {
+      neighbors.get(next)!.delete(id);
+      if (neighbors.get(next)!.size < 2) pending.push(next);
+    }
+  }
+  return subgraph(graph, new Set([...graph.nodes.keys()].filter(id => !removed.has(id))));
+}
+function subgraph(graph: Graph, keep: Set<number>): Graph {
+  return { ...graph,
+    nodes: new Map([...graph.nodes].filter(([id]) => keep.has(id))),
+    edges: new Map([...graph.edges].filter(([id]) => keep.has(id)).map(([id, edges]) => [id, edges.filter(edge => keep.has(edge.to))])),
+  };
+}
+export function returnableComponent(graph: Graph, start: number): Graph {
+  const reverse = new Map<number, number[]>();
+  for (const [id, edges] of graph.edges) for (const edge of edges) {
+    const entries = reverse.get(edge.to) ?? []; entries.push(id); reverse.set(edge.to, entries);
+  }
+  function reachable(backwards: boolean): Set<number> {
+    const seen = new Set([start]), pending = [start];
+    while (pending.length) {
+      const id = pending.pop()!;
+      const next = backwards ? reverse.get(id) ?? [] : (graph.edges.get(id) ?? []).map(edge => edge.to);
+      for (const to of next) if (!seen.has(to)) { seen.add(to); pending.push(to); }
+    }
+    return seen;
+  }
+  const forward = reachable(false), backward = reachable(true);
+  return subgraph(graph, new Set([...forward].filter(id => backward.has(id))));
 }
 
 export function validateSettings(settings: Settings) {
@@ -105,15 +152,16 @@ export function validateSettings(settings: Settings) {
 
 export function solve(data: OsmData, settings: Settings, progress: (message: string) => void = () => {}): Route {
   validateSettings(settings);
-  const graph = buildGraph(data, settings);
+  let graph = loopCore(buildGraph(data, settings));
   let start = -1;
   let snapM = Infinity;
   for (const [id, node] of graph.nodes) {
-    if (!graph.edges.has(id)) continue;
+    if (!(graph.edges.get(id)?.length)) continue;
     const d = distance(node, settings.start);
     if (d < snapM) { start = id; snapM = d; }
   }
-  if (snapM > 300) throw new Error('No usable cycling start within 300 m of your pin. Move the start onto a mapped road or permitted cycle path.');
+  if (snapM > 300) throw new Error('No usable cycling loop start within 300 m of your pin. Move the start onto a mapped road or permitted cycle path.');
+  graph = returnableComponent(graph, start);
   const origin = graph.nodes.get(start)!;
   const targetM = settings.targetKm * 1000;
   const baseRadius = targetM / (2 * Math.PI);

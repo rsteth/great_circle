@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { bicycleAccess, buildGraph, directions, turnAllowed } from '../src/routing/graph';
 import { angleDelta, distance, offset, roundness, trackLength } from '../src/routing/geo';
-import { chooseAnchors, shortestPath, solve, validateSettings } from '../src/routing/solve';
+import { chooseAnchors, loopCore, returnableComponent, shortestPath, solve, validateSettings } from '../src/routing/solve';
 import { toGpx } from '../src/routing/gpx';
 import { queryFor } from '../src/routing/overpass';
 import type { Edge, OsmData, OsmNode, OsmRelation, OsmWay } from '../src/routing/types';
@@ -101,6 +101,29 @@ describe('circle search and export', () => {
     expect(gpx).toContain('OpenStreetMap contributors');
     expect(gpx).not.toMatch(/NaN|undefined/);
   });
+  it('prunes cul-de-sac anchors and snaps to a returnable loop instead of a spur', () => {
+    const { data, settings } = circleFixture();
+    const spur = offset(center, 1100, 0);
+    data.elements.push({ type: 'node', id: 9001, ...spur }, { type: 'way', id: 9002, nodes: [1, 9001], tags: { highway: 'cycleway' } });
+    expect(loopCore(buildGraph(data, settings)).nodes.has(9001)).toBe(false);
+    const route = solve(data, { ...settings, start: spur });
+    expect(route.points).toHaveLength(65);
+    expect(route.snapM).toBeCloseTo(100, 0);
+    expect(route.repeated).toBe(0);
+    expect(route.points[0]).toEqual(route.points.at(-1));
+  });
+  it('excludes a reachable one-way exit component that cannot return to the start', () => {
+    const { data, settings } = circleFixture();
+    for (const [id, x, y] of [[9101, 200, 0], [9102, 300, 100], [9103, 300, -100]]) data.elements.push({ type: 'node', id, ...offset(center, x, y) });
+    data.elements.push({ type: 'way', id: 9100, nodes: [9101, 9102, 9103, 9101], tags: { highway: 'cycleway', surface: 'asphalt' } }, { type: 'way', id: 9200, nodes: [1, 9101], tags: { highway: 'cycleway', oneway: 'yes' } });
+    const raw = loopCore(buildGraph(data, settings));
+    expect(shortestPath(raw, 1, 9101)).not.toBeNull();
+    expect(shortestPath(raw, 9101, 1)).toBeNull();
+    const usable = returnableComponent(raw, 1);
+    expect(usable.nodes.has(9101)).toBe(false);
+    expect(usable.nodes.size).toBe(64);
+    expect(solve(data, settings).points).toHaveLength(65);
+  });
   it('keeps a one-way ring directed all the way around', () => {
     const { data, settings } = circleFixture();
     (data.elements.at(-1) as OsmWay).tags!.oneway = 'yes';
@@ -117,11 +140,11 @@ describe('circle search and export', () => {
     const { data, settings } = circleFixture();
     expect(() => solve(data, { ...settings, targetKm: 30, tolerance: 0.1 })).toThrow('No sufficiently circular');
     const disconnected = { ...data, elements: [...data.elements.filter(e => e.type === 'node'), { type: 'way' as const, id: 9001, nodes: Array.from({ length: 32 }, (_, i) => i + 1), tags: { highway: 'cycleway' } }, { type: 'way' as const, id: 9002, nodes: Array.from({ length: 32 }, (_, i) => i + 33), tags: { highway: 'cycleway' } }] };
-    expect(() => solve(disconnected, settings)).toThrow('No sufficiently circular');
+    expect(() => solve(disconnected, settings)).toThrow('No usable cycling loop start');
     expect(() => solve({ elements: [] }, settings)).toThrow('No usable cycling network');
     expect(() => solve({ ...data, remark: 'runtime error: timeout' }, settings)).toThrow('incomplete data');
     const line: OsmData = { elements: [...Array.from({ length: 6 }, (_, i) => ({ type: 'node' as const, id: i + 1, ...offset(center, 200 * i, 0) })), { type: 'way', id: 100, nodes: [1, 2, 3, 4, 5, 6], tags: { highway: 'cycleway' } }] };
-    expect(() => solve(line, { ...settings, start: center })).toThrow('No sufficiently circular');
+    expect(() => solve(line, { ...settings, start: center })).toThrow('No usable cycling loop start');
     expect(() => solve(data, { ...settings, start: offset(center, -2200, 0) })).toThrow('within 300 m');
     expect(roundness([center, offset(center, 100, 0), center])).toBe(0);
   });

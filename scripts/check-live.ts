@@ -1,12 +1,12 @@
 // Explicit opt-in: one bounded Overpass request, no retries. Never run on install/build.
 import { writeFile } from 'node:fs/promises';
-import { loadNetwork } from '../src/routing/overpass';
+import { CLIENT_USER_AGENT, loadNetwork } from '../src/routing/overpass';
 import { solve } from '../src/routing/solve';
 import { toGpx } from '../src/routing/gpx';
 import type { Settings } from '../src/routing/types';
-const settings: Settings = { center: { lat: 49.299, lon: -123.133 }, start: { lat: 49.2928, lon: -123.1331 }, radiusM: 3000, targetKm: 10, tolerance: 0.2, surface: 'mixed', style: 'quiet' };
-console.log('One bounded live request: Vancouver, 3 km search radius. No retries.');
-const { data } = await loadNetwork(settings, new AbortController().signal);
+const settings: Settings = { center: { lat: 49.289, lon: -123.128 }, start: { lat: 49.289, lon: -123.128 }, radiusM: 1000, targetKm: 3, tolerance: 0.2, surface: 'mixed', style: 'quiet' };
+console.log('One bounded live request: Vancouver West End, 1 km search radius. No retries.');
+const { data } = await loadNetwork(settings, new AbortController().signal, { userAgent: CLIENT_USER_AGENT });
 await writeFile('/tmp/great-circle-live-osm.json', JSON.stringify(data));
 console.log(`Received ${data.elements.length} actual OSM elements.`);
 const route = solve(data, settings);
