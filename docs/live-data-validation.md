@@ -70,3 +70,20 @@ Final browser artifacts (actual data, not fixtures):
 The temporary production preview and test servers were stopped after QA. No commands remain active. No endpoint failover, deployment, push, credentials, or security/network setting changes occurred.
 
 This proves one small live case and the tested invariants, not universal route quality, legal access in every jurisdiction, or real-world safety. Missing map tags, current conditions, closures, elevation, and unsupported restrictions still limit the prototype. It remains a bounded heuristic rather than a complete navigation engine.
+
+## Published Pages verification
+
+The owner explicitly approved publishing the source/history and changing `rsteth/great_circle` from private to public after GitHub rejected private-repository Pages on the current plan. A lightweight scan checked all 37 committed history blobs for credential patterns and suspicious filenames, with no findings; this complements source review and is not a guarantee.
+
+The repository was made public and Pages configured for Actions. The existing custom domain gives the canonical URL **https://stethem.com/great_circle/**. HTTPS is enforced with the existing approved certificate. The pinned-action workflow tests/builds in GitHub runners and deploys the app branch, preserving `main` and `main.py`. The initial publication run for commit `3ef2f0d8867ff9822cc24a0002cc359a8e39015e` completed successfully: https://github.com/rsteth/great_circle/actions/runs/40154093677.
+
+The live URL returned HTTP 200 and the Great Circle document/bundle. One bounded real browser request from the deployed app used Origin `https://stethem.com` and its normal browser-generated Referer/User-Agent, with no override. Overpass returned HTTP 200 and `Access-Control-Allow-Origin: *`. The deployed worker generated the 3.26 km (+8.8%), 62/100 displayed-roundness loop with 0% repeated sections and 199 geometry points. The downloaded GPX parsed without errors, used GPX 1.1, and closed at the same point. Desktop/390 px screenshots were visually inspected, and there was no horizontal overflow. Resizing reused the route; exactly one map-data request occurred.
+
+Published smoke artifacts:
+
+- `/tmp/great-circle-pages-live-summary.json`
+- `/tmp/great-circle-pages-live.gpx`
+- `/tmp/great-circle-pages-live-desktop.png`
+- `/tmp/great-circle-pages-live-mobile.png`
+
+This publication check used no broad local build or benchmark while Ant owned heavy validation. No new account, credentials, paid API, alternate endpoint, DNS change, or unrelated repository setting was needed.

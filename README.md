@@ -1,5 +1,7 @@
 # Great Circle
 
+**Live app: [stethem.com/great_circle](https://stethem.com/great_circle/)**
+
 A small browser app for finding near-circular cycling loops on real OpenStreetMap roads and paths, then taking the result with you as a GPX track. React, TypeScript, Vite, and Leaflet; inspired by the simple controls and dark zinc/blue styling of [Focus Speed Reader](https://github.com/rsteth/focus-speed-reader).
 
 The original Python experiment remains intact in `main.py`. The TypeScript app does not execute it and needs no Python environment, API key, account, or backend.
@@ -96,7 +98,7 @@ The selected area is transmitted only when generating a route. OSM map tiles loa
 - `tests/`: deterministic routing fixtures and responsive browser checks.
 - `main.py`: unchanged historical Python sketch, with its original limitations.
 
-`npm run build` creates static output in `dist/`; `npm run preview` serves it locally. The Vite base is relative so assets and the worker can live under a subpath. No deployment workflow, analytics, credentials, or paid service was added.
+`npm run build` creates static output in `dist/`; `npm run preview` serves it locally. The Vite base is relative so assets and the worker can live under a subpath. The pinned-action `.github/workflows/pages.yml` runs the deterministic checks and production build in GitHub Actions, then publishes `dist/` through GitHub Pages on pushes to `feat/typescript-route-planner`. The repository is public by explicit owner approval; the original `main` branch and Python sketch are preserved. No analytics, credentials, or paid service was added.
 
 ## Primary references
 
@@ -104,3 +106,7 @@ The selected area is transmitted only when generating a route. OSM map tiles loa
 - [Overpass QL](https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL) and [public-instance usage guidance](https://dev.overpass-api.de/overpass-doc/en/preface/commons.html)
 - [OSM bicycle access](https://wiki.openstreetmap.org/wiki/Key:bicycle), [one-way rules](https://wiki.openstreetmap.org/wiki/Key:oneway), and [turn restrictions](https://wiki.openstreetmap.org/wiki/Relation:restriction)
 - [OSM tile policy](https://operations.osmfoundation.org/policies/tiles/) and [data attribution/license](https://www.openstreetmap.org/copyright)
+
+## Published smoke check
+
+GitHub Pages serves the app at **https://stethem.com/great_circle/** through the existing account custom domain, with HTTPS enforced. The cloud test/build/deploy workflow passed. A single actual browser request from the deployed origin succeeded with normal browser-controlled identity and CORS; it produced the 3.26 km / +8.8% / 62-roundness / 0%-repeat / 199-point closed GPX example. Desktop and 390 px phone-width layouts were inspected without horizontal overflow. This is one bounded live case, not a guarantee of route quality or current real-world conditions.
