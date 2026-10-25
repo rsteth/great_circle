@@ -43,13 +43,13 @@ export default function MapView({ settings, route, mode, busy, onPick }: Props) 
       const points: L.LatLngTuple[] = route.points.map(p => [p.lat, p.lon]);
       L.polyline(points, { color: '#101c31', weight: 9, opacity: 0.8, interactive: false }).addTo(group);
       L.polyline(points, { color: '#3b82f6', weight: 4, opacity: 1, interactive: false }).addTo(group);
-      L.circleMarker(points[0], { radius: 7, color: '#fff', weight: 2.5, fillColor: '#2563eb', fillOpacity: 1 }).bindTooltip('Route start & finish · snapped to network').addTo(group);
+      L.circleMarker(points[0], { radius: 7, color: '#fff', weight: 2.5, fillColor: '#2563eb', fillOpacity: 1 }).bindTooltip('Route start & finish').addTo(group);
       if (lastRoute.current !== route) instance.fitBounds(L.latLngBounds(points).pad(0.15), { animate: false });
     } else if (lastRoute.current || !instance.getBounds().contains([settings.center.lat, settings.center.lon])) {
       instance.fitBounds(area.getBounds().pad(0.1), { animate: false });
     }
     const icon = L.divIcon({ className: 'start-icon', html: '<span>S</span>', iconSize: [28, 28], iconAnchor: [14, 14] });
-    L.marker([settings.start.lat, settings.start.lon], { icon, keyboard: true, title: 'Selected start pin' }).addTo(group).bindTooltip('Selected start · route snaps within 300 m');
+    L.marker([settings.start.lat, settings.start.lon], { icon, keyboard: true, title: 'Selected start pin' }).addTo(group).bindTooltip('Selected start · route may start up to 300 m away');
     lastRoute.current = route;
   }, [settings, route, showIdeal, viewReady]);
   function fitArea() {
@@ -57,9 +57,9 @@ export default function MapView({ settings, route, mode, busy, onPick }: Props) 
   }
   return <div className={`map-shell ${busy ? 'working' : ''}`}>
     <div ref={host} className="map" aria-label="Route map. Click to select the area center or start. Coordinate inputs are also available." />
-    <div className="map-topline"><span className="map-tag"><span className="live-dot" /> {route ? 'YOUR LOOP' : 'EXPLORE AN AREA'}</span><button className="map-button" onClick={fitArea} title="Fit search area" aria-label="Fit search area"><Crosshair size={17} /></button></div>
-    <div className="map-hint">{busy ? 'Working on your loop…' : `Click the map to set ${mode === 'area' ? 'the area center' : 'your start'}`}</div>
+    <div className="map-topline"><span className="map-tag"><span className="live-dot" /> {route ? 'ROUTE' : 'AREA'}</span><button className="map-button" onClick={fitArea} title="Fit search area" aria-label="Fit search area"><Crosshair size={17} /></button></div>
+    <div className="map-hint">{busy ? 'Finding a loop…' : `Click to set ${mode === 'area' ? 'area center' : 'start'}.`}</div>
     {route && <button className={`ideal-toggle ${showIdeal ? 'selected' : ''}`} onClick={() => setShowIdeal(!showIdeal)} aria-pressed={showIdeal}><Layers2 size={14} /> Ideal circle</button>}
-    {tileFailed && <div className="tile-warning" role="status">Some map tiles couldn’t load. Coordinates and route generation still work.</div>}
+    {tileFailed && <div className="tile-warning" role="status">Map tiles unavailable. Try coordinates.</div>}
   </div>;
 }
