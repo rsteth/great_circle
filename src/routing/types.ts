@@ -8,6 +8,7 @@ export type Settings = {
   center: Point;
   start: Point;
   radiusM: number;
+  circleRadiusM?: number; // Explicit target circle; radiusM remains the padded search boundary.
   targetKm: number;
   tolerance: number;
   surface: 'mixed' | 'paved';

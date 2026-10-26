@@ -146,6 +146,7 @@ export function validateSettings(settings: Settings) {
   if (!Number.isFinite(settings.radiusM) || settings.radiusM < 1000 || settings.radiusM > 6000) throw new Error('Choose a search radius between 1 and 6 km.');
   if (!Number.isFinite(settings.targetKm) || settings.targetKm < 3 || settings.targetKm > 40) throw new Error('Choose a target distance between 3 and 40 km.');
   if (![0.1, 0.2, 0.3].includes(settings.tolerance) || !['mixed', 'paved'].includes(settings.surface) || !['quiet', 'balanced'].includes(settings.style)) throw new Error('Choose valid route preferences.');
+  if (settings.circleRadiusM !== undefined && (!Number.isFinite(settings.circleRadiusM) || settings.circleRadiusM < 500 || settings.circleRadiusM > 4500 || settings.circleRadiusM >= settings.radiusM || Math.abs(distance(settings.start, settings.center) - settings.circleRadiusM) > 2 || Math.abs(settings.targetKm * 1000 - settings.circleRadiusM * 2 * Math.PI) > 10)) throw new Error('Choose a valid circle size and a start on its edge.');
   if (distance(settings.start, settings.center) > settings.radiusM) throw new Error('Your start is outside the search area. Move the start or expand the area.');
   if (Math.abs(settings.center.lon) + settings.radiusM / (111000 * Math.cos(settings.center.lat * Math.PI / 180)) >= 180) throw new Error('Choose an area that does not cross the date line.');
 }
@@ -168,7 +169,11 @@ export function solve(data: OsmData, settings: Settings, progress: (message: str
   const circles: { center: Point; radius: number; clockwise: boolean }[] = [];
   // Include a ring around the selected area, then circles that pass through the
   // start. Test several radii, orientations, and both travel directions.
-  for (const scale of [1, 0.8, 1.15]) {
+  if (settings.circleRadiusM !== undefined) {
+    // The circle-hand UI selects an explicit geographic center and size. Keep
+    // that center stable; the existing path search may fit nearby ring radii.
+    for (const scale of [1, 0.9, 1.1]) for (const clockwise of [true, false]) circles.push({ center: settings.center, radius: settings.circleRadiusM * scale, clockwise });
+  } else for (const scale of [1, 0.8, 1.15]) {
     const radius = baseRadius * scale;
     if (distance(settings.center, origin) > radius * 0.55) {
       for (const clockwise of [true, false]) circles.push({ center: settings.center, radius, clockwise });
