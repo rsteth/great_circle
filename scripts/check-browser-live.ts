@@ -50,7 +50,7 @@ try {
   }
   await page.screenshot({ path: '/tmp/great-circle-browser-live-desktop.png', fullPage: true });
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.screenshot({ path: '/tmp/great-circle-browser-live-mobile.png', fullPage: true });
+  await page.screenshot({ path: '/tmp/great-circle-browser-live-mobile.png', fullPage: false });
   const summary = { baseURL, source: 'Actual browser request from local production app; no fixture or identity override', requests, network, status, error, metrics: await page.locator('.metrics').innerText(), gpx, horizontalOverflow: await page.evaluate(() => document.documentElement.scrollWidth > innerWidth) };
   await writeFile('/tmp/great-circle-browser-live-summary.json', JSON.stringify(summary, null, 2));
   console.log(JSON.stringify(summary, null, 2));

@@ -63,7 +63,7 @@ export default function MapView({ settings, route, busy, onChange }: Props) {
       if (latest.current.busy || gesture.current) return;
       latest.current.onChange(changeCircle(latest.current.settings, { center: { lat: event.latlng.lat, lon: event.latlng.lng } }));
     });
-    const observer = new ResizeObserver(() => { instance.invalidateSize(); project.current(); });
+    const observer = new ResizeObserver(() => { instance.invalidateSize(); if (!gesture.current) fit.current(latest.current.settings); project.current(); });
     observer.observe(host.current);
     const onEscape = (event: globalThis.KeyboardEvent) => { if (event.key === 'Escape' && gesture.current) { event.preventDefault(); finish(true); } };
     const onBlur = () => finish(true);

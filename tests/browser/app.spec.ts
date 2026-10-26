@@ -6,9 +6,23 @@ const tile = '<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256"><
 test.beforeEach(async ({ page }) => {
   await page.route('**/tile.openstreetmap.org/**', route => route.fulfill({ contentType: 'image/svg+xml', body: tile }));
 });
+async function openSettings(page: Page) {
+  const trigger = page.getByRole('button', { name: 'Settings', exact: true });
+  if (await trigger.count() && !(await page.getByRole('dialog', { name: 'Route settings', exact: true }).count())) await trigger.click();
+}
+async function closeSettings(page: Page) {
+  const dialog = page.getByRole('dialog', { name: 'Route settings', exact: true });
+  if (await dialog.count()) await dialog.getByRole('button', { name: 'Done', exact: true }).click();
+}
+async function coordinates(page: Page) {
+  await openSettings(page);
+  await page.getByText('Coordinates', { exact: true }).click();
+}
 async function number(page: Page, label: string, value: string) {
-  const input = page.getByRole('spinbutton', { name: label, exact: true });
+  const input = page.getByLabel(label, { exact: true });
+  if (!(await input.isVisible())) await openSettings(page);
   await input.fill(value); await input.press('Tab');
+  if (!(await input.getAttribute('aria-invalid') === 'true')) await closeSettings(page);
 }
 async function frame(page: Page) {
   return page.locator('.map-shell').evaluate(element => {
@@ -26,8 +40,8 @@ async function dragStart(page: Page, angle: number, release = true) {
   await page.mouse.move(f.x + Math.sin(radians) * f.radius, f.y - Math.cos(radians) * f.radius, { steps: 8 });
   if (release) await page.mouse.up();
 }
-const radiusInput = (page: Page) => page.getByRole('spinbutton', { name: 'Radius (km)', exact: true });
-const angleInput = (page: Page) => page.getByRole('spinbutton', { name: 'Start angle (° clockwise from north)', exact: true });
+const radiusInput = (page: Page) => page.getByLabel('Radius (km)', { exact: true });
+const angleInput = (page: Page) => page.getByLabel('Start angle (° clockwise from north)', { exact: true });
 
 test('circle controls generate a fixture loop and download full GPX geometry', async ({ page }, info) => {
   const errors: string[] = []; page.on('pageerror', error => errors.push(error.message));
@@ -54,7 +68,7 @@ test('circle controls generate a fixture loop and download full GPX geometry', a
   await radiusInput(page).focus(); await radiusInput(page).press('Tab');
   await expect(page.getByRole('button', { name: 'Download again' })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
-  await page.screenshot({ path: `/tmp/great-circle-hand-${info.project.name}.png`, fullPage: true });
+  await page.screenshot({ path: `/tmp/great-circle-hand-${info.project.name}.png`, fullPage: info.project.name !== 'mobile' });
   await page.getByRole('slider', { name: 'Start angle', exact: true }).press('ArrowRight');
   await expect(page.getByRole('button', { name: 'Download GPX' })).toHaveCount(0);
   await page.getByRole('button', { name: 'Generate loop' }).click();
@@ -65,19 +79,19 @@ test('circle controls generate a fixture loop and download full GPX geometry', a
 test('repeated clock drags wrap north without changing size or center', async ({ page }) => {
   await page.goto('/');
   const originalRadius = await radiusInput(page).inputValue();
-  const target = await page.getByRole('spinbutton', { name: 'Target distance (km)', exact: true }).inputValue();
+  const target = await page.getByLabel('Target distance (km)', { exact: true }).inputValue();
   for (const angle of [355, 5, 90, 180, 270, 359, 1]) {
     await dragStart(page, angle);
     const actual = Number(await angleInput(page).inputValue());
     expect(Math.abs(Math.atan2(Math.sin((actual - angle) * Math.PI / 180), Math.cos((actual - angle) * Math.PI / 180)) * 180 / Math.PI)).toBeLessThan(3);
     await expect(radiusInput(page)).toHaveValue(originalRadius);
   }
-  await expect(page.getByRole('spinbutton', { name: 'Target distance (km)', exact: true })).toHaveValue(target);
+  await expect(page.getByLabel('Target distance (km)', { exact: true })).toHaveValue(target);
   const handle = page.getByRole('slider', { name: 'Start angle', exact: true });
   await handle.press('Home'); await handle.press('ArrowLeft');
   await expect(angleInput(page)).toHaveValue('359');
   await handle.press('ArrowRight'); await expect(angleInput(page)).toHaveValue('0');
-  await page.getByText('Coordinates', { exact: true }).click();
+  await coordinates(page);
   await expect(page.getByRole('textbox', { name: 'Latitude', exact: true })).toHaveValue('49.29900');
   await expect(page.getByRole('textbox', { name: 'Longitude', exact: true })).toHaveValue('-123.13300');
 });
@@ -124,10 +138,11 @@ test('center and size changes preserve the hand angle and allow regeneration', a
   await number(page, 'Start angle (° clockwise from north)', '90');
   await page.getByRole('button', { name: 'Generate loop' }).click();
   await expect(page.getByText('Loop found.', { exact: true })).toBeVisible();
-  await page.getByText('Coordinates', { exact: true }).click();
+  await coordinates(page);
   await page.getByRole('textbox', { name: 'Latitude', exact: true }).fill('49.2991');
   await page.getByRole('button', { name: 'Set pin' }).click();
   await expect(angleInput(page)).toHaveValue('90'); await expect(radiusInput(page)).toHaveValue('0.85');
+  await closeSettings(page);
   await expect(page.getByRole('button', { name: 'Download GPX' })).toHaveCount(0);
   await page.clock.fastForward(31000);
   await page.getByRole('button', { name: 'Generate loop' }).click();
@@ -150,7 +165,7 @@ test('network errors, search cancellation and numeric fallbacks remain actionabl
   await page.getByRole('button', { name: 'Generate loop' }).click(); await page.getByRole('button', { name: 'Cancel', exact: true }).click();
   await expect(page.getByRole('status', { name: 'Route status' })).toContainText('Cancelled.');
   await page.waitForTimeout(1200); await expect(page.getByRole('status', { name: 'Route status' })).toContainText('Cancelled.');
-  await page.getByText('Coordinates', { exact: true }).click();
+  await coordinates(page);
   await page.getByRole('textbox', { name: 'Latitude', exact: true }).fill('91'); await page.getByRole('button', { name: 'Set pin' }).click();
   await expect(page.getByRole('alert')).toContainText('latitude');
 });
