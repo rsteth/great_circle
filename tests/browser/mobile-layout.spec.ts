@@ -27,7 +27,7 @@ test('full-width map with reachable controls at narrow, portrait and landscape w
     expect(top).toBe(true);
     expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false);
     const before = await center(page);
-    await page.getByLabel('Radius (km)', { exact: true }).fill('0.85'); await page.getByLabel('Radius (km)', { exact: true }).press('Tab');
+    await page.getByRole('slider', { name: 'Circle radius', exact: true }).press('Home'); for (let i=0;i<7;i++) await page.getByRole('slider', { name: 'Circle radius', exact: true }).press('ArrowUp');
     expect(await center(page)).toEqual(before);
     for (const name of ['Start angle', 'Circle radius']) {
       const handle = page.getByRole('slider', { name, exact: true });
@@ -35,7 +35,7 @@ test('full-width map with reachable controls at narrow, portrait and landscape w
       const b = (await handle.boundingBox())!;
       expect(b.x).toBeGreaterThanOrEqual(-1); expect(b.x + b.width).toBeLessThanOrEqual(width + 1);
       expect(b.y).toBeGreaterThanOrEqual(map.y - 1); expect(b.y + b.height).toBeLessThanOrEqual(map.y + map.height + 1);
-      for (const overlay of await page.locator('.map-tag,.map-button,.map-hint,.ideal-toggle').all()) {
+      for (const overlay of await page.locator('.place-search,.map-button,.map-hint,.ideal-toggle').all()) {
         const other = await overlay.boundingBox();
         if (other) expect(b.x < other.x + other.width && b.x + b.width > other.x && b.y < other.y + other.height && b.y + b.height > other.y).toBe(false);
       }
@@ -57,7 +57,7 @@ test('drawer traps focus, locks scroll, dismisses repeatedly and returns focus w
     await done.focus(); await page.keyboard.press('Tab'); await expect(close).toBeFocused();
     await page.keyboard.press('Shift+Tab'); await expect(done).toBeFocused();
     if (method === 'done') await done.click();
-    if (method === 'escape') { await dialog(page).getByLabel('Target distance (km)', { exact: true }).focus(); await page.keyboard.press('Escape'); }
+    if (method === 'escape') { await dialog(page).getByLabel('Start angle (° clockwise from north)', { exact: true }).focus(); await page.keyboard.press('Escape'); }
     if (method === 'close') await close.click();
     if (method === 'backdrop') {
       const map = (await page.locator('.map').boundingBox())!, panel = (await dialog(page).boundingBox())!;
@@ -102,10 +102,10 @@ test('loading, errors, successful result and GPX remain outside the drawer', asy
   let release!: () => void;
   const gate = new Promise<void>(resolve => { release = resolve; });
   await page.route(endpoint, async route => { await gate; await route.fulfill({ json: circleFixture(64, 850).data }); });
-  await page.goto('/'); await page.getByLabel('Radius (km)', { exact: true }).fill('0.85'); await page.getByLabel('Radius (km)', { exact: true }).press('Tab');
+  await page.goto('/'); await page.getByRole('slider', { name: 'Circle radius', exact: true }).press('Home'); for (let i=0;i<7;i++) await page.getByRole('slider', { name: 'Circle radius', exact: true }).press('ArrowUp');
   await page.getByRole('button', { name: 'Generate loop' }).click();
   await expect(page.getByRole('button', { name: 'Cancel', exact: true })).toBeInViewport();
-  await expect(trigger(page)).toBeDisabled(); await expect(page.getByLabel('Radius (km)', { exact: true })).toBeDisabled();
+  await expect(trigger(page)).toBeDisabled(); await expect(page.getByRole('slider', { name: 'Circle radius', exact: true })).toBeDisabled();
   await expect(page.getByRole('status', { name: 'Route status' })).toContainText('Loading');
   release(); await expect(page.getByText('Loop found.', { exact: true })).toBeVisible();
   const download = page.getByRole('button', { name: 'Download GPX', exact: true });

@@ -16,3 +16,20 @@ footer>p{white-space:normal;color:#a1a1aa;font-size:11px}.route-notes summary{cu
 .mobile-layout .site-header{height:calc(56px + env(safe-area-inset-top));padding-top:env(safe-area-inset-top)}.mobile-layout .map-shell{height:calc(100svh - 245px - env(safe-area-inset-top) - env(safe-area-inset-bottom))}.mobile-layout .leaflet-bottom.leaflet-right{right:env(safe-area-inset-right)}.mobile-layout .leaflet-bottom.leaflet-left{left:env(safe-area-inset-left)}.mobile-layout .route-bottom{padding:18px max(16px,env(safe-area-inset-right)) 18px max(16px,env(safe-area-inset-left))}.mobile-layout .metrics{padding:18px max(16px,env(safe-area-inset-right)) 18px max(16px,env(safe-area-inset-left))}.mobile-layout footer{padding:18px max(16px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}@media(orientation:landscape){.mobile-layout .site-header{height:calc(44px + env(safe-area-inset-top))}.mobile-layout .map-shell{height:calc(100svh - 190px - env(safe-area-inset-top) - env(safe-area-inset-bottom))}}
 
 .mobile-layout .map-hint{display:none}
+
+/* Perimeter controls: one radial guide; search and location remain map controls. */
+.size-radius{stroke:#60a5fa;stroke-width:1.5;filter:drop-shadow(0 1px 2px #000)}
+.circle-handle.size-handle{cursor:grab}.circle-handle.size-handle:active{cursor:grabbing}
+.place-search{position:relative;pointer-events:auto;width:min(280px,calc(100% - 48px));font-size:12px}
+.place-search form{display:flex;align-items:center;background:#18181bf5;border:1px solid #55555a;border-radius:7px;box-shadow:0 2px 12px #0003;padding:0 2px 0 10px;min-height:44px}
+.place-search input{min-width:0;width:100%;background:transparent;border:0;color:#f4f4f5;height:42px;padding:0;outline-offset:0}
+.place-search input::-webkit-search-cancel-button{display:none}.place-search form button{flex:none;width:38px;height:40px;padding:0}
+.place-results{background:#18181bf5;border:1px solid #55555a;border-radius:7px;margin-top:5px;max-height:220px;overflow:auto;overscroll-behavior:contain;box-shadow:0 4px 12px #0005}
+.place-results ul{list-style:none;padding:0;margin:0}.place-results li+li{border-top:1px solid #3f3f46}.place-results li button{width:100%;min-height:44px;text-align:left;justify-content:flex-start;padding:9px 12px;line-height:1.4}.place-results li button:hover{background:#27272a}.place-results p{margin:10px 12px}.place-results a{display:block;padding:5px 12px;font-size:9px;color:#a1a1aa}
+.locate-button{position:absolute;bottom:96px;right:10px;z-index:3;width:32px;height:36px}.locate-button[aria-pressed=true]{color:#93c5fd;outline:1px solid #60a5fa}
+.location-error{position:absolute;z-index:4;right:50px;bottom:96px;max-width:230px;padding:8px 10px;background:#18181bf5;border:1px solid #55555a;border-radius:5px;font-size:11px;display:flex;gap:5px}.location-error button{min-width:28px;align-self:flex-start}
+.leaflet-control-scale-line{border:1.5px solid #60a5fa!important;border-radius:5px;background:#18181bf5!important;font:10px/1.4 ui-monospace,monospace!important;color:#bfdbfe!important;padding:2px 5px!important}
+.variation-control{display:flex;align-items:center;gap:18px;width:100%;margin-top:12px}.variation-control label{flex:1;min-width:0;color:#a1a1aa;font-size:11px}.variation-control input[type=range]{margin:12px 0;height:5px;min-height:20px}.variation-control output{flex:none;text-align:right;color:#f4f4f5;font:18px ui-monospace,monospace}.variation-control output small{display:block;color:#a1a1aa;font:10px ui-sans-serif,sans-serif;margin-top:4px}.dock-scale fieldset{display:block}.dock-scale .variation-control{margin-top:0}.mobile-layout .locate-button{right:calc(10px + env(safe-area-inset-right))}.mobile-layout .map-topline{top:8px}.mobile-layout .place-search{width:min(260px,calc(100% - 48px))}.mobile-layout .location-error{bottom:96px;right:calc(50px + env(safe-area-inset-right));max-width:210px}
+@media(orientation:landscape){.mobile-layout .place-search{width:245px}.mobile-layout .map-dock .variation-control{gap:14px}}
+.size-arrow-guide{stroke:#60a5fa;stroke-width:1.5}
+.circle-handle[hidden]{display:none}
