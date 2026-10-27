@@ -99,7 +99,7 @@ The selected area is transmitted only when generating a route. OSM map tiles loa
 - `tests/`: deterministic routing fixtures and responsive browser checks.
 - `main.py`: unchanged historical Python sketch, with its original limitations.
 
-`npm run build` creates static output in `dist/`; `npm run preview` serves it locally. The Vite base is relative so assets and the worker can live under a subpath. The pinned-action `.github/workflows/pages.yml` runs the deterministic checks and production build in GitHub Actions, then publishes `dist/` through GitHub Pages on pushes to `feat/typescript-route-planner`. The repository is public by explicit owner approval; the original `main` branch and Python sketch are preserved. No analytics, credentials, or paid service was added.
+`npm run build` creates static output in `dist/`; `npm run preview` serves it locally. The Vite base is relative so assets and the worker can live under a subpath. The pinned-action `.github/workflows/pages.yml` runs the deterministic checks and production build in GitHub Actions, then publishes `dist/` through GitHub Pages on pushes to `main`. The repository is public by explicit owner approval; the original Python sketch is preserved. No analytics, credentials, or paid service was added.
 
 ## Primary references
 
@@ -135,3 +135,7 @@ Set `VITE_PLACE_SEARCH_URL` to a compatible Photon endpoint at build time if a d
 Local validation for this revision: 29 deterministic routing/network/circle/geocoding tests passed; TypeScript and production build passed. The desktop/phone suite covers 24 applicable cases (six desktop copies of phone-only checks skipped). Final zoom safety checks also passed after correcting the test to wait between Leaflet animations. Coverage includes on-ring hit selection and Start exclusion, repeated rotation/wraparound, touch resizing, multitouch/cancel/capture loss, pan/pinch, extreme zoom/Fit, center/size regeneration, stale export, full closed GPX, hidden-field/drawer accessibility, mocked search races/errors/cache, and explicit mocked location denial/success. Screenshots: `/tmp/great-circle-perimeter-{desktop,mobile}.png`, `/tmp/great-circle-mobile-landscape.png`, `/tmp/great-circle-mobile-map-dock.png`. All map/search/location data in this revision's browser tests are fixtures; no actual personal location, new live map query, provider performance benchmark, push or deployment was used.
 
 At very small on-screen circle sizes the Size handle is hidden to protect Start's hit target; use Fit circle to restore separated handles. This changes only the view, not the radius or route settings.
+
+## Main branch publication
+
+The verified UI lineage is integrated into `main` by fast-forward, preserving the original Python sketch and all TypeScript history. Pages now publishes pushes to `main`; optimization work starts on a separate local feature branch and needs a separate publication decision.

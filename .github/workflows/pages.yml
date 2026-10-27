@@ -2,7 +2,7 @@ name: Publish Great Circle to Pages
 
 on:
   push:
-    branches: [feat/typescript-route-planner]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
