@@ -1,0 +1,15 @@
+# Search readiness check — 27 October 2026
+
+Application code checked: `73ff607b50b12ace2f4dd6b166e4828e813359fb`, production assets `index-csgLruTW.js`, `index-X5rTcb9Y.css`; routing worker remains `worker-D-2ZPTOE.js`.
+
+One actual browser request from the local production app at `http://127.0.0.1:4183` queried `https://photon.komoot.io/api/?q=Paris&limit=5`. It returned HTTP **200**, **five** features and `Access-Control-Allow-Origin: *`. The app displayed results and selected Paris at 48.85350, 2.34839. Request parameters contained only `q` and `limit`; browser-controlled User-Agent, Origin and Referer were unchanged. No authentication or paid API was involved. One request only, no retries. No Overpass request or actual geolocation call ran; map tiles were intercepted with an offline fixture.
+
+The check used isolated headless Chrome for Testing on the Mac, not the user's foreground Chrome or its profile/tabs. Moving windows has no bearing on its results. All temporary preview/browser processes were stopped afterward.
+
+Keyboard checks against the production app confirmed: Enter submits search; Tab reaches Search, Clear and each result; Enter chooses a result and returns focus to the input; Start and Size can be focused and adjusted independently with keyboard input. Existing mocked browser checks additionally cover Escape/cancellation, stale responses, service failure and location permission denial. Handles retain slider names, bounds and value text; resizing has a keyboard alternative without adding an editable off-map radius control.
+
+Visual inspection covered desktop 1440×1100, portrait 390×844 and landscape 844×390. Search, on-ring Size, floating Start, variation/readout, location above zoom and map attribution remain visible. Phone Generate/Settings fit the initial viewport; the map fills its width. Ordinary below-fold desktop footer content is scrollable. The map uses labeled fixture tiles in screenshots, so these are UI evidence rather than actual Paris map/navigation evidence. Final screenshots are `/tmp/great-circle-review-mobile.png`, `/tmp/great-circle-review-desktop.png` and `/tmp/great-circle-mobile-landscape.png`.
+
+Provider review: the [official Photon public service](https://photon.komoot.io/) and [official repository](https://github.com/komoot/photon) permit project usage at reasonable request volume, warn of throttling or bans for extensive usage, and provide no availability guarantee. The implementation is manual-submit only, conservatively rate-limited, bounded and cached. Search results name/link Photon; OSM attribution/license links remain on the map and in the footer. The service is separate from unchanged Overpass routing. There is no claim of an SLA or globally optimal routes.
+
+This verifies current localhost browser CORS/availability, not a published-origin deployment. Publication is still pending approval. No performance refactor or benchmark ran; prior 29 deterministic tests and 24 applicable browser cases remain the application validation. Application source did not change during this readiness pass.
