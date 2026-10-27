@@ -1,6 +1,6 @@
 import { angleDelta, distance, offset, roundness, trackLength, xy } from './geo';
 import { buildGraph, turnAllowed } from './graph';
-import type { Edge, Graph, OsmData, Point, Route, Settings } from './types';
+import type { Edge, Graph, OsmData, Point, Route, Settings, SolveTiming } from './types';
 
 class Heap<T> {
   private values: { cost: number; value: T }[] = [];
@@ -34,10 +34,11 @@ class Heap<T> {
 }
 type Budget = { remaining: number; deadline: number };
 class SearchLimit extends Error {}
-const edgeKey = (edge: Edge) => `${edge.to}/${edge.from}/${edge.way}`;
-const physicalKey = (edge: Edge) => `${Math.min(edge.from, edge.to)}/${Math.max(edge.from, edge.to)}`;
+const edgeKeys = new WeakMap<Edge, string>(), physicalKeys = new WeakMap<Edge, string>();
+const edgeKey = (edge: Edge) => { let key = edgeKeys.get(edge); if (key === undefined) { key = `${edge.to}/${edge.from}/${edge.way}`; edgeKeys.set(edge, key); } return key; };
+const physicalKey = (edge: Edge) => { let key = physicalKeys.get(edge); if (key === undefined) { key = `${Math.min(edge.from, edge.to)}/${Math.max(edge.from, edge.to)}`; physicalKeys.set(edge, key); } return key; };
 
-export function shortestPath(graph: Graph, from: number, to: number, options: { previous?: Edge; first?: Edge; center?: Point; radius?: number; used?: Set<string>; budget?: Budget } = {}): Edge[] | null {
+export function shortestPath(graph: Graph, from: number, to: number, options: { previous?: Edge; first?: Edge; center?: Point; radius?: number; used?: Set<string>; budget?: Budget; radialCosts?: Map<number, number> } = {}): Edge[] | null {
   if (from === to) return [];
   type State = { node: number; previous?: Edge; parent?: State; edge?: Edge };
   const heap = new Heap<State>();
@@ -60,8 +61,13 @@ export function shortestPath(graph: Graph, from: number, to: number, options: { 
     }
     for (const edge of graph.edges.get(state.node) ?? []) {
       if (!turnAllowed(graph, state.previous, edge)) continue;
-      const radialError = options.center && options.radius ? Math.abs(distance(graph.nodes.get(edge.to)!, options.center) - options.radius) / options.radius : 0;
-      const costNext = cost + edge.length * (edge.factor + 2.5 * radialError ** 2 + (options.used?.has(physicalKey(edge)) ? 5 : 0));
+      let radialCost = options.radialCosts?.get(edge.to);
+      if (radialCost === undefined) {
+        const radialError = options.center && options.radius ? Math.abs(distance(graph.nodes.get(edge.to)!, options.center) - options.radius) / options.radius : 0;
+        radialCost = 2.5 * radialError ** 2;
+        options.radialCosts?.set(edge.to, radialCost);
+      }
+      const costNext = cost + edge.length * (edge.factor + radialCost + (options.used?.has(physicalKey(edge)) ? 5 : 0));
       const key = edgeKey(edge);
       if (costNext >= (costs.get(key) ?? Infinity)) continue;
       costs.set(key, costNext);
@@ -71,7 +77,17 @@ export function shortestPath(graph: Graph, from: number, to: number, options: { 
   return null;
 }
 
-export function chooseAnchors(graph: Graph, start: number, center: Point, radius: number, clockwise: boolean): number[] | null {
+type Projected = { id: number; x: number; y: number; radial: number; angle: number };
+function projectNodes(graph: Graph, center: Point): Projected[] {
+  const values: Projected[] = [];
+  for (const [id, point] of graph.nodes) {
+    if (!(graph.edges.get(id)?.length)) continue;
+    const [x, y] = xy(point, center);
+    values.push({ id, x, y, radial: Math.hypot(x, y), angle: Math.atan2(y, x) });
+  }
+  return values;
+}
+export function chooseAnchors(graph: Graph, start: number, center: Point, radius: number, clockwise: boolean, projected = projectNodes(graph, center)): number[] | null {
   const localStart = xy(graph.nodes.get(start)!, center);
   const startAngle = Math.atan2(localStart[1], localStart[0]);
   const anchors = [start];
@@ -80,11 +96,9 @@ export function chooseAnchors(graph: Graph, start: number, center: Point, radius
     const ideal = [Math.cos(angle) * radius, Math.sin(angle) * radius];
     let best: number | undefined;
     let bestScore = Infinity;
-    for (const [id, point] of graph.nodes) {
-      if (!(graph.edges.get(id)?.length) || anchors.includes(id)) continue;
-      const [x, y] = xy(point, center);
-      const radial = Math.hypot(x, y);
-      if (radial < radius * 0.5 || radial > radius * 1.5 || angleDelta(Math.atan2(y, x), angle) > Math.PI / 8) continue;
+    for (const { id, x, y, radial, angle: nodeAngle } of projected) {
+      if (anchors.includes(id)) continue;
+      if (radial < radius * 0.5 || radial > radius * 1.5 || angleDelta(nodeAngle, angle) > Math.PI / 8) continue;
       const score = (x - ideal[0]) ** 2 + (y - ideal[1]) ** 2;
       if (score < bestScore) { bestScore = score; best = id; }
     }
@@ -151,9 +165,12 @@ export function validateSettings(settings: Settings) {
   if (Math.abs(settings.center.lon) + settings.radiusM / (111000 * Math.cos(settings.center.lat * Math.PI / 180)) >= 180) throw new Error('Choose an area that does not cross the date line.');
 }
 
-export function solve(data: OsmData, settings: Settings, progress: (message: string) => void = () => {}): Route {
+export function solve(data: OsmData, settings: Settings, progress: (message: string) => void = () => {}, options: { graph?: Graph; timing?: SolveTiming } = {}): Route {
+  const started = performance.now();
   validateSettings(settings);
-  let graph = loopCore(buildGraph(data, settings));
+  let graph = options.graph ?? loopCore(buildGraph(data, settings));
+  const prepared = performance.now();
+  if (options.timing && !options.graph) options.timing.graphMs = prepared - started;
   let start = -1;
   let snapM = Infinity;
   for (const [id, node] of graph.nodes) {
@@ -164,6 +181,8 @@ export function solve(data: OsmData, settings: Settings, progress: (message: str
   if (snapM > 300) throw new Error('No usable cycling loop start within 300 m of your pin. Move the start onto a mapped road or permitted cycle path.');
   graph = returnableComponent(graph, start);
   const origin = graph.nodes.get(start)!;
+  const searchStarted = performance.now();
+  if (options.timing) options.timing.snapComponentMs = searchStarted - prepared;
   const targetM = settings.targetKm * 1000;
   const baseRadius = targetM / (2 * Math.PI);
   const circles: { center: Point; radius: number; clockwise: boolean }[] = [];
@@ -191,11 +210,19 @@ export function solve(data: OsmData, settings: Settings, progress: (message: str
   let candidates = 0;
   let limited = false;
   let closestError = Infinity;
+  const projections = new Map<string, Projected[]>();
+  const radialCosts = new Map<string, Map<number, number>>();
   for (let index = 0; index < circles.length; index++) {
     if (Date.now() > budget.deadline || budget.remaining <= 0) { limited = true; break; }
     const circle = circles[index];
     progress(`Comparing road loops · ${index + 1} of ${circles.length}`);
-    const anchors = chooseAnchors(graph, start, circle.center, circle.radius, circle.clockwise);
+    const centerKey = `${circle.center.lat}/${circle.center.lon}`;
+    let projected = projections.get(centerKey);
+    if (!projected) { projected = projectNodes(graph, circle.center); projections.set(centerKey, projected); if (projections.size > 2) projections.delete(projections.keys().next().value!); if (options.timing) options.timing.anchorNodeProjections += projected.length; }
+    const radiusKey = `${centerKey}/${circle.radius}`;
+    let costs = radialCosts.get(radiusKey);
+    if (!costs) { costs = new Map(); radialCosts.set(radiusKey, costs); if (radialCosts.size > 4) radialCosts.delete(radialCosts.keys().next().value!); }
+    const anchors = chooseAnchors(graph, start, circle.center, circle.radius, circle.clockwise, projected);
     if (!anchors) continue;
     const used = new Set<string>();
     const routeEdges: Edge[] = [];
@@ -204,7 +231,7 @@ export function solve(data: OsmData, settings: Settings, progress: (message: str
       for (let i = 0; i < anchors.length; i++) {
         const path = shortestPath(graph, anchors[i], anchors[(i + 1) % anchors.length], {
           previous: routeEdges.at(-1), first: i === anchors.length - 1 ? routeEdges[0] : undefined,
-          center: circle.center, radius: circle.radius, used, budget,
+          center: circle.center, radius: circle.radius, used, budget, radialCosts: costs,
         });
         if (!path?.length) { failed = true; break; }
         routeEdges.push(...path);
@@ -238,6 +265,7 @@ export function solve(data: OsmData, settings: Settings, progress: (message: str
       best = { points, lengthM, error, roundness: round, repeated, unknownSurface: unknownM / lengthM, snapM, circleCenter: circle.center, circleRadiusM: circle.radius, candidates, notes: [...graph.notes], dataTimestamp: data.osm3s?.timestamp_osm_base };
     }
   }
+  if (options.timing) { options.timing.searchMs = performance.now() - searchStarted; options.timing.pathExpansions = 1800000 - budget.remaining; options.timing.totalMs = performance.now() - started; }
   if (!best) {
     const hint = Number.isFinite(closestError) ? ` Closest closed candidate was ${Math.round(closestError * 100)}% from the target.` : '';
     throw new Error(`No sufficiently circular closed loop found within ±${Math.round(settings.tolerance * 100)}% of your target.${hint} Try a shorter distance, wider area, different start, or mixed surfaces.${limited ? ' The bounded search reached its limit.' : ''}`);

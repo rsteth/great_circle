@@ -40,6 +40,8 @@ export default function App() {
   useEffect(() => { if (mobile && route) dockResult.current?.scrollIntoView({ block: 'nearest', behavior: 'instant' }); }, [route, mobile]);
   function closeDrawer() { setDrawerOpen(false); setDrawerFocus(undefined); }
   const worker = useRef<Worker | null>(null);
+  const workerDataset = useRef('');
+  const requestSequence = useRef(0);
   const abort = useRef<AbortController | null>(null);
   useEffect(() => () => { abort.current?.abort(); worker.current?.terminate(); }, []);
   function update(patch: Partial<Settings>) {
@@ -50,10 +52,11 @@ export default function App() {
   }
   function cancel() {
     abort.current?.abort(); abort.current = null;
-    worker.current?.terminate(); worker.current = null;
+    worker.current?.terminate(); worker.current = null; workerDataset.current = ''; requestSequence.current++;
     setBusy(false); setStatus('Cancelled.');
   }
   async function generate() {
+    if (abort.current) return;
     const invalid = [...document.querySelectorAll<HTMLInputElement>('.number-control input')].find(input => !input.value.trim() || !Number.isFinite(Number(input.value)) || Number(input.value) < Number(input.min) || Number(input.value) > Number(input.max));
     if (invalid) {
       setError('Check the circle size or start angle.');
@@ -62,30 +65,42 @@ export default function App() {
       return;
     }
     try { validateSettings(settings); } catch (cause) { setError((cause as Error).message); return; }
+    const id = ++requestSequence.current;
+    const generationStarted = performance.now();
     const controller = new AbortController();
     abort.current = controller;
     setBusy(true); setRoute(undefined); setError(''); setDownloaded(false);
     setStatus('Loading roads & paths…');
     try {
-      const { data } = await loadNetwork(settings, controller.signal);
+      const { data, datasetId, timing: networkTiming } = await loadNetwork(settings, controller.signal);
       if (controller.signal.aborted) return;
       setStatus('Finding a loop…');
-      const instance = new Worker(new URL('./routing/worker.ts', import.meta.url), { type: 'module' });
+      const instance = worker.current ?? new Worker(new URL('./routing/worker.ts', import.meta.url), { type: 'module' });
+      let transferMs = 0;
       worker.current = instance;
       instance.onmessage = (event: MessageEvent<WorkerResponse>) => {
-        if (controller.signal.aborted) return;
         const message = event.data;
+        if (controller.signal.aborted || message.id !== id || id !== requestSequence.current) return;
         if (message.type === 'progress') { setStatus(message.message); return; }
-        instance.terminate(); worker.current = null; abort.current = null; setBusy(false);
-        if (message.type === 'result') { setRoute(message.route); setStatus('Loop found.'); }
+        abort.current = null; setBusy(false);
+        if (message.type === 'result') {
+          performance.clearMeasures('great-circle-generation');
+          performance.measure('great-circle-generation', { start: generationStarted, detail: { network: networkTiming, transferMs, worker: message.timing, totalMs: performance.now() - generationStarted } });
+          setRoute(message.route); setStatus('Loop found.');
+        }
         else { setError(message.message); setStatus('No loop found.'); }
       };
       instance.onerror = () => {
-        if (controller.signal.aborted) return;
-        instance.terminate(); worker.current = null; abort.current = null; setBusy(false);
+        if (controller.signal.aborted || id !== requestSequence.current) return;
+        instance.terminate(); worker.current = null; workerDataset.current = ''; abort.current = null; setBusy(false);
         setError('Search stopped. Try a smaller area.'); setStatus('Search stopped.');
       };
-      instance.postMessage({ data, settings });
+      const transferStarted = performance.now();
+      try {
+        instance.postMessage({ id, datasetId, data: workerDataset.current === datasetId ? undefined : data, settings });
+        workerDataset.current = datasetId;
+      } catch (cause) { instance.terminate(); worker.current = null; workerDataset.current = ''; throw cause; }
+      transferMs = performance.now() - transferStarted;
     } catch (cause) {
       if (controller.signal.aborted) return;
       setError(cause instanceof Error ? cause.message : 'Couldn’t load map data. Try again.');

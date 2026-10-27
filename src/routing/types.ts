@@ -36,5 +36,7 @@ export type Route = {
   notes: string[];
   dataTimestamp?: string;
 };
-export type WorkerRequest = { data: OsmData; settings: Settings };
-export type WorkerResponse = { type: 'progress'; message: string } | { type: 'result'; route: Route } | { type: 'error'; message: string };
+export type NetworkTiming = { fetchMs: number; parseMs: number; bytes: number; cacheHit: boolean };
+export type SolveTiming = { graphMs: number; graphCached: boolean; snapComponentMs: number; searchMs: number; totalMs: number; anchorNodeProjections: number; pathExpansions: number };
+export type WorkerRequest = { id: number; datasetId: string; data?: OsmData; settings: Settings };
+export type WorkerResponse = { id: number } & ({ type: 'progress'; message: string } | { type: 'result'; route: Route; timing: SolveTiming } | { type: 'error'; message: string });
