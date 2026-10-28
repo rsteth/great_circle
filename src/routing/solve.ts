@@ -1,3 +1,4 @@
+import { CoverageGapError } from './coverage';
 import { angleDelta, distance, offset, roundness, trackLength, xy } from './geo';
 import { MAX_CIRCLE_RADIUS_M, MAX_SHARED_QUERY_RADIUS_M } from './limits';
 import { buildGraph, turnAllowed } from './graph';
@@ -88,7 +89,7 @@ function projectNodes(graph: Graph, center: Point): Projected[] {
   }
   return values;
 }
-export function chooseAnchors(graph: Graph, start: number, center: Point, radius: number, clockwise: boolean, projected = projectNodes(graph, center)): number[] | null {
+export function chooseAnchors(graph: Graph, start: number, center: Point, radius: number, clockwise: boolean, projected = projectNodes(graph, center), onMissing?: (point: Point) => void): number[] | null {
   const localStart = xy(graph.nodes.get(start)!, center);
   const startAngle = Math.atan2(localStart[1], localStart[0]);
   const anchors = [start];
@@ -103,7 +104,7 @@ export function chooseAnchors(graph: Graph, start: number, center: Point, radius
       const score = (x - ideal[0]) ** 2 + (y - ideal[1]) ** 2;
       if (score < bestScore) { bestScore = score; best = id; }
     }
-    if (best === undefined) return null;
+    if (best === undefined) { onMissing?.(offset(center, ideal[0], ideal[1])); return null; }
     anchors.push(best);
   }
   return anchors;
@@ -158,8 +159,8 @@ export function returnableComponent(graph: Graph, start: number): Graph {
 
 export function validateSettings(settings: Settings) {
   for (const point of [settings.center, settings.start]) if (!Number.isFinite(point.lat) || !Number.isFinite(point.lon) || Math.abs(point.lat) > 75 || Math.abs(point.lon) > 180) throw new Error('Choose coordinates between 75°S and 75°N, with longitude between −180° and 180°.');
-  if (!Number.isFinite(settings.radiusM) || settings.radiusM < 1000 || settings.radiusM > MAX_CIRCLE_RADIUS_M * 1.35 || (settings.circleRadiusM === undefined && settings.radiusM > MAX_SHARED_QUERY_RADIUS_M)) throw new Error('Choose a valid search radius: 1–6 km, or a padded boundary for an explicit circle up to 100 km radius.');
-  if (!Number.isFinite(settings.targetKm) || settings.targetKm < 3 || settings.targetKm > MAX_CIRCLE_RADIUS_M * 2 * Math.PI / 1000) throw new Error('Choose a valid target distance for a circle up to 100 km radius.');
+  if (!Number.isFinite(settings.radiusM) || settings.radiusM < 1000 || settings.radiusM > MAX_CIRCLE_RADIUS_M * 1.35 || (settings.circleRadiusM === undefined && settings.radiusM > MAX_SHARED_QUERY_RADIUS_M)) throw new Error('Choose a valid search radius: 1–6 km, or a padded boundary for an explicit circle up to 10 km radius.');
+  if (!Number.isFinite(settings.targetKm) || settings.targetKm < 3 || settings.targetKm > MAX_CIRCLE_RADIUS_M * 2 * Math.PI / 1000) throw new Error('Choose a valid target distance for a circle up to 10 km radius.');
   if (![0.1, 0.2, 0.3].includes(settings.tolerance) || !['mixed', 'paved'].includes(settings.surface) || !['quiet', 'balanced'].includes(settings.style)) throw new Error('Choose valid route preferences.');
   if (settings.circleRadiusM !== undefined && (!Number.isFinite(settings.circleRadiusM) || settings.circleRadiusM < 500 || settings.circleRadiusM > MAX_CIRCLE_RADIUS_M || settings.circleRadiusM >= settings.radiusM || Math.abs(distance(settings.start, settings.center) - settings.circleRadiusM) > 2 || Math.abs(settings.targetKm * 1000 - settings.circleRadiusM * 2 * Math.PI) > 10)) throw new Error('Choose a valid circle size and a start on its edge.');
   if (distance(settings.start, settings.center) > settings.radiusM) throw new Error('Your start is outside the search area. Move the start or expand the area.');
@@ -179,6 +180,7 @@ export function solve(data: OsmData, settings: Settings, progress: (message: str
     const d = distance(node, settings.start);
     if (d < snapM) { start = id; snapM = d; }
   }
+  if (snapM > 300 && graph.coverage?.kind === 'corridor' && graph.frontier?.length) throw new CoverageGapError('No returnable start in the downloaded corridor.', [...graph.frontier].sort((a, b) => distance(a, settings.start) - distance(b, settings.start)).slice(0, 2));
   if (snapM > 300) throw new Error('No usable cycling loop start within 300 m of your pin. Move the start onto a mapped road or permitted cycle path.');
   graph = returnableComponent(graph, start);
   const origin = graph.nodes.get(start)!;
@@ -211,6 +213,7 @@ export function solve(data: OsmData, settings: Settings, progress: (message: str
   let candidates = 0;
   let limited = false;
   let closestError = Infinity;
+  const missingConnections: Point[] = [];
   const projections = new Map<string, Projected[]>();
   const radialCosts = new Map<string, Map<number, number>>();
   for (let index = 0; index < circles.length; index++) {
@@ -223,7 +226,7 @@ export function solve(data: OsmData, settings: Settings, progress: (message: str
     const radiusKey = `${centerKey}/${circle.radius}`;
     let costs = radialCosts.get(radiusKey);
     if (!costs) { costs = new Map(); radialCosts.set(radiusKey, costs); if (radialCosts.size > 4) radialCosts.delete(radialCosts.keys().next().value!); }
-    const anchors = chooseAnchors(graph, start, circle.center, circle.radius, circle.clockwise, projected);
+    const anchors = chooseAnchors(graph, start, circle.center, circle.radius, circle.clockwise, projected, point => missingConnections.push(point));
     if (!anchors) continue;
     const used = new Set<string>();
     const routeEdges: Edge[] = [];
@@ -234,7 +237,7 @@ export function solve(data: OsmData, settings: Settings, progress: (message: str
           previous: routeEdges.at(-1), first: i === anchors.length - 1 ? routeEdges[0] : undefined,
           center: circle.center, radius: circle.radius, used, budget, radialCosts: costs,
         });
-        if (!path?.length) { failed = true; break; }
+        if (!path?.length) { missingConnections.push(graph.nodes.get(anchors[i])!); failed = true; break; }
         routeEdges.push(...path);
         path.forEach(e => used.add(physicalKey(e)));
       }
@@ -268,8 +271,13 @@ export function solve(data: OsmData, settings: Settings, progress: (message: str
   }
   if (options.timing) { options.timing.searchMs = performance.now() - searchStarted; options.timing.pathExpansions = 1800000 - budget.remaining; options.timing.totalMs = performance.now() - started; }
   if (!best) {
+    if (!candidates && missingConnections.length && graph.coverage?.kind === 'corridor' && graph.frontier?.length) {
+      const ranked = [...graph.frontier].sort((a, b) => Math.min(...missingConnections.map(point => distance(a, point))) - Math.min(...missingConnections.map(point => distance(b, point))));
+      const gaps: Point[] = []; for (const point of ranked) { if (!gaps.some(known => distance(known, point) < 500)) gaps.push(point); if (gaps.length === 2) break; }
+      throw new CoverageGapError('A connection reaches the downloaded corridor boundary.', gaps);
+    }
     const hint = Number.isFinite(closestError) ? ` Closest closed candidate was ${Math.round(closestError * 100)}% from the target.` : '';
-    throw new Error(`No sufficiently circular closed loop found within ±${Math.round(settings.tolerance * 100)}% of your target.${hint} Try a shorter distance, wider area, different start, or mixed surfaces.${limited ? ' The bounded search reached its limit.' : ''}`);
+    throw new Error(`No sufficiently circular closed loop found within ±${Math.round(settings.tolerance * 100)}% of your target.${hint} Try a shorter distance, wider area, different start, or mixed surfaces.${graph.coverage?.kind === 'corridor' ? ' No loop was found within downloaded coverage; wider detours are unknown.' : ''}${limited ? ' The bounded search reached its limit.' : ''}`);
   }
   best.candidates = candidates;
   if (limited) best.notes.push('Search stopped at its time/work limit; this is the best acceptable loop found so far.');

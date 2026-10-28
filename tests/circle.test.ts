@@ -29,12 +29,12 @@ describe('circle size and clock hand', () => {
   it('preserves angle when resizing or moving center, with padded search limits', () => {
     let { settings } = circleFixture();
     settings = changeCircle(settings, { radiusM: 1000, bearing: 37 });
-    for (const radiusM of [500, 1500, 4500, 10000, 100000, 100001, 1]) {
+    for (const radiusM of [500, 1500, 4500, 10000, 10000, 10001, 1]) {
       settings = changeCircle(settings, { radiusM });
       expect(bearingTo(settings.center, settings.start)).toBeCloseTo(37, 5);
       expect(settings.targetKm).toBeCloseTo(circleRadius(settings) * 2 * Math.PI / 1000, 8);
       expect(settings.radiusM).toBeGreaterThan(circleRadius(settings));
-      expect(settings.radiusM).toBeLessThanOrEqual(135000);
+      expect(settings.radiusM).toBeLessThanOrEqual(13500);
       validateSettings(settings);
     }
     settings = changeCircle(settings, { center: { lat: 50, lon: -124 } });
@@ -48,7 +48,7 @@ describe('circle size and clock hand', () => {
     expect(angleKey('Home', 180, false)).toBe(0);
     expect(angleKey('End', 180, false)).toBe(359);
     expect(radiusKey('Home', 1000, false)).toBe(500);
-    expect(radiusKey('End', 1000, false)).toBe(100000);
+    expect(radiusKey('End', 1000, false)).toBe(10000);
     expect(radiusKey('ArrowUp', 1000, true)).toBe(1250);
     expect(angleKey('Tab', 40, false)).toBeUndefined();
   });
@@ -73,16 +73,16 @@ describe('circle size and clock hand', () => {
   });
 });
 
-describe('100 km circle planning and safe perimeter angle', () => {
-  it('uses 100 km radius, not diameter; rejects invalid configured circles', () => {
+describe('10 km circle planning and safe perimeter angle', () => {
+  it('uses 10 km radius, not diameter; rejects invalid configured circles', () => {
     const { settings } = circleFixture();
-    const large = changeCircle(settings, { radiusM: 100000, bearing: 135 });
-    expect(large.circleRadiusM).toBe(100000); expect(distance(large.center, large.start)).toBeCloseTo(100000, 5);
-    expect(large.targetKm).toBeCloseTo(628.3185307, 6); expect(large.radiusM).toBe(135000); validateSettings(large);
-    expect(changeCircle(large, { radiusM: 100001 }).circleRadiusM).toBe(100000);
-    expect(() => validateSettings({ ...large, circleRadiusM: 100001 })).toThrow();
+    const large = changeCircle(settings, { radiusM: 10000, bearing: 135 });
+    expect(large.circleRadiusM).toBe(10000); expect(distance(large.center, large.start)).toBeCloseTo(10000, 5);
+    expect(large.targetKm).toBeCloseTo(62.83185307, 6); expect(large.radiusM).toBe(13500); validateSettings(large);
+    expect(changeCircle(large, { radiusM: 10001 }).circleRadiusM).toBe(10000);
+    expect(() => validateSettings({ ...large, circleRadiusM: 10001 })).toThrow();
     expect(() => validateSettings({ ...large, circleRadiusM: NaN })).toThrow();
-    expect(radiusKey('ArrowUp', 100000, false)).toBe(100000);
+    expect(radiusKey('ArrowUp', 10000, false)).toBe(10000);
   });
   it('tracks the nearest safe perimeter angle with stable handoff in both directions', () => {
     for (const angles of [[330,350,359,0,1,10,30,60], [60,30,10,1,0,359,350,330]]) {

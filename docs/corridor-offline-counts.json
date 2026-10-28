@@ -1,0 +1,102 @@
+{
+  "scope": "Synthetic fixtures; counts and route quality only, not service CPU/network latency",
+  "results": [
+    {
+      "fixture": "dense-grid",
+      "disk": {
+        "elements": 1241,
+        "bytes": 107603,
+        "nodes": 365,
+        "edges": 1376,
+        "frontiers": 0,
+        "route": {
+          "lengthM": 14499.988399524242,
+          "error": 0.15387241427971174,
+          "roundness": 0.616365775574076,
+          "points": 59
+        }
+      },
+      "initial": {
+        "elements": 624,
+        "bytes": 53681,
+        "nodes": 140,
+        "edges": 432,
+        "frontiers": 92,
+        "route": {
+          "lengthM": 14499.988399524242,
+          "error": 0.15387241427971174,
+          "roundness": 0.616365775574076,
+          "points": 59
+        }
+      },
+      "queryCostProxy": {
+        "vertices": 97,
+        "areaM2": 9864874.741823727
+      }
+    },
+    {
+      "fixture": "sparse-tree",
+      "disk": {
+        "elements": 113,
+        "bytes": 8884,
+        "nodes": 55,
+        "edges": 108,
+        "frontiers": 0,
+        "error": "No sufficiently circular closed loop found within \u00b120% of your target. Try a shorter distance, wider area, different start, or mixed surfaces."
+      },
+      "initial": {
+        "elements": 34,
+        "bytes": 2656,
+        "nodes": 14,
+        "edges": 24,
+        "frontiers": 4,
+        "error": "A connection reaches the downloaded corridor boundary."
+      },
+      "queryCostProxy": {
+        "vertices": 97,
+        "areaM2": 9864874.741823727
+      }
+    },
+    {
+      "fixture": "bridge-detour",
+      "disk": {
+        "elements": 118,
+        "bytes": 9766,
+        "nodes": 59,
+        "edges": 118,
+        "frontiers": 0,
+        "route": {
+          "lengthM": 13626.23514175331,
+          "error": 0.08434133927126633,
+          "roundness": 0.8959071441239073,
+          "points": 60
+        }
+      },
+      "initial": {
+        "elements": 117,
+        "bytes": 9672,
+        "nodes": 57,
+        "edges": 112,
+        "frontiers": 2,
+        "error": "A connection reaches the downloaded corridor boundary."
+      },
+      "expanded": {
+        "elements": 118,
+        "bytes": 9766,
+        "nodes": 59,
+        "edges": 118,
+        "frontiers": 0,
+        "route": {
+          "lengthM": 13626.23514175331,
+          "error": 0.08434133927126633,
+          "roundness": 0.8959071441239073,
+          "points": 60
+        }
+      },
+      "queryCostProxy": {
+        "vertices": 97,
+        "areaM2": 9864874.741823727
+      }
+    }
+  ]
+}

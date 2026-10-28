@@ -34,16 +34,17 @@ test.beforeEach(async ({ page }) => {
   await page.route('**/tile.openstreetmap.org/**', route => route.fulfill({ contentType: 'image/svg+xml', body: '<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256"><text x="8" y="20">Offline map fixture</text></svg>' }));
 });
 
-test('warm generations reuse worker/dataset/graph; contained bounds reclip without re-fetching', async ({ page }) => {
+test('warm generations reuse worker/dataset/graph; changed rings need new complete coverage', async ({ page }) => {
+  await page.addInitScript(() => { const now = Date.now.bind(Date); const state = window as unknown as { wallOffset: number }; state.wallOffset = 0; Date.now = () => now() + state.wallOffset; });
   await observeWorkers(page); let requests = 0;
   await page.route(endpoint, route => { requests++; return route.fulfill({ json: circleFixture(64, 850).data }); });
   await page.goto('/'); await setRadius(page, 1000); await page.getByRole('slider', { name: 'Route variation', exact: true }).fill('0.3');
   await generate(page); expect((await timing(page)).worker.graphCached).toBe(false);
   await page.getByRole('slider', { name: 'Start angle', exact: true }).press('ArrowRight'); await generate(page);
   const warm = await timing(page); expect(warm.worker.graphCached).toBe(true); expect(warm.network).toMatchObject({ cacheHit: true, bytes: 0 });
-  await setRadius(page, 850); await generate(page); const smaller = await timing(page);
-  expect(smaller.network.cacheHit).toBe(true); expect(smaller.worker.graphCached).toBe(false); expect(requests).toBe(1);
-  const observed = await stats(page); expect(observed.created).toBe(1); expect(observed.terminated).toBe(0); expect(observed.sends.map(send => send.dataset)).toEqual([true, false, false]);
+  await setRadius(page, 850); await page.evaluate(() => { (window as unknown as { wallOffset: number }).wallOffset += 31000; }); await generate(page); const smaller = await timing(page);
+  expect(smaller.network.cacheHit).toBe(false); expect(smaller.worker.graphCached).toBe(false); expect(requests).toBe(2);
+  const observed = await stats(page); expect(observed.created).toBe(1); expect(observed.terminated).toBe(0); expect(observed.sends.map(send => send.dataset)).toEqual([true, false, true]);
   expect(await page.evaluate(() => performance.getEntriesByName('great-circle-generation').length)).toBe(1);
 });
 

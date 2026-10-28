@@ -1,4 +1,6 @@
-# Radius and synchronized-map revision (local)
+# Radius and synchronized-map revision (historical local checkpoint)
+
+**Superseded radius/download limits:** the latest [adaptive corridor revision](adaptive-corridor-prototype.md) uses a 10 km maximum radius and bounded corridor retrieval. The 100 km planning-only limit and old large-circle rejection described below document the earlier checkpoint, not current behavior.
 
 Circle planning radius is 0.5–100 km. The maximum is a **radius**, producing a nominal circumference of approximately 628.3 km. Tap/click the radius readout beside Route variation to enter kilometers. Enter or a valid blur commits; Escape cancels; empty, nonfinite and out-of-range values remain editable with a units/range error. Arrow/Home/End map-handle controls share the same constants.
 

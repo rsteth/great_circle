@@ -6,17 +6,17 @@ async function camera(page:Page){return page.locator('.map').evaluate(el=>({pane
 async function begin(page:Page){const b=(await size(page).boundingBox())!;await page.mouse.move(b.x+b.width/2,b.y+b.height/2);await page.mouse.down();}
 test.beforeEach(async({page})=>{await page.route('**/tile.openstreetmap.org/**',r=>r.fulfill({contentType:'image/svg+xml',body:'<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256"><rect width="256" height="256" fill="#aaa"/><text x="8" y="20">Offline fixture map</text></svg>'}));});
 
-test('radius readout edits km, validates, commits Enter/blur and cancels Escape up to 100 km radius',async({page})=>{
+test('radius readout edits km, validates, commits Enter/blur and cancels Escape up to 10 km radius',async({page})=>{
  let requests=0;await page.route('**/overpass-api.de/**',r=>{requests++;return r.abort();});await page.goto('/');await page.waitForLoadState('networkidle');const before=await camera(page);
  await page.getByRole('button',{name:'Edit circle radius',exact:true}).click();let input=page.getByRole('spinbutton',{name:'Circle radius (km)',exact:true});await expect(input).toBeFocused();
- for(const value of ['101','0.49','-2','']){await input.fill(value);await input.press('Enter');await expect(input).toHaveAttribute('aria-invalid','true');await expect(page.getByText('Enter a radius from 0.5 to 100 km.')).toBeVisible();}
+ for(const value of ['101','0.49','-2','']){await input.fill(value);await input.press('Enter');await expect(input).toHaveAttribute('aria-invalid','true');await expect(page.getByText('Enter a radius from 0.5 to 10 km.')).toBeVisible();}
  await input.press('Escape');await expect(page.getByRole('button',{name:'Edit circle radius',exact:true})).toBeFocused();
- await page.getByRole('button',{name:'Edit circle radius',exact:true}).click();input=page.getByRole('spinbutton',{name:'Circle radius (km)',exact:true});await input.fill('100');await input.press('Enter');
- await expect(size(page)).toHaveAttribute('aria-valuemax','100000');await expect(size(page)).toHaveAttribute('aria-valuenow','100000');await expect(page.getByRole('button',{name:'Edit circle radius',exact:true})).toContainText('100.00');expect(await camera(page)).toEqual(before);
- await page.getByRole('button',{name:'Generate loop',exact:true}).click();await expect(page.getByRole('alert')).toContainText('too large for the shared map service');expect(requests).toBe(0);
+ await page.getByRole('button',{name:'Edit circle radius',exact:true}).click();input=page.getByRole('spinbutton',{name:'Circle radius (km)',exact:true});await input.fill('10');await input.press('Enter');
+ await expect(size(page)).toHaveAttribute('aria-valuemax','10000');await expect(size(page)).toHaveAttribute('aria-valuenow','10000');await expect(page.getByRole('button',{name:'Edit circle radius',exact:true})).toContainText('10.00');expect(await camera(page)).toEqual(before);
+ await page.getByRole('button',{name:'Generate loop',exact:true}).click();await expect(page.getByRole('alert')).toContainText('Could not reach');expect(requests).toBe(1);
  await page.getByRole('button',{name:'Edit circle radius',exact:true}).click();input=page.getByRole('spinbutton',{name:'Circle radius (km)',exact:true});await input.fill('1.25');await input.press('Tab');await expect(size(page)).toHaveAttribute('aria-valuenow','1250');
  await page.getByRole('button',{name:'Edit circle radius',exact:true}).click();input=page.getByRole('spinbutton',{name:'Circle radius (km)',exact:true});await input.fill('2');await input.press('Escape');await expect(size(page)).toHaveAttribute('aria-valuenow','1250');
- await size(page).press('End');await expect(size(page)).toHaveAttribute('aria-valuenow','100000');await size(page).press('ArrowUp');await expect(size(page)).toHaveAttribute('aria-valuenow','100000');
+ await size(page).press('End');await expect(size(page)).toHaveAttribute('aria-valuenow','10000');await size(page).press('ArrowUp');await expect(size(page)).toHaveAttribute('aria-valuenow','10000');
 });
 
 test('Size follows pointer around Start both directions without camera changes or Start rotation',async({page})=>{

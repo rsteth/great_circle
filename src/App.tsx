@@ -7,9 +7,10 @@ import SettingsDrawer from './SettingsDrawer';
 import useMobileLayout from './useMobileLayout';
 import { bearingTo, changeCircle, circleRadius } from './circle';
 import { toGpx } from './routing/gpx';
-import { loadNetwork } from './routing/overpass';
+import { planRoute, PlanningFailure } from './routing/plan';
+import { SearchClient } from './routing/searchClient';
 import { validateSettings } from './routing/solve';
-import type { Point, Route, Settings, WorkerResponse } from './routing/types';
+import type { Point, Route, Settings } from './routing/types';
 const initial: Settings = changeCircle({ center: { lat: 49.299, lon: -123.133 }, start: { lat: 49.2928, lon: -123.1331 }, radiusM: 3000, targetKm: 10, tolerance: 0.2, surface: 'mixed', style: 'quiet' }, { bearing: 180 });
 function Coordinates({ point, onApply }: { point: Point; onApply: (point: Point) => void }) {
   const [lat, setLat] = useState(String(point.lat));
@@ -40,11 +41,11 @@ export default function App() {
   useEffect(() => { if (mobile && error && !drawerOpen) errorBox.current?.scrollIntoView({ block: 'nearest', behavior: 'instant' }); }, [error, mobile, drawerOpen]);
   useEffect(() => { if (mobile && route) dockResult.current?.scrollIntoView({ block: 'nearest', behavior: 'instant' }); }, [route, mobile]);
   function closeDrawer() { setDrawerOpen(false); setDrawerFocus(undefined); }
-  const worker = useRef<Worker | null>(null);
-  const workerDataset = useRef('');
+  const searchClient = useRef<SearchClient | null>(null);
+  if (!searchClient.current) searchClient.current = new SearchClient();
   const requestSequence = useRef(0);
   const abort = useRef<AbortController | null>(null);
-  useEffect(() => () => { abort.current?.abort(); worker.current?.terminate(); }, []);
+  useEffect(() => () => { abort.current?.abort(); searchClient.current?.cancel(); }, []);
   function update(patch: Partial<Settings>) {
     setSettings(previous => ({ ...previous, ...patch })); setRoute(undefined); setError(''); setDownloaded(false); setStatus('Ready to generate.');
   }
@@ -53,7 +54,7 @@ export default function App() {
   }
   function cancel() {
     abort.current?.abort(); abort.current = null;
-    worker.current?.terminate(); worker.current = null; workerDataset.current = ''; requestSequence.current++;
+    searchClient.current?.cancel(); requestSequence.current++;
     setBusy(false); setStatus('Cancelled.');
   }
   async function generate() {
@@ -73,39 +74,20 @@ export default function App() {
     setBusy(true); setRoute(undefined); setError(''); setDownloaded(false);
     setStatus('Loading roads & paths…');
     try {
-      const { data, datasetId, timing: networkTiming } = await loadNetwork(settings, controller.signal);
-      if (controller.signal.aborted) return;
-      setStatus('Finding a loop…');
-      const instance = worker.current ?? new Worker(new URL('./routing/worker.ts', import.meta.url), { type: 'module' });
-      let transferMs = 0;
-      worker.current = instance;
-      instance.onmessage = (event: MessageEvent<WorkerResponse>) => {
-        const message = event.data;
-        if (controller.signal.aborted || message.id !== id || id !== requestSequence.current) return;
-        if (message.type === 'progress') { setStatus(message.message); return; }
-        abort.current = null; setBusy(false);
-        if (message.type === 'result') {
-          performance.clearMeasures('great-circle-generation');
-          performance.measure('great-circle-generation', { start: generationStarted, detail: { network: networkTiming, transferMs, worker: message.timing, totalMs: performance.now() - generationStarted } });
-          setRoute(message.route); setStatus('Loop found.');
-        }
-        else { setError(message.message); setStatus('No loop found.'); }
-      };
-      instance.onerror = () => {
-        if (controller.signal.aborted || id !== requestSequence.current) return;
-        instance.terminate(); worker.current = null; workerDataset.current = ''; abort.current = null; setBusy(false);
-        setError('Search stopped. Try a smaller area.'); setStatus('Search stopped.');
-      };
-      const transferStarted = performance.now();
-      try {
-        instance.postMessage({ id, datasetId, data: workerDataset.current === datasetId ? undefined : data, settings });
-        workerDataset.current = datasetId;
-      } catch (cause) { instance.terminate(); worker.current = null; workerDataset.current = ''; throw cause; }
-      transferMs = performance.now() - transferStarted;
+      const result = await planRoute(settings, controller.signal, message => { if (!controller.signal.aborted && id === requestSequence.current) setStatus(message); }, searchClient.current!.search);
+      if (controller.signal.aborted || id !== requestSequence.current) return;
+      performance.clearMeasures('great-circle-generation');
+      performance.measure('great-circle-generation', { start: generationStarted, detail: { ...result.metrics, totalMs: performance.now() - generationStarted } });
+      setRoute(result.route); setStatus('Loop found.');
+      setBusy(false); abort.current = null;
     } catch (cause) {
       if (controller.signal.aborted) return;
       setError(cause instanceof Error ? cause.message : 'Couldn’t load map data. Try again.');
-      setBusy(false); abort.current = null; setStatus('Map download stopped.');
+      if (cause instanceof PlanningFailure) {
+        performance.clearMeasures('great-circle-generation');
+        performance.measure('great-circle-generation', { start: generationStarted, detail: { ...cause.metrics, outcome: 'error', phase: cause.phase, totalMs: performance.now() - generationStarted } });
+      }
+      setBusy(false); abort.current = null; setStatus(cause instanceof PlanningFailure && cause.phase === 'search' ? (cause.message.startsWith('Search stopped') ? 'Search stopped.' : 'No loop found.') : cause instanceof PlanningFailure && cause.phase === 'budget' ? 'Planning stopped.' : 'Map download stopped.');
     }
   }
   function download() {

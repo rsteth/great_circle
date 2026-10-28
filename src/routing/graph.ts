@@ -1,3 +1,4 @@
+import { compileCoverage, CoverageGapError, type Coverage } from './coverage';
 import { distance } from './geo';
 import type { Edge, Graph, OsmData, OsmNode, Settings, Tags } from './types';
 const allowed = new Set(['yes', 'designated', 'official', 'permissive']);
@@ -30,10 +31,13 @@ export function directions(tags: Tags): [boolean, boolean] {
   }
   return [forward, backward];
 }
-export function buildGraph(data: OsmData, settings: Settings): Graph {
+export function buildGraph(data: OsmData, settings: Settings, coverage?: Coverage): Graph {
   if (data.remark) throw new Error('OpenStreetMap returned incomplete data. Wait a little, then try a smaller area.');
   if (!Array.isArray(data.elements) || data.elements.length > 200000) throw new Error('This area is too dense. Reduce the search radius.');
-  const graph: Graph = { nodes: new Map(), edges: new Map(), turns: new Map(), notes: [] };
+  const graph: Graph = { nodes: new Map(), edges: new Map(), turns: new Map(), notes: [], coverage };
+  const covered = coverage?.kind === 'corridor' ? compileCoverage(coverage) : undefined;
+  const frontier = new Map<number, OsmNode>();
+  const rawNodes = covered ? new Map(data.elements.filter((element): element is OsmNode => element.type === 'node').map(node => [node.id, node])) : new Map<number, OsmNode>();
   const blockedWays = new Set<number>();
   // A via-way or conditional restriction needs a richer state machine. Exclude its
   // approach ways rather than silently route through a potentially illegal turn.
@@ -59,7 +63,7 @@ export function buildGraph(data: OsmData, settings: Settings): Graph {
   }
   if (blockedWays.size) graph.notes.push('Approach roads with unsupported or conditional turn restrictions were excluded.');
   for (const element of data.elements) {
-    if (element.type === 'node' && Number.isFinite(element.lat) && Number.isFinite(element.lon) && bicycleAccess(element.tags ?? {}, true) && distance(element, settings.center) <= settings.radiusM) graph.nodes.set(element.id, element);
+    if (element.type === 'node' && Number.isFinite(element.lat) && Number.isFinite(element.lon) && bicycleAccess(element.tags ?? {}, true) && (coverage?.kind === 'corridor' ? covered!.contains(element) : distance(element, settings.center) <= settings.radiusM)) graph.nodes.set(element.id, element);
   }
   for (const way of data.elements) {
     if (way.type !== 'way' || !way.tags || blockedWays.has(way.id) || !bicycleAccess(way.tags)) continue;
@@ -67,13 +71,25 @@ export function buildGraph(data: OsmData, settings: Settings): Graph {
     const known = paved.has(tags.surface);
     if (settings.surface === 'paved' && !known) continue;
     const [forward, backward] = directions(tags);
+    if (!forward && !backward) continue;
     const highway = tags.highway;
     const busy = ['primary', 'primary_link', 'secondary', 'secondary_link'].includes(highway);
     const factor = 1 + (busy ? (settings.style === 'quiet' ? 3 : 0.7) : ['tertiary', 'tertiary_link'].includes(highway) ? 0.35 : 0) + (!known ? 0.15 : 0) + (highway === 'service' ? 0.15 : 0);
     for (let i = 1; i < way.nodes.length; i++) {
       const a = graph.nodes.get(way.nodes[i - 1]);
       const b = graph.nodes.get(way.nodes[i]);
-      if (!a || !b || a.id === b.id) continue;
+      if (!a || !b) {
+        if (covered) {
+          const missing = rawNodes.get(way.nodes[a ? i : i - 1]);
+          const inside = a ?? b;
+          if (inside && missing && bicycleAccess(missing.tags ?? {}, true) && !covered.contains(missing)) frontier.set(inside.id, inside);
+        }
+        continue;
+      }
+      if (a.id === b.id) continue;
+      // Endpoint membership alone is insufficient for a non-convex corridor.
+      // Keep original nodes only; never synthesize clipped GPX geometry.
+      if (covered && !covered.segment(a, b)) { frontier.set(a.id, a); frontier.set(b.id, b); continue; }
       const length = distance(a, b);
       const add = (from: OsmNode, to: OsmNode) => {
         const edges = graph.edges.get(from.id) ?? [];
@@ -87,7 +103,10 @@ export function buildGraph(data: OsmData, settings: Settings): Graph {
   const used = new Set<number>();
   for (const [id, edges] of graph.edges) { used.add(id); edges.forEach(e => used.add(e.to)); }
   for (const id of graph.nodes.keys()) if (!used.has(id)) graph.nodes.delete(id);
-  if (graph.nodes.size < 3) throw new Error('No usable cycling network in this area with these preferences. Try mixed surfaces or a different area.');
+  graph.frontier = [...frontier.values()];
+  if (graph.nodes.size < 3 && coverage?.kind === 'corridor' && graph.frontier.length) throw new CoverageGapError('No connected cycling network in downloaded coverage.', graph.frontier.slice(0, 2));
+  if (graph.nodes.size < 3) throw new Error(coverage?.kind === 'corridor' ? 'No usable cycling network within downloaded coverage. Roads outside it are unknown. Try another area or start.' : 'No usable cycling network in this area with these preferences. Try mixed surfaces or a different area.');
+  if (coverage?.kind === 'corridor') graph.notes.push('Route uses downloaded corridor coverage; detours outside it are unknown.');
   return graph;
 }
 export function turnAllowed(graph: Graph, previous: Edge | undefined, next: Edge): boolean {

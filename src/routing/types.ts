@@ -1,3 +1,4 @@
+import type { Coverage } from './coverage';
 export type Point = { lat: number; lon: number };
 export type Tags = Record<string, string>;
 export type OsmNode = Point & { type: 'node'; id: number; tags?: Tags };
@@ -21,6 +22,8 @@ export type Graph = {
   edges: Map<number, Edge[]>;
   turns: Map<number, Turn[]>;
   notes: string[];
+  coverage?: Coverage;
+  frontier?: Point[];
 };
 export type Route = {
   points: Point[];
@@ -36,7 +39,7 @@ export type Route = {
   notes: string[];
   dataTimestamp?: string;
 };
-export type NetworkTiming = { fetchMs: number; parseMs: number; bytes: number; cacheHit: boolean };
+export type NetworkTiming = { fetchMs: number; parseMs: number; bytes: number; cacheHit: boolean; elements: number; queryAreaM2: number; queryVertices: number };
 export type SolveTiming = { graphMs: number; graphCached: boolean; snapComponentMs: number; searchMs: number; totalMs: number; anchorNodeProjections: number; pathExpansions: number };
-export type WorkerRequest = { id: number; datasetId: string; data?: OsmData; settings: Settings };
-export type WorkerResponse = { id: number } & ({ type: 'progress'; message: string } | { type: 'result'; route: Route; timing: SolveTiming } | { type: 'error'; message: string });
+export type WorkerRequest = { id: number; datasetId: string; data?: OsmData; sourceCoverage?: Coverage; coverage?: Coverage; settings: Settings };
+export type WorkerResponse = { id: number } & ({ type: 'progress'; message: string } | { type: 'result'; route: Route; timing: SolveTiming } | { type: 'error'; message: string; gaps?: Point[] });

@@ -1,3 +1,4 @@
+import { coverageKey, covers, type Coverage } from './coverage';
 import { buildGraph } from './graph';
 import { loopCore, solve, validateSettings } from './solve';
 import type { Graph, OsmData, Settings, SolveTiming } from './types';
@@ -5,19 +6,21 @@ import type { Graph, OsmData, Settings, SolveTiming } from './types';
 // directed-edge count. A cancelled worker is discarded, including these caches.
 export class RoutingEngine {
   private data?: OsmData;
+  private sourceCoverage?: Coverage;
   private graphs = new Map<string, { graph: Graph; edges: number }>();
-  setData(data: OsmData) { if (this.data !== data) { this.data = data; this.graphs.clear(); } }
-  solve(settings: Settings, progress: (message: string) => void = () => {}) {
+  setData(data: OsmData, sourceCoverage?: Coverage) { if (this.data !== data || coverageKey(this.sourceCoverage) !== coverageKey(sourceCoverage)) { this.data = data; this.sourceCoverage = sourceCoverage; this.graphs.clear(); } }
+  solve(settings: Settings, progress: (message: string) => void = () => {}, coverage?: Coverage) {
     validateSettings(settings);
     if (!this.data) throw new Error('Map data is missing. Generate again.');
+    if (coverage && (!this.sourceCoverage || !covers(this.sourceCoverage, coverage))) throw new Error('Dataset does not cover the requested corridor.');
     const started = performance.now();
-    const key = JSON.stringify([settings.center.lat, settings.center.lon, settings.radiusM, settings.surface, settings.style]);
+    const key = JSON.stringify([settings.center.lat, settings.center.lon, settings.radiusM, settings.surface, settings.style, coverageKey(coverage)]);
     let entry = this.graphs.get(key);
     const cached = !!entry;
     if (entry) { this.graphs.delete(key); this.graphs.set(key, entry); }
     else {
       progress('Building a directed cycling network…');
-      const graph = loopCore(buildGraph(this.data, settings));
+      const graph = loopCore(buildGraph(this.data, settings, coverage));
       const edges = [...graph.edges.values()].reduce((sum, list) => sum + list.length, 0);
       entry = { graph, edges };
       if (edges <= 250000) {

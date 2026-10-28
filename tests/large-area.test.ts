@@ -1,18 +1,18 @@
 import { afterEach, expect, it, vi } from 'vitest';
 import { changeCircle } from '../src/circle';
 import { validateSettings } from '../src/routing/solve';
+import { coverageCost, initialCoverage, type Corridor } from '../src/routing/coverage';
 import { loadNetwork, queryFor } from '../src/routing/overpass';
 import { circleFixture } from './fixtures';
 afterEach(() => vi.unstubAllGlobals());
-it('accepts 100 km planning geometry but never issues an oversized shared-service query', async () => {
-  const large = changeCircle(circleFixture().settings, { radiusM: 100000 });
-  expect(() => validateSettings(large)).not.toThrow(); expect(() => queryFor(large)).toThrow('too large for the shared map service');
-  const fetch = vi.fn(); vi.stubGlobal('fetch', fetch);
-  await expect(loadNetwork(large, new AbortController().signal)).rejects.toThrow('4.5 km'); expect(fetch).not.toHaveBeenCalled();
+it('caps planning at 10 km radius and replaces the old disk guard with bounded corridor cost', () => {
+  const selected=changeCircle(circleFixture().settings,{radiusM:10000});validateSettings(selected);
+  expect(selected.circleRadiusM).toBe(10000);expect(selected.targetKm).toBeCloseTo(62.8318530718);
+  const coverage=initialCoverage(selected);expect(coverage.kind).toBe('corridor');expect(coverageCost(coverage).areaM2).toBeLessThan(110000000);expect(queryFor(selected)).toContain('around:775,');
+  expect(()=>queryFor(selected,{kind:'disk',center:selected.center,radiusM:selected.radiusM+50})).toThrow('6 km');
 });
-
-it('preserves the previous 4.5 km circle download limit', () => {
-  const largest = changeCircle(circleFixture().settings, { radiusM: 4500 });
-  expect(largest.radiusM).toBe(6000); expect(() => queryFor(largest)).not.toThrow();
-  expect(() => queryFor(changeCircle(largest, { radiusM: 4501 }))).toThrow('too large');
+it('rejects excessive corridor width/config before any live request', async () => {
+  const selected=changeCircle(circleFixture().settings,{radiusM:10000}),fetch=vi.fn();vi.stubGlobal('fetch',fetch);
+  await expect(loadNetwork({...selected,circleRadiusM:10001},new AbortController().signal)).rejects.toThrow();
+  await expect(loadNetwork(selected,new AbortController().signal,undefined,{coverage:{...initialCoverage(selected) as Corridor,halfWidthM:5000}})).rejects.toThrow('budget');expect(fetch).not.toHaveBeenCalled();
 });
