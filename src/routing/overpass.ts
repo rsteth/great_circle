@@ -6,6 +6,20 @@ export const CLIENT_USER_AGENT = 'GreatCircle/0.1 (+https://github.com/rsteth/gr
 const REQUEST_COOLDOWN_MS = 30000;
 const RESPONSE_CAP = 32 * 1024 * 1024;
 const HIGHWAYS = '^(cycleway|residential|living_street|unclassified|service|tertiary|tertiary_link|secondary|secondary_link|primary|primary_link|track|path|footway|pedestrian)$';
+export type MapFailureDetail = { status: number; retryAfterSeconds: number; requestMs: number; queryBytes: number; queryVertices: number; queryAreaM2: number };
+export class MapServiceError extends Error {
+  constructor(readonly detail: MapFailureDetail) {
+    const { status, retryAfterSeconds: seconds } = detail;
+    const message = status === 406 || status === 403
+      ? `The map service declined the request (HTTP ${status}). Public service access may be restricted. No automatic retry was made.`
+      : status === 502
+        ? `The public map request failed (HTTP 502: Bad Gateway). Keep this tab open. Wait at least ${seconds} seconds, then select Generate loop to try again. This is a download error, not a no-loop result.`
+        : [429, 504].includes(status)
+          ? `The map service is busy or rate-limited (HTTP ${status}). Wait at least ${seconds} seconds before trying again.`
+          : `Map download failed (HTTP ${status}). Wait at least ${seconds} seconds before trying again.`;
+    super(message); this.name = 'MapServiceError';
+  }
+}
 export type FetchBudget = { remainingBytes: number; remainingElements: number; remainingRequests: number; deadline: number };
 export const newFetchBudget = (): FetchBudget => ({ remainingBytes: RESPONSE_CAP, remainingElements: 200000, remainingRequests: 2, deadline: performance.now() + 90000 });
 export type NetworkResult = { data: OsmData; cached: boolean; datasetId: string; sourceCoverage: Coverage; coverage: Coverage; timing: NetworkTiming };
@@ -21,6 +35,9 @@ export function queryFor(settings: Settings, coverage: Coverage = initialCoverag
   const query = `[out:json][timeout:25][maxsize:33554432];\n${selected}\nrel(bw.roads)["type"="restriction"]->.turns;\n(.roads;node(w.roads);.turns;);out body;`;
   if (query.length > 16000) throw new Error('Corridor query exceeds its vertex/text budget. Try a smaller circle.');
   return query;
+}
+function discardBody(response: Response) {
+  try { void response.body?.cancel().catch(() => {}); } catch { /* Preserve the original status even if cancellation throws synchronously. */ }
 }
 function wait(ms: number, signal: AbortSignal) {
   return new Promise<void>((resolve, reject) => {
@@ -53,15 +70,25 @@ export async function loadNetwork(settings: Settings, signal: AbortSignal, clien
   nextRequestAt = Date.now() + REQUEST_COOLDOWN_MS;
   if (budget) budget.remainingRequests--;
   const started = performance.now(), timeout = AbortSignal.timeout(Math.max(1, Math.floor(Math.min(45000, budget ? budget.deadline - performance.now() : 45000))));
+  const requestSignal = AbortSignal.any([signal, timeout]);
+  // Charge cancellation at the moment it happens, not when a late fetch settles.
+  // An aborted old request must not later replace a newer request's backoff/cache.
+  const onAbort = () => { nextRequestAt = Math.max(nextRequestAt, Date.now() + REQUEST_COOLDOWN_MS); };
+  requestSignal.addEventListener('abort', onAbort, { once: true });
+  if (requestSignal.aborted) onAbort();
   try {
-    const response = await fetch(OVERPASS_URL, { method: 'POST', body: new URLSearchParams({ data: query }), headers: client ? { 'User-Agent': client.userAgent } : undefined, signal: AbortSignal.any([signal, timeout]) });
+    const response = await fetch(OVERPASS_URL, { method: 'POST', body: new URLSearchParams({ data: query }), headers: client ? { 'User-Agent': client.userAgent } : undefined, signal: requestSignal });
+    if (requestSignal.aborted) { discardBody(response); requestSignal.throwIfAborted(); }
     if (!response.ok) {
-      await response.body?.cancel();
       const retry = response.headers.get('retry-after');
-      const retryMs = retry === null ? 0 : /^\d+$/.test(retry) ? Number(retry) * 1000 : Math.max(0, Date.parse(retry) - Date.now()) || 0;
-      nextRequestAt = Math.max(nextRequestAt, Date.now() + Math.max(REQUEST_COOLDOWN_MS, retryMs));
-      if (response.status === 406) throw new Error('The map service declined the request (HTTP 406). Wait at least 30 seconds before trying again. Public service access may be restricted.');
-      throw new Error([429, 504].includes(response.status) ? 'The map service is busy or rate-limited. Wait a minute, then try a smaller area.' : `Map download failed (HTTP ${response.status}). Wait at least 30 seconds before trying again.`);
+      const parsedRetry = retry === null ? 0 : /^\d+$/.test(retry) ? Number(retry) * 1000 : Date.parse(retry) - Date.now();
+      const retryMs = Number.isFinite(parsedRetry) ? Math.max(0, parsedRetry) : 0;
+      const waitMs = Math.max(REQUEST_COOLDOWN_MS, retryMs);
+      nextRequestAt = Math.max(nextRequestAt, Date.now() + waitMs);
+      // Discard the error body without letting a failed body cancellation mask
+      // the actual HTTP status or Retry-After. Never cache error/partial data.
+      discardBody(response);
+      throw new MapServiceError({ status: response.status, retryAfterSeconds: Math.ceil(waitMs / 1000), requestMs: performance.now() - started, queryBytes: new TextEncoder().encode(query).byteLength, queryVertices: cost.vertices, queryAreaM2: cost.areaM2 });
     }
     const limit = Math.min(RESPONSE_CAP, budget?.remainingBytes ?? RESPONSE_CAP);
     if (Number(response.headers.get('content-length') ?? 0) > limit) { await response.body?.cancel(); throw new Error('Map download exceeds the remaining byte budget. Try a smaller circle.'); }
@@ -70,6 +97,7 @@ export async function loadNetwork(settings: Settings, signal: AbortSignal, clien
     while (true) {
       const { value, done } = await reader.read(); if (done) break;
       size += value.byteLength; if (budget) budget.remainingBytes -= value.byteLength;
+      requestSignal.throwIfAborted();
       if (size > limit) { await reader.cancel(); throw new Error('Map download exceeds the remaining byte budget. Try a smaller circle.'); }
       chunks.push(value);
     }
@@ -83,7 +111,7 @@ export async function loadNetwork(settings: Settings, signal: AbortSignal, clien
     if (data.elements.length > 200000 || (budget && budget.remainingElements < 0)) throw new Error('Map data exceeds the remaining element budget. Try a smaller circle.');
     const nodeIds = new Set(data.elements.filter(element => element.type === 'node').map(element => element.id));
     if (data.elements.some(element => element.type === 'way' && (!Array.isArray(element.nodes) || element.nodes.some(id => !nodeIds.has(id))))) throw new Error('The map service returned incomplete way geometry. Try later.');
-    if (signal.aborted) throw new DOMException('Cancelled', 'AbortError');
+    requestSignal.throwIfAborted();
     const datasetId = `osm-${++datasetSequence}`;
     if (size <= MAX_CACHED_BYTES) {
       areas.push({ key: query, at: Date.now(), data, coverage: requested, bytes: size, datasetId });
@@ -91,12 +119,12 @@ export async function loadNetwork(settings: Settings, signal: AbortSignal, clien
     }
     return { data, cached: false, datasetId, sourceCoverage: requested, coverage: requested, timing: { fetchMs: fetched - started, parseMs: performance.now() - fetched, bytes: size, cacheHit: false, elements: data.elements.length, queryAreaM2: cost.areaM2, queryVertices: cost.vertices } };
   } catch (error) {
-    // Every issued failure (including cancel, timeout, parse and incomplete 200)
-    // waits a full cooldown *after* failure; HTTP Retry-After may require longer.
-    nextRequestAt = Math.max(nextRequestAt, Date.now() + REQUEST_COOLDOWN_MS);
+    // The abort listener already applied cancellation/timeout backoff. Other
+    // failures start a full pause now; a longer HTTP Retry-After is preserved.
+    if (!requestSignal.aborted) nextRequestAt = Math.max(nextRequestAt, Date.now() + REQUEST_COOLDOWN_MS);
     if (signal.aborted) throw new DOMException('Cancelled', 'AbortError');
     if (timeout.aborted) throw new Error('The map service took too long. Wait a little and try a smaller circle.');
     if (error instanceof TypeError) throw new Error('Could not reach the public map service. Your connection may have changed, or the service may be unavailable. Check your connection, wait 30 seconds, then try again.');
     throw error;
-  }
+  } finally { requestSignal.removeEventListener('abort', onAbort); }
 }

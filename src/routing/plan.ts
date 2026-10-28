@@ -1,5 +1,5 @@
 import { CoverageGapError, expandCoverage, initialCoverage } from './coverage';
-import { loadNetwork, newFetchBudget, type FetchBudget } from './overpass';
+import { loadNetwork, MapServiceError, newFetchBudget, type FetchBudget } from './overpass';
 import type { SearchClient } from './searchClient';
 import type { NetworkTiming, Settings } from './types';
 export class PlanningFailure extends Error {
@@ -15,12 +15,13 @@ export async function planRoute(settings: Settings, signal: AbortSignal, progres
   const load = dependencies.load ?? loadNetwork, attempts: NetworkTiming[] = [];
   const started = performance.now(), initial = { requests: budget.remainingRequests, bytes: budget.remainingBytes, elements: budget.remainingElements };
   let phase: 'download' | 'search' = 'download';
+  let requestStage: 'initial' | 'connection' = 'initial';
   const metrics = () => ({ network: attempts.at(-1), networkAttempts: [...attempts], requests: initial.requests - budget.remainingRequests, bytes: initial.bytes - budget.remainingBytes, elements: initial.elements - budget.remainingElements, elapsedMs: performance.now() - started });
   let coverage = initialCoverage(settings);
   try {
     for (let attempt = 0; attempt < 2; attempt++) {
       if (controller.signal.aborted) throw controller.signal.reason;
-      phase = 'download';
+      phase = 'download'; requestStage = attempt ? 'connection' : 'initial';
       progress(attempt ? 'Checking a missing connection…' : 'Loading roads near the circle…');
       const network = await load(settings, controller.signal, undefined, { coverage, budget, waitForCooldown: attempt > 0, onWait: seconds => progress(seconds ? `Waiting ${seconds}s before one connection check…` : 'Loading the connection check…') });
       attempts.push(network.timing); coverage = network.coverage;
@@ -39,6 +40,8 @@ export async function planRoute(settings: Settings, signal: AbortSignal, progres
   } catch (error) {
     if (signal.aborted) throw signal.reason ?? new DOMException('Cancelled', 'AbortError');
     if (controller.signal.aborted) throw new PlanningFailure('Route planning time budget reached. Try a smaller circle.', 'budget', metrics());
-    throw new PlanningFailure(error instanceof Error ? error.message : 'Route planning stopped.', phase, metrics());
+    const mapFailure = error instanceof MapServiceError ? { ...error.detail, stage: requestStage } : undefined;
+    const message = error instanceof Error ? error.message : 'Route planning stopped.';
+    throw new PlanningFailure(mapFailure ? `${requestStage === 'initial' ? 'Initial road download' : 'Connection-check download'} failed. ${message}` : message, phase, { ...metrics(), ...(mapFailure ? { mapFailure } : {}) });
   } finally { clearTimeout(timer); signal.removeEventListener('abort', cancel); }
 }

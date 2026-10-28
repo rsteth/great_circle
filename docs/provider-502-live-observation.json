@@ -1,0 +1,112 @@
+{
+  "url": "https://stethem.com/great_circle/",
+  "case": "Fresh untouched published default: 500 m at 49.289,-123.128, south Start, mixed/quiet, 30% variation",
+  "requests": [
+    {
+      "endpoint": "https://overpass-api.de/api/interpreter",
+      "phase": "initial",
+      "status": 200,
+      "requestToHeadersMs": 38387,
+      "queryBytes": 2464,
+      "encodedBodyBytes": 2995,
+      "querySha256": "d07a312a4620b8f6872f697482d9b07ad625fa4294bf18cbf82c661ecdf01d1f",
+      "headers": {
+        "date": "Wed, 28 Oct 2026 13:14:18 GMT",
+        "server": "nginx",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "browserIdentity": {
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/147.0.0.0 Safari/537.36",
+        "origin": "https://stethem.com",
+        "referer": "https://stethem.com/"
+      },
+      "requestToBodyMs": 38978,
+      "bytes": 1491538,
+      "elements": 8478
+    },
+    {
+      "endpoint": "https://overpass-api.de/api/interpreter",
+      "phase": "expansion",
+      "status": 200,
+      "requestToHeadersMs": 34477,
+      "queryBytes": 2887,
+      "encodedBodyBytes": 3544,
+      "querySha256": "792f4d5f7ab9465ad64305c1c8fa1da163bd1206fba80095b3ece45ebbbcabae",
+      "headers": {
+        "date": "Wed, 28 Oct 2026 13:14:53 GMT",
+        "server": "nginx",
+        "content-type": "application/json",
+        "access-control-allow-origin": "*"
+      },
+      "browserIdentity": {
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/147.0.0.0 Safari/537.36",
+        "origin": "https://stethem.com",
+        "referer": "https://stethem.com/"
+      },
+      "requestToBodyMs": 35102,
+      "bytes": 2504769,
+      "elements": 13875
+    }
+  ],
+  "errors": [],
+  "console": [],
+  "elapsedMs": 74381,
+  "status": "Loop found.",
+  "alerts": [],
+  "sent": 2,
+  "blocked": 0,
+  "measure": [
+    {
+      "network": {
+        "fetchMs": 35027.700000047684,
+        "parseMs": 16,
+        "bytes": 2504769,
+        "cacheHit": false,
+        "elements": 13875,
+        "queryAreaM2": 9398799.516801214,
+        "queryVertices": 99
+      },
+      "networkAttempts": [
+        {
+          "fetchMs": 38928,
+          "parseMs": 17.200000047683716,
+          "bytes": 1491538,
+          "cacheHit": false,
+          "elements": 8478,
+          "queryAreaM2": 2797527.9534456604,
+          "queryVertices": 97
+        },
+        {
+          "fetchMs": 35027.700000047684,
+          "parseMs": 16,
+          "bytes": 2504769,
+          "cacheHit": false,
+          "elements": 13875,
+          "queryAreaM2": 9398799.516801214,
+          "queryVertices": 99
+        }
+      ],
+      "requests": 2,
+      "bytes": 3996307,
+      "elements": 22353,
+      "elapsedMs": 74257.09999990463,
+      "transferMs": 5.099999904632568,
+      "worker": {
+        "graphMs": 32.40000009536743,
+        "graphCached": false,
+        "snapComponentMs": 3.200000047683716,
+        "searchMs": 27.200000047683716,
+        "totalMs": 62.90000009536743,
+        "anchorNodeProjections": 2683,
+        "pathExpansions": 64878
+      },
+      "coverage": "corridor",
+      "totalMs": 74257.29999995232
+    }
+  ],
+  "download": "great-circle-3.7km.gpx",
+  "baselineCommit": "b9182552237e36e2cb145027d5cbee57fcffa748",
+  "limitation": "No 502 response observed; does not reproduce or resolve the user failure. One fresh small default run, no retries/failover or further provider requests.",
+  "gpxPointCount": 197
+}

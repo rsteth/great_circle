@@ -85,13 +85,13 @@ export default function App() {
       setRoute(result.route); setStatus('Loop found.');
       setBusy(false); abort.current = null;
     } catch (cause) {
-      if (controller.signal.aborted) return;
+      if (controller.signal.aborted || id !== requestSequence.current) return;
       setError(cause instanceof Error ? cause.message : 'Couldn’t load map data. Try again.');
       if (cause instanceof PlanningFailure) {
         performance.clearMeasures('great-circle-generation');
         performance.measure('great-circle-generation', { start: generationStarted, detail: { ...cause.metrics, outcome: 'error', phase: cause.phase, totalMs: performance.now() - generationStarted } });
       }
-      setBusy(false); abort.current = null; setStatus(cause instanceof PlanningFailure && cause.phase === 'search' ? (cause.message.startsWith('Search stopped') ? 'Search stopped.' : 'No loop found.') : cause instanceof PlanningFailure && cause.phase === 'budget' ? 'Planning stopped.' : 'Map download stopped.');
+      setBusy(false); abort.current = null; setStatus(cause instanceof PlanningFailure && cause.phase === 'search' ? (cause.message.startsWith('Search stopped') ? 'Search stopped.' : 'No loop found.') : cause instanceof PlanningFailure && cause.phase === 'budget' ? 'Planning stopped.' : cause instanceof PlanningFailure && cause.metrics.mapFailure ? 'Map service error.' : 'Map download stopped.');
     }
   }
   function download() {
@@ -130,7 +130,7 @@ export default function App() {
           <div className="dock-actions">{primaryAction}<button ref={settingsTrigger} type="button" className="settings-button" aria-haspopup="dialog" aria-expanded={drawerOpen} aria-controls="route-settings-drawer" disabled={busy} onClick={event => { drawerReturn.current = event.currentTarget; setDrawerFocus(undefined); setDrawerOpen(true); }}><SlidersHorizontal size={17} /> Settings</button></div>
           {route && <div ref={dockResult} className="dock-result"><strong>{(route.lengthM / 1000).toFixed(2)} km <small>closed loop</small></strong><button type="button" className="export-button" onClick={download}><ArrowDownToLine size={17} />{downloaded ? 'Download again' : 'Download GPX'}</button></div>}
         </section>}
-        {error && <div ref={errorBox} className="error-box" role="alert"><Flag size={18} /><div><strong>Couldn’t make a loop.</strong><p>{error}</p></div></div>}
+        {error && <div ref={errorBox} className="error-box" role="alert"><Flag size={18} /><div><strong>{status === 'Map service error.' || status === 'Map download stopped.' ? 'Road download failed.' : 'Couldn’t make a loop.'}</strong><p>{error}</p></div></div>}
         <div className="metrics" aria-label="Route metrics"><div><span>DISTANCE</span><strong>{route ? (route.lengthM / 1000).toFixed(2) : '—'} <small>km</small></strong></div><div><span>FROM TARGET</span><strong>{route ? `${route.error < 0.005 ? '' : route.lengthM > settings.targetKm * 1000 ? '+' : '−'}${(route.error * 100).toFixed(1)}` : '—'} <small>%</small></strong></div><div><span>REPEATED</span><strong>{route ? Math.round(route.repeated * 100) : '—'} <small>%</small></strong></div></div>
         <div className="route-bottom">{route ? <>{!mobile && <div className="export-heading"><span className="export-icon"><RouteIcon size={22} /></span><div><h2>Save your route</h2><p>For your cycling app or GPS.</p></div><button className="export-button" onClick={download}>{downloaded ? <Check size={17} /> : <ArrowDownToLine size={17} />}{downloaded ? 'Download again' : 'Download GPX'}</button></div>}<div className="route-notes">{route.snapM > 25 && <p>Start moved {Math.round(route.snapM)} m to a mapped route. Getting there isn’t included.</p>}<details><summary>Route details</summary><p>Roundness: {Math.round(route.roundness * 100)}/100 · {route.candidates} loops compared · {route.points.length.toLocaleString()} track points.</p><p>No elevation or turn-by-turn directions.</p>{route.notes.filter(note => !note.startsWith('Start snapped')).map(note => <p key={note}>{note}</p>)}{route.dataTimestamp && <p className="data-time">Map updated: {new Date(route.dataTimestamp).toLocaleString()}</p>}</details></div></> : <div className="empty-state"><span className="empty-orbit"><CircleDashed size={34} /><i /></span><div><h2>Your loop will appear here.</h2><button className="text-button" disabled={busy} onClick={() => update(exampleSettings())}><RotateCcw size={13} /> Vancouver example</button></div></div>}</div>
       </section>
