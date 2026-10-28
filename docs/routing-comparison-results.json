@@ -1,0 +1,458 @@
+{
+  "baselineCommit": "cfb2be02bba544e1c7b1192915fcd9ec4985dd91",
+  "baselineSourceSha": "47b53928be16f0816b863c012e8f2c8a8d9e8bf535f6268754261abb4fd24125",
+  "optimizedCommit": "f9ddd8d6c422f0c36086e1473476147ae72cdeaf",
+  "node": "v25.9.0",
+  "protocol": "Offline, 1 excluded warmup per mode; 5 interleaved samples per mode, rotating order. Cold graph rebuilt each call; warm graph/dataset retained. Solve timings exclude JSON parsing, worker transfer/startup, export hashing and all network latency. Small local fixtures; not a universal speedup or statistical benchmark.",
+  "actualFixtureSha": "ec1ddc51603b2b0f63c8ecf67970deab999ce9de200a638d127c9e59d6c28a16",
+  "results": [
+    {
+      "fixture": "ring-512-explicit-circle",
+      "gpxHash": "b13fd849200ce89df575cd0346bb715e98aea5ae9920590f6c888a89153a9cfc",
+      "summary": [
+        {
+          "mode": "baseline",
+          "medianMs": 3.9083339999999964,
+          "minMs": 3.480917000000005,
+          "maxMs": 4.15900000000002,
+          "samples": 5
+        },
+        {
+          "mode": "optimized-cold",
+          "medianMs": 2.8082500000000152,
+          "minMs": 2.474290999999994,
+          "maxMs": 3.3126670000000047,
+          "samples": 5
+        },
+        {
+          "mode": "optimized-warm",
+          "medianMs": 1.9044169999999951,
+          "minMs": 1.6967919999999879,
+          "maxMs": 2.291417000000024,
+          "samples": 5
+        }
+      ],
+      "samples": [
+        {
+          "mode": "optimized-cold",
+          "elapsedMs": 3.3126670000000047,
+          "timing": {
+            "graphMs": 0.6072909999999752,
+            "graphCached": false,
+            "snapComponentMs": 0.26712499999999295,
+            "searchMs": 2.4174999999999898,
+            "totalMs": 3.2976249999999823,
+            "anchorNodeProjections": 512,
+            "pathExpansions": 3501
+          },
+          "points": 513,
+          "lengthM": 6283.145858247535,
+          "candidates": 6
+        },
+        {
+          "mode": "optimized-warm",
+          "elapsedMs": 2.082290999999998,
+          "timing": {
+            "graphMs": 0.010541999999986729,
+            "graphCached": true,
+            "snapComponentMs": 0.27412499999999795,
+            "searchMs": 1.7881670000000156,
+            "totalMs": 2.0766669999999863,
+            "anchorNodeProjections": 512,
+            "pathExpansions": 3501
+          },
+          "points": 513,
+          "lengthM": 6283.145858247535,
+          "candidates": 6
+        },
+        {
+          "mode": "baseline",
+          "elapsedMs": 4.15900000000002,
+          "points": 513,
+          "lengthM": 6283.145858247535,
+          "candidates": 6
+        },
+        {
+          "mode": "optimized-warm",
+          "elapsedMs": 2.291417000000024,
+          "timing": {
+            "graphMs": 0.00533300000000736,
+            "graphCached": true,
+            "snapComponentMs": 0.27745899999999324,
+            "searchMs": 1.991833000000014,
+            "totalMs": 2.2831250000000125,
+            "anchorNodeProjections": 512,
+            "pathExpansions": 3501
+          },
+          "points": 513,
+          "lengthM": 6283.145858247535,
+          "candidates": 6
+        },
+        {
+          "mode": "baseline",
+          "elapsedMs": 4.042999999999978,
+          "points": 513,
+          "lengthM": 6283.145858247535,
+          "candidates": 6
+        },
+        {
+          "mode": "optimized-cold",
+          "elapsedMs": 2.6690830000000005,
+          "timing": {
+            "graphMs": 0.41412500000001273,
+            "graphCached": false,
+            "snapComponentMs": 0.2912080000000117,
+            "searchMs": 1.9491669999999885,
+            "totalMs": 2.660665999999992,
+            "anchorNodeProjections": 512,
+            "pathExpansions": 3501
+          },
+          "points": 513,
+          "lengthM": 6283.145858247535,
+          "candidates": 6
+        },
+        {
+          "mode": "baseline",
+          "elapsedMs": 3.802750000000003,
+          "points": 513,
+          "lengthM": 6283.145858247535,
+          "candidates": 6
+        },
+        {
+          "mode": "optimized-cold",
+          "elapsedMs": 3.0324159999999836,
+          "timing": {
+            "graphMs": 0.4076249999999959,
+            "graphCached": false,
+            "snapComponentMs": 0.23545799999999417,
+            "searchMs": 2.3758339999999976,
+            "totalMs": 3.0234590000000026,
+            "anchorNodeProjections": 512,
+            "pathExpansions": 3501
+          },
+          "points": 513,
+          "lengthM": 6283.145858247535,
+          "candidates": 6
+        },
+        {
+          "mode": "optimized-warm",
+          "elapsedMs": 1.9044169999999951,
+          "timing": {
+            "graphMs": 0.00491600000000858,
+            "graphCached": true,
+            "snapComponentMs": 0.25099999999997635,
+            "searchMs": 1.6344170000000133,
+            "totalMs": 1.8939159999999902,
+            "anchorNodeProjections": 512,
+            "pathExpansions": 3501
+          },
+          "points": 513,
+          "lengthM": 6283.145858247535,
+          "candidates": 6
+        },
+        {
+          "mode": "optimized-cold",
+          "elapsedMs": 2.474290999999994,
+          "timing": {
+            "graphMs": 0.38720899999998437,
+            "graphCached": false,
+            "snapComponentMs": 0.40937500000001137,
+            "searchMs": 1.664041999999995,
+            "totalMs": 2.4633340000000032,
+            "anchorNodeProjections": 512,
+            "pathExpansions": 3501
+          },
+          "points": 513,
+          "lengthM": 6283.145858247535,
+          "candidates": 6
+        },
+        {
+          "mode": "optimized-warm",
+          "elapsedMs": 1.6967919999999879,
+          "timing": {
+            "graphMs": 0.004750000000001364,
+            "graphCached": true,
+            "snapComponentMs": 0.2508749999999793,
+            "searchMs": 1.4360420000000147,
+            "totalMs": 1.693125000000009,
+            "anchorNodeProjections": 512,
+            "pathExpansions": 3501
+          },
+          "points": 513,
+          "lengthM": 6283.145858247535,
+          "candidates": 6
+        },
+        {
+          "mode": "baseline",
+          "elapsedMs": 3.9083339999999964,
+          "points": 513,
+          "lengthM": 6283.145858247535,
+          "candidates": 6
+        },
+        {
+          "mode": "optimized-warm",
+          "elapsedMs": 1.7912079999999833,
+          "timing": {
+            "graphMs": 0.0026249999999947704,
+            "graphCached": true,
+            "snapComponentMs": 0.25287499999998886,
+            "searchMs": 1.530083000000019,
+            "totalMs": 1.786875000000009,
+            "anchorNodeProjections": 512,
+            "pathExpansions": 3501
+          },
+          "points": 513,
+          "lengthM": 6283.145858247535,
+          "candidates": 6
+        },
+        {
+          "mode": "baseline",
+          "elapsedMs": 3.480917000000005,
+          "points": 513,
+          "lengthM": 6283.145858247535,
+          "candidates": 6
+        },
+        {
+          "mode": "optimized-cold",
+          "elapsedMs": 2.8082500000000152,
+          "timing": {
+            "graphMs": 0.37454199999999105,
+            "graphCached": false,
+            "snapComponentMs": 0.22212500000000546,
+            "searchMs": 2.202500000000015,
+            "totalMs": 2.801209,
+            "anchorNodeProjections": 512,
+            "pathExpansions": 3501
+          },
+          "points": 513,
+          "lengthM": 6283.145858247535,
+          "candidates": 6
+        }
+      ]
+    },
+    {
+      "fixture": "saved-vancouver-1km-legacy",
+      "gpxHash": "8b10c1811ceb29398dab233977af79b5203cbd3ee5d5983c2baae9c4b034dbec",
+      "summary": [
+        {
+          "mode": "baseline",
+          "medianMs": 111.16016700000011,
+          "minMs": 108.54620799999998,
+          "maxMs": 117.11325,
+          "samples": 5
+        },
+        {
+          "mode": "optimized-cold",
+          "medianMs": 60.29429099999993,
+          "minMs": 57.58270799999991,
+          "maxMs": 70.50008300000002,
+          "samples": 5
+        },
+        {
+          "mode": "optimized-warm",
+          "medianMs": 47.23883300000011,
+          "minMs": 46.71183300000007,
+          "maxMs": 49.497833000000014,
+          "samples": 5
+        }
+      ],
+      "samples": [
+        {
+          "mode": "optimized-cold",
+          "elapsedMs": 70.50008300000002,
+          "timing": {
+            "graphMs": 7.912207999999964,
+            "graphCached": false,
+            "snapComponentMs": 2.965417000000002,
+            "searchMs": 59.59449999999998,
+            "totalMs": 70.48175000000003,
+            "anchorNodeProjections": 55104,
+            "pathExpansions": 109127
+          },
+          "points": 199,
+          "lengthM": 3264.457950349883,
+          "candidates": 28
+        },
+        {
+          "mode": "optimized-warm",
+          "elapsedMs": 49.497833000000014,
+          "timing": {
+            "graphMs": 0.004958999999985281,
+            "graphCached": true,
+            "snapComponentMs": 1.8355830000000424,
+            "searchMs": 47.64549999999997,
+            "totalMs": 49.48879199999999,
+            "anchorNodeProjections": 55104,
+            "pathExpansions": 109127
+          },
+          "points": 199,
+          "lengthM": 3264.457950349883,
+          "candidates": 28
+        },
+        {
+          "mode": "baseline",
+          "elapsedMs": 117.11325,
+          "points": 199,
+          "lengthM": 3264.457950349883,
+          "candidates": 28
+        },
+        {
+          "mode": "optimized-warm",
+          "elapsedMs": 47.691208000000074,
+          "timing": {
+            "graphMs": 0.004207999999948697,
+            "graphCached": true,
+            "snapComponentMs": 1.9637089999999944,
+            "searchMs": 45.70679099999995,
+            "totalMs": 47.677791999999954,
+            "anchorNodeProjections": 55104,
+            "pathExpansions": 109127
+          },
+          "points": 199,
+          "lengthM": 3264.457950349883,
+          "candidates": 28
+        },
+        {
+          "mode": "baseline",
+          "elapsedMs": 112.07154200000002,
+          "points": 199,
+          "lengthM": 3264.457950349883,
+          "candidates": 28
+        },
+        {
+          "mode": "optimized-cold",
+          "elapsedMs": 59.16745800000001,
+          "timing": {
+            "graphMs": 6.830832999999984,
+            "graphCached": false,
+            "snapComponentMs": 2.524208000000044,
+            "searchMs": 49.791334000000006,
+            "totalMs": 59.15391599999998,
+            "anchorNodeProjections": 55104,
+            "pathExpansions": 109127
+          },
+          "points": 199,
+          "lengthM": 3264.457950349883,
+          "candidates": 28
+        },
+        {
+          "mode": "baseline",
+          "elapsedMs": 111.16016700000011,
+          "points": 199,
+          "lengthM": 3264.457950349883,
+          "candidates": 28
+        },
+        {
+          "mode": "optimized-cold",
+          "elapsedMs": 60.29429099999993,
+          "timing": {
+            "graphMs": 7.040625000000091,
+            "graphCached": false,
+            "snapComponentMs": 1.7148329999999987,
+            "searchMs": 51.51262500000007,
+            "totalMs": 60.282917,
+            "anchorNodeProjections": 55104,
+            "pathExpansions": 109127
+          },
+          "points": 199,
+          "lengthM": 3264.457950349883,
+          "candidates": 28
+        },
+        {
+          "mode": "optimized-warm",
+          "elapsedMs": 47.23883300000011,
+          "timing": {
+            "graphMs": 0.005415999999968335,
+            "graphCached": true,
+            "snapComponentMs": 1.6920000000000073,
+            "searchMs": 45.530250000000024,
+            "totalMs": 47.231291000000056,
+            "anchorNodeProjections": 55104,
+            "pathExpansions": 109127
+          },
+          "points": 199,
+          "lengthM": 3264.457950349883,
+          "candidates": 28
+        },
+        {
+          "mode": "optimized-cold",
+          "elapsedMs": 60.431749999999965,
+          "timing": {
+            "graphMs": 7.217332999999826,
+            "graphCached": false,
+            "snapComponentMs": 1.5949590000000171,
+            "searchMs": 51.60208299999999,
+            "totalMs": 60.4231249999998,
+            "anchorNodeProjections": 55104,
+            "pathExpansions": 109127
+          },
+          "points": 199,
+          "lengthM": 3264.457950349883,
+          "candidates": 28
+        },
+        {
+          "mode": "optimized-warm",
+          "elapsedMs": 47.17904199999998,
+          "timing": {
+            "graphMs": 0.0037910000000920263,
+            "graphCached": true,
+            "snapComponentMs": 1.6718339999999898,
+            "searchMs": 45.49324999999999,
+            "totalMs": 47.17220800000018,
+            "anchorNodeProjections": 55104,
+            "pathExpansions": 109127
+          },
+          "points": 199,
+          "lengthM": 3264.457950349883,
+          "candidates": 28
+        },
+        {
+          "mode": "baseline",
+          "elapsedMs": 108.90379200000007,
+          "points": 199,
+          "lengthM": 3264.457950349883,
+          "candidates": 28
+        },
+        {
+          "mode": "optimized-warm",
+          "elapsedMs": 46.71183300000007,
+          "timing": {
+            "graphMs": 0.00416599999994105,
+            "graphCached": true,
+            "snapComponentMs": 1.5885829999999714,
+            "searchMs": 45.10441700000001,
+            "totalMs": 46.70404099999996,
+            "anchorNodeProjections": 55104,
+            "pathExpansions": 109127
+          },
+          "points": 199,
+          "lengthM": 3264.457950349883,
+          "candidates": 28
+        },
+        {
+          "mode": "baseline",
+          "elapsedMs": 108.54620799999998,
+          "points": 199,
+          "lengthM": 3264.457950349883,
+          "candidates": 28
+        },
+        {
+          "mode": "optimized-cold",
+          "elapsedMs": 57.58270799999991,
+          "timing": {
+            "graphMs": 6.724333999999999,
+            "graphCached": false,
+            "snapComponentMs": 1.509999999999991,
+            "searchMs": 49.330416000000014,
+            "totalMs": 57.572374999999965,
+            "anchorNodeProjections": 55104,
+            "pathExpansions": 109127
+          },
+          "points": 199,
+          "lengthM": 3264.457950349883,
+          "candidates": 28
+        }
+      ]
+    }
+  ]
+}

@@ -143,3 +143,5 @@ The verified UI lineage is integrated into `main` by fast-forward, preserving th
 ## Current local refinements
 
 See [radius/map behavior and large-area boundary](docs/radius-map-refinement.md) and [local routing-efficiency work](docs/routing-efficiency-local.md). Circle planning/editing supports a 100 km **radius**; the shared public map downloader still supports circles up to 4.5 km radius and rejects larger downloads before fetching. Efficiency and this newest UI revision remain local pending a separate publication decision.
+
+The measured offline comparison preserved exact baseline GPX on both fixtures. Saved Vancouver median solve time was 111.16 ms baseline, 60.29 ms cold and 47.24 ms warm (five interleaved samples; no network timing claim). See [protocol and full results](docs/routing-efficiency-local.md#paired-offline-comparison). `npm run benchmark:routes -- --baseline /absolute/path/to/frozen-cfb2be0-source` is explicitly opt-in and requires a coordinated timing window.
