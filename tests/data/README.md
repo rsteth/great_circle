@@ -6,7 +6,7 @@ Data © [OpenStreetMap contributors](https://www.openstreetmap.org/copyright), a
 
 ## Adaptive-corridor snapshots (2026-10-28)
 
-Two actual small Vancouver corridor responses at public center 49.289, −123.128, circle radius 500 m. These are separate full snapshots, not merged data. They reproduce a rejected 86%-off-target candidate, not a successful route. The second query includes two localized connection patches; neither is complete disk coverage. See `docs/adaptive-corridor-prototype.md` for acquisition and limits.
+Two actual small Vancouver corridor responses at public center 49.289, −123.128, circle radius 500 m. These are separate full snapshots, not merged data. They preserve the original rejected 86%-off-target candidate. A subsequent offline regression reproduces that original-anchor failure and validates a bounded junction-anchor fallback that recovers a route from the same unchanged data; this is not a new live check. The second query includes two localized connection patches; neither is complete disk coverage. See `docs/adaptive-corridor-prototype.md` for acquisition and limits.
 
 | Gzipped fixture | OSM timestamp | Elements | Normalized JSON bytes | Uncompressed SHA-256 |
 |---|---|---:|---:|---|

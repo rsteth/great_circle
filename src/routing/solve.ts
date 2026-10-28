@@ -188,7 +188,7 @@ export function solve(data: OsmData, settings: Settings, progress: (message: str
   if (options.timing) options.timing.snapComponentMs = searchStarted - prepared;
   const targetM = settings.targetKm * 1000;
   const baseRadius = targetM / (2 * Math.PI);
-  const circles: { center: Point; radius: number; clockwise: boolean }[] = [];
+  const circles: { center: Point; radius: number; clockwise: boolean; junctions?: boolean }[] = [];
   // Include a ring around the selected area, then circles that pass through the
   // start. Test several radii, orientations, and both travel directions.
   if (settings.circleRadiusM !== undefined) {
@@ -207,6 +207,13 @@ export function solve(data: OsmData, settings: Settings, progress: (message: str
       for (const clockwise of [true, false]) circles.push({ center, radius, clockwise });
     }
   }
+  // Geometrically nearest degree-two nodes can force long alley/seawall detours.
+  // Only after every original candidate fails, try the same sectors at junctions.
+  // Keep all original successes and share the existing work/time budget.
+  const originalCircleCount = circles.length;
+  if (settings.circleRadiusM !== undefined) circles.push(...circles.map(circle => ({ ...circle, junctions: true })));
+  const junctions = new Set([...graph.edges].filter(([, edges]) => new Set(edges.map(edge => edge.to)).size >= 3).map(([id]) => id));
+  let primaryCandidates = 0;
   const budget: Budget = { remaining: 1800000, deadline: Date.now() + 14000 };
   let best: Route | undefined;
   let bestScore = Infinity;
@@ -217,6 +224,7 @@ export function solve(data: OsmData, settings: Settings, progress: (message: str
   const projections = new Map<string, Projected[]>();
   const radialCosts = new Map<string, Map<number, number>>();
   for (let index = 0; index < circles.length; index++) {
+    if (index === originalCircleCount && best) break;
     if (Date.now() > budget.deadline || budget.remaining <= 0) { limited = true; break; }
     const circle = circles[index];
     progress(`Comparing road loops · ${index + 1} of ${circles.length}`);
@@ -226,7 +234,7 @@ export function solve(data: OsmData, settings: Settings, progress: (message: str
     const radiusKey = `${centerKey}/${circle.radius}`;
     let costs = radialCosts.get(radiusKey);
     if (!costs) { costs = new Map(); radialCosts.set(radiusKey, costs); if (radialCosts.size > 4) radialCosts.delete(radialCosts.keys().next().value!); }
-    const anchors = chooseAnchors(graph, start, circle.center, circle.radius, circle.clockwise, projected, point => missingConnections.push(point));
+    const anchors = chooseAnchors(graph, start, circle.center, circle.radius, circle.clockwise, circle.junctions ? projected.filter(node => junctions.has(node.id)) : projected, point => missingConnections.push(point));
     if (!anchors) continue;
     const used = new Set<string>();
     const routeEdges: Edge[] = [];
@@ -262,16 +270,17 @@ export function solve(data: OsmData, settings: Settings, progress: (message: str
     }
     const repeated = repeatedM / lengthM;
     candidates++;
+    if (!circle.junctions) primaryCandidates++;
     if (error > settings.tolerance || round < 0.3 || repeated > 0.2) continue;
     const score = error * 3 + (1 - round) * 1.5 + repeated * 4;
     if (score < bestScore) {
       bestScore = score;
-      best = { points, lengthM, error, roundness: round, repeated, unknownSurface: unknownM / lengthM, snapM, circleCenter: circle.center, circleRadiusM: circle.radius, candidates, notes: [...graph.notes], dataTimestamp: data.osm3s?.timestamp_osm_base };
+      best = { points, lengthM, error, roundness: round, repeated, unknownSurface: unknownM / lengthM, snapM, circleCenter: circle.center, circleRadiusM: circle.radius, candidates, notes: [...graph.notes, ...(circle.junctions ? ['Used alternative junction anchors after the nearest anchors failed.'] : [])], dataTimestamp: data.osm3s?.timestamp_osm_base };
     }
   }
   if (options.timing) { options.timing.searchMs = performance.now() - searchStarted; options.timing.pathExpansions = 1800000 - budget.remaining; options.timing.totalMs = performance.now() - started; }
   if (!best) {
-    if (!candidates && missingConnections.length && graph.coverage?.kind === 'corridor' && graph.frontier?.length) {
+    if (!primaryCandidates && missingConnections.length && graph.coverage?.kind === 'corridor' && graph.frontier?.length) {
       const ranked = [...graph.frontier].sort((a, b) => Math.min(...missingConnections.map(point => distance(a, point))) - Math.min(...missingConnections.map(point => distance(b, point))));
       const gaps: Point[] = []; for (const point of ranked) { if (!gaps.some(known => distance(known, point) < 500)) gaps.push(point); if (gaps.length === 2) break; }
       throw new CoverageGapError('A connection reaches the downloaded corridor boundary.', gaps);

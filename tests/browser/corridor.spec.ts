@@ -33,7 +33,7 @@ test('empty returned corridor is an honest one-request failure',async({page})=>{
  let requests=0;await page.route('**/overpass-api.de/api/interpreter',r=>{requests++;return r.fulfill({json:{elements:[]}});});await page.goto('/');await page.getByRole('button',{name:'Generate loop',exact:true}).click();await expect(page.getByRole('alert')).toContainText('No usable cycling network');await expect(page.getByRole('status',{name:'Route status'})).toContainText('No loop found.');expect(requests).toBe(1);await expect(page.getByRole('button',{name:'Download GPX'})).toHaveCount(0);
 });
 
-test('replayed actual Vancouver data reports solver rejection, not a download failure',async({page},info)=>{
+test('replayed actual Vancouver data recovers a valid loop with junction-anchor fallback',async({page},info)=>{
  await page.clock.install();let requests=0;
  const snapshots=['initial','expanded'].map(phase=>JSON.parse(gunzipSync(readFileSync(new URL(`../data/vancouver-corridor-${phase}-2026-10-28.osm.json.gz`,import.meta.url))).toString()));
  await page.route('**/overpass-api.de/api/interpreter',r=>r.fulfill({json:snapshots[requests++]}));await page.goto('/');
@@ -41,6 +41,6 @@ test('replayed actual Vancouver data reports solver rejection, not a download fa
  await page.getByRole('textbox',{name:'Latitude',exact:true}).fill('49.289');await page.getByRole('textbox',{name:'Longitude',exact:true}).fill('-123.128');await page.getByRole('button',{name:'Set pin',exact:true}).click();if(await trigger.count())await page.getByRole('button',{name:'Done',exact:true}).click();
  await page.getByRole('button',{name:'Edit circle radius',exact:true}).click();await page.getByRole('spinbutton',{name:'Circle radius (km)',exact:true}).fill('0.5');await page.getByRole('spinbutton',{name:'Circle radius (km)',exact:true}).press('Enter');await page.getByRole('slider',{name:'Route variation',exact:true}).fill('0.3');
  await page.getByRole('button',{name:'Generate loop',exact:true}).click();await expect(page.getByRole('status',{name:'Route status'})).toContainText('Waiting');await page.clock.fastForward(31000);
- await expect(page.getByRole('status',{name:'Route status'})).toContainText('No loop found.');await expect(page.getByRole('alert')).toContainText('86%');expect(requests).toBe(2);await expect(page.getByRole('button',{name:'Download GPX'})).toHaveCount(0);
+ await expect(page.getByRole('status',{name:'Route status'})).toContainText('Loop found.');expect(requests).toBe(2);await expect(page.getByRole('alert')).toHaveCount(0);const pending=page.waitForEvent('download');await page.getByRole('button',{name:'Download GPX',exact:true}).click();const download=await pending;expect(download.suggestedFilename()).toContain('3.7km');
  await page.screenshot({path:`/tmp/great-circle-corridor-actual-replay-${info.project.name}.png`,fullPage:info.project.name==='desktop'});
 });
