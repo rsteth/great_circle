@@ -54,3 +54,8 @@ footer>p{white-space:normal;color:#a1a1aa;font-size:11px}.route-notes summary{cu
 /* Preserve keyboard focus/value at tiny projected sizes without covering Start. */
 .circle-handle.size-too-small{opacity:0;pointer-events:none}
 .route-space:has(.size-handle.size-too-small:focus-visible) .radius-readout button{outline:2px solid #93c5fd;outline-offset:4px}
+
+.radius-readout>.radius-label{display:block;text-align:right;font:10px/1.4 Inter,ui-sans-serif,sans-serif;color:#a1a1aa;margin-bottom:5px;white-space:nowrap}
+.circle-layer .center-handle{display:flex;align-items:center;justify-content:center;width:44px;height:44px;border:1.5px solid #93c5fd;color:#dbeafe;background:#18181bf5;cursor:grab;z-index:1}
+.circle-layer .center-handle:active{cursor:grabbing}
+.circle-layer .start-handle,.circle-layer .size-handle{z-index:2}

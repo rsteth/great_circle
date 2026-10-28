@@ -1,0 +1,210 @@
+{
+  "scope": "Published 1dfc2f06 fresh small actual-data success; default initial-only diagnostic and network failure, not a full default no-route result",
+  "freshSmall": {
+    "url": "https://stethem.com/great_circle/",
+    "radiusM": 500,
+    "center": {
+      "lat": 49.289,
+      "lon": -123.128
+    },
+    "requests": [
+      {
+        "status": 200,
+        "headers": {
+          "access-control-allow-origin": "*",
+          "access-control-max-age": "600",
+          "content-encoding": "gzip",
+          "content-type": "application/json",
+          "date": "Wed, 28 Oct 2026 05:02:52 GMT",
+          "server": "nginx"
+        },
+        "bytes": 1491538,
+        "elements": 8478
+      },
+      {
+        "status": 200,
+        "headers": {
+          "access-control-allow-origin": "*",
+          "access-control-max-age": "600",
+          "content-encoding": "gzip",
+          "content-type": "application/json",
+          "date": "Wed, 28 Oct 2026 05:03:19 GMT",
+          "server": "nginx"
+        },
+        "bytes": 2504769,
+        "elements": 13875
+      }
+    ],
+    "console": [],
+    "errors": [],
+    "elapsedMs": 63228,
+    "status": "Loop found.",
+    "alerts": [],
+    "sent": 2,
+    "download": "great-circle-3.7km.gpx"
+  },
+  "downloadedGpxAudit": {
+    "points": 197,
+    "lengthM": 3729.6444202340294,
+    "error": 0.18718269091070397,
+    "roundness": 0.39607301703338554,
+    "closed": true,
+    "allDirectedEdgesTurnsAndCoverage": true
+  },
+  "defaultFirstAttempt": {
+    "url": "https://stethem.com/great_circle/",
+    "radiusM": 1591.5494309189535,
+    "center": {
+      "lat": 49.299,
+      "lon": -123.133
+    },
+    "requests": [],
+    "console": [
+      "Failed to load resource: net::ERR_NETWORK_CHANGED"
+    ],
+    "errors": [
+      "net::ERR_NETWORK_CHANGED"
+    ],
+    "elapsedMs": 17240,
+    "status": "Map download stopped.",
+    "alerts": [
+      "Couldn\u2019t make a loop.Could not reach the public map service. Check your connection and try later."
+    ],
+    "sent": 1
+  },
+  "defaultManualRetry": {
+    "url": "https://stethem.com/great_circle/",
+    "radiusM": 1591.5494309189535,
+    "center": {
+      "lat": 49.299,
+      "lon": -123.133
+    },
+    "requests": [
+      {
+        "status": 200,
+        "headers": {
+          "access-control-allow-origin": "*",
+          "access-control-max-age": "600",
+          "content-encoding": "gzip",
+          "content-type": "application/json",
+          "date": "Wed, 28 Oct 2026 05:07:26 GMT",
+          "server": "nginx"
+        },
+        "bytes": 1865632,
+        "elements": 11581
+      }
+    ],
+    "console": [
+      "Failed to load resource: net::ERR_FAILED"
+    ],
+    "errors": [
+      "harness aggregate guard",
+      "net::ERR_FAILED"
+    ],
+    "elapsedMs": 43046,
+    "status": "Map download stopped.",
+    "alerts": [
+      "Couldn\u2019t make a loop.Could not reach the public map service. Check your connection and try later."
+    ],
+    "sent": 2
+  },
+  "defaultOfflineInitialCoverage": {
+    "settings": {
+      "center": {
+        "lat": 49.299,
+        "lon": -123.133
+      },
+      "start": {
+        "lat": 49.284686871869006,
+        "lon": -123.13299999999998
+      },
+      "radiusM": 2149,
+      "targetKm": 10,
+      "tolerance": 0.2,
+      "surface": "mixed",
+      "style": "quiet",
+      "circleRadiusM": 1591.5494309189535
+    },
+    "coverageCost": {
+      "vertices": 97,
+      "areaM2": 7940427.686644177
+    },
+    "elements": 11581,
+    "nodes": 1408,
+    "edges": 2847,
+    "snapM": 27.600840564695318,
+    "sectors": [
+      {
+        "angleFromEastDeg": 0,
+        "count": 0,
+        "minRadiusM": null,
+        "maxRadiusM": null,
+        "nearTarget": 0
+      },
+      {
+        "angleFromEastDeg": 45,
+        "count": 0,
+        "minRadiusM": null,
+        "maxRadiusM": null,
+        "nearTarget": 0
+      },
+      {
+        "angleFromEastDeg": 90,
+        "count": 0,
+        "minRadiusM": null,
+        "maxRadiusM": null,
+        "nearTarget": 0
+      },
+      {
+        "angleFromEastDeg": 135,
+        "count": 0,
+        "minRadiusM": null,
+        "maxRadiusM": null,
+        "nearTarget": 0
+      },
+      {
+        "angleFromEastDeg": 180,
+        "count": 0,
+        "minRadiusM": null,
+        "maxRadiusM": null,
+        "nearTarget": 0
+      },
+      {
+        "angleFromEastDeg": 225,
+        "count": 215,
+        "minRadiusM": 1241.8709262970408,
+        "maxRadiusM": 1796.7394862146973,
+        "nearTarget": 215
+      },
+      {
+        "angleFromEastDeg": 270,
+        "count": 812,
+        "minRadiusM": 1251.4284988941483,
+        "maxRadiusM": 1935.958159921943,
+        "nearTarget": 812
+      },
+      {
+        "angleFromEastDeg": 315,
+        "count": 381,
+        "minRadiusM": 1245.592498535888,
+        "maxRadiusM": 1940.5718041058656,
+        "nearTarget": 381
+      }
+    ],
+    "error": "A connection reaches the downloaded corridor boundary.",
+    "gaps": [
+      {
+        "type": "node",
+        "id": 317166670,
+        "lat": 49.3005462,
+        "lon": -123.1500874
+      },
+      {
+        "type": "node",
+        "id": 629865878,
+        "lat": 49.2957826,
+        "lon": -123.1494472
+      }
+    ]
+  }
+}

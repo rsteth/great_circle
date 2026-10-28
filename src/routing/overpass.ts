@@ -96,7 +96,7 @@ export async function loadNetwork(settings: Settings, signal: AbortSignal, clien
     nextRequestAt = Math.max(nextRequestAt, Date.now() + REQUEST_COOLDOWN_MS);
     if (signal.aborted) throw new DOMException('Cancelled', 'AbortError');
     if (timeout.aborted) throw new Error('The map service took too long. Wait a little and try a smaller circle.');
-    if (error instanceof TypeError) throw new Error('Could not reach the public map service. Check your connection and try later.');
+    if (error instanceof TypeError) throw new Error('Could not reach the public map service. Your connection may have changed, or the service may be unavailable. Check your connection, wait 30 seconds, then try again.');
     throw error;
   }
 }

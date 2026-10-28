@@ -14,3 +14,7 @@ Two actual small Vancouver corridor responses at public center 49.289, −123.12
 | `vancouver-corridor-expanded-2026-10-28.osm.json.gz` | 2026-10-28T03:52:36Z | 13,875 | 1,892,856 | `c936f42754a3882c835935dba7b954bbf4c51ff2356e4bfec4407a022dae2895` |
 
 Normalized JSON sizes are reproducible fixture sizes, not measured original wire bytes. Data © OpenStreetMap contributors, ODbL under the links above. Tests replay locally with no service requests or personal device location. These historical snapshots do not establish current access, routing completeness or safe riding conditions.
+
+## Default-circle diagnostic snapshot
+
+`vancouver-default-corridor-2026-10-28.osm.json.gz` is the complete initial response for the untouched default 10 km-circumference circle centered at 49.299, −123.133, radius 1,591.549 m. It covers a buffered ring, not a disk; no expanded response was acquired. OSM timestamp 2026-10-28T05:06:00Z; 11,581 elements, 1,412,608 normalized uncompressed bytes, SHA-256 `a485e109eaf125d13fcfee0244f79794d27464d42443746f087df34a5287dfe0`. The initial start component lacks roads in five angular sectors, so the solver requests bounded expansion; this snapshot does not establish that expansion could never find a route. It is historical public OSM data, not user location. Data © OpenStreetMap contributors, ODbL under the links above. See generation-center-diagnosis.md.

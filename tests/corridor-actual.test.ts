@@ -51,3 +51,11 @@ it('replays both actual snapshots offline and recovers a valid loop using bounde
   }
   expect(turnAllowed(graph,edges.at(-1),edges[0])).toBe(true);expect(toGpx(route).match(/<trkpt /g)).toHaveLength(route.points.length);
 });
+
+it('preserves the actual default initial-coverage gap without claiming a complete no-route result',()=>{
+ const data:OsmData=JSON.parse(gunzipSync(readFileSync(new URL('./data/vancouver-default-corridor-2026-10-28.osm.json.gz',import.meta.url))).toString());
+ const settings=changeCircle({center:{lat:49.299,lon:-123.133},start:{lat:49.2928,lon:-123.1331},radiusM:3000,targetKm:10,tolerance:.2,surface:'mixed',style:'quiet'},{bearing:180});
+ const coverage=initialCoverage(settings),graph=loopCore(buildGraph(data,settings,coverage));expect(data.elements).toHaveLength(11581);
+ let error:unknown;try{solve(data,settings,()=>{},{graph});}catch(cause){error=cause;}
+ expect(error).toBeInstanceOf(CoverageGapError);expect((error as CoverageGapError).gaps).toHaveLength(2);
+});

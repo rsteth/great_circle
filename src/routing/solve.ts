@@ -286,7 +286,7 @@ export function solve(data: OsmData, settings: Settings, progress: (message: str
       throw new CoverageGapError('A connection reaches the downloaded corridor boundary.', gaps);
     }
     const hint = Number.isFinite(closestError) ? ` Closest closed candidate was ${Math.round(closestError * 100)}% from the target.` : '';
-    throw new Error(`No sufficiently circular closed loop found within ±${Math.round(settings.tolerance * 100)}% of your target.${hint} Try a shorter distance, wider area, different start, or mixed surfaces.${graph.coverage?.kind === 'corridor' ? ' No loop was found within downloaded coverage; wider detours are unknown.' : ''}${limited ? ' The bounded search reached its limit.' : ''}`);
+    throw new Error(`No sufficiently circular closed loop found within ±${Math.round(settings.tolerance * 100)}% of your target.${hint} Try a smaller circle, move its center or Start, increase Route variation, or use mixed surfaces.${graph.coverage?.kind === 'corridor' ? ' No loop was found within downloaded coverage; wider detours are unknown.' : ''}${limited ? ' The bounded search reached its limit.' : ''}`);
   }
   best.candidates = candidates;
   if (limited) best.notes.push('Search stopped at its time/work limit; this is the best acceptable loop found so far.');

@@ -15,6 +15,7 @@ export default function RadiusControl({ value, disabled, onCommit }: { value: nu
     close(focus); if (Math.abs(next - value) > 0.000001) onCommit(next);
   }
   return <div className={`radius-readout ${editing ? 'editing number-control' : ''}`}>
+    <span className="radius-label">Circle size</span>
     {editing ? <><input ref={input} id="circle-radius-input" type="number" inputMode="decimal" aria-label="Circle radius (km)" min="0.5" max="10" step="any" value={draft} disabled={disabled} aria-invalid={!!error} aria-describedby={`radius-unit${error ? ' radius-error' : ''}`} onChange={event => setDraft(event.target.value)} onBlur={() => commit(false)} onKeyDown={event => { if (event.key === 'Enter') { event.preventDefault(); event.stopPropagation(); commit(true); } if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); close(true); } }} /><small id="radius-unit">km radius</small>{error && <span className="input-error" id="radius-error" role="alert">{error}</span>}</> : <button ref={trigger} type="button" aria-label="Edit circle radius" disabled={disabled} title="Enter radius in kilometers" onClick={() => { setDraft(String(Number(value.toFixed(3)))); setError(''); setEditing(true); }}><span>{value.toFixed(2)}</span><small>km radius</small></button>}
   </div>;
 }
