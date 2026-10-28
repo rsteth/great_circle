@@ -59,3 +59,16 @@ it('preserves the actual default initial-coverage gap without claiming a complet
  let error:unknown;try{solve(data,settings,()=>{},{graph});}catch(cause){error=cause;}
  expect(error).toBeInstanceOf(CoverageGapError);expect((error as CoverageGapError).gaps).toHaveLength(2);
 });
+
+it('completes both captured default stages and reports no loop with actionable guidance, never a third request',async()=>{
+ const snapshots=['vancouver-default-corridor-2026-10-28.osm.json.gz','vancouver-default-expanded-2026-10-28.osm.json.gz'].map(name=>JSON.parse(gunzipSync(readFileSync(new URL(`./data/${name}`,import.meta.url))).toString()) as OsmData);
+ const settings=changeCircle({center:{lat:49.299,lon:-123.133},start:{lat:49.2928,lon:-123.1331},radiusM:3000,targetKm:10,tolerance:.2,surface:'mixed',style:'quiet'},{bearing:180});const engine=new RoutingEngine();let count=0;
+ const load:typeof loadNetwork=async(selected,_signal,_client,options={})=>{
+  expect(count).toBeLessThan(2);const data=snapshots[count++],coverage=options.coverage??initialCoverage(selected),bytes=Buffer.byteLength(JSON.stringify(data)),cost=coverageCost(coverage);
+  if(count===2){expect(coverage.kind).toBe('corridor');if(coverage.kind==='corridor')expect(coverage.patches.map(p=>p.center)).toEqual([{lat:49.300546,lon:-123.150087},{lat:49.295783,lon:-123.149447}]);}
+  options.budget!.remainingRequests--;options.budget!.remainingBytes-=bytes;options.budget!.remainingElements-=data.elements.length;
+  return{data,cached:false,datasetId:String(count),sourceCoverage:coverage,coverage,timing:{fetchMs:0,parseMs:0,bytes,cacheHit:false,elements:data.elements.length,queryAreaM2:cost.areaM2,queryVertices:cost.vertices}};
+ };
+ let stopped:unknown;try{await planRoute(settings,new AbortController().signal,()=>{},async(network,selected,_signal,progress)=>{engine.setData(network.data,network.sourceCoverage);return{...engine.solve(selected,progress,network.coverage),transferMs:0};},{load});}catch(error){stopped=error;}
+ expect(stopped).toBeInstanceOf(Error);expect((stopped as Error).message).toContain('Move the center');expect((stopped as {phase:string}).phase).toBe('search');expect((stopped as {metrics:{requests:number;elements:number}}).metrics).toMatchObject({requests:2,elements:25654});expect(count).toBe(2);
+});

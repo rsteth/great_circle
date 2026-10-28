@@ -31,7 +31,7 @@ export async function planRoute(settings: Settings, signal: AbortSignal, progres
       } catch (error) {
         if (!(error instanceof CoverageGapError) || coverage.kind !== 'corridor') throw error;
         const expanded = attempt === 0 ? expandCoverage(coverage, error.gaps) : undefined;
-        if (!expanded) throw new Error('No loop found within downloaded coverage. The bounded connection check could not complete a route; wider detours may be needed.');
+        if (!expanded) throw new Error('No loop found within downloaded coverage. The bounded connection check could not complete a route. Move the center, try a smaller circle or choose another Start. Wider detours have not been checked.');
         coverage = expanded;
       }
     }

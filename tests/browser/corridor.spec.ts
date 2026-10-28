@@ -44,3 +44,9 @@ test('replayed actual Vancouver data recovers a valid loop with junction-anchor 
  await expect(page.getByRole('status',{name:'Route status'})).toContainText('Loop found.');expect(requests).toBe(2);await expect(page.getByRole('alert')).toHaveCount(0);const pending=page.waitForEvent('download');await page.getByRole('button',{name:'Download GPX',exact:true}).click();const download=await pending;expect(download.suggestedFilename()).toContain('3.7km');
  await page.screenshot({path:`/tmp/great-circle-corridor-actual-replay-${info.project.name}.png`,fullPage:info.project.name==='desktop'});
 });
+
+test('ordinary default exhausts its two downloaded stages and shows a useful no-loop message',async({page},info)=>{
+ await page.clock.install();let requests=0;const snapshots=['vancouver-default-corridor-2026-10-28.osm.json.gz','vancouver-default-expanded-2026-10-28.osm.json.gz'].map(name=>JSON.parse(gunzipSync(readFileSync(new URL(`../data/${name}`,import.meta.url))).toString()));
+ await page.route('**/overpass-api.de/api/interpreter',r=>{expect(requests).toBeLessThan(2);return r.fulfill({json:snapshots[requests++]});});await page.goto('/');await page.getByRole('button',{name:'Generate loop',exact:true}).click();await expect(page.getByRole('status',{name:'Route status'})).toContainText('Waiting');await page.clock.fastForward(31000);await expect(page.getByRole('status',{name:'Route status'})).toContainText('No loop found.');await expect(page.getByRole('alert')).toContainText('Move the center');expect(requests).toBe(2);await expect(page.getByRole('button',{name:'Download GPX'})).toHaveCount(0);await page.clock.fastForward(60000);expect(requests).toBe(2);
+ await page.screenshot({path:`/tmp/great-circle-default-no-loop-${info.project.name}.png`,fullPage:info.project.name==='desktop'});
+});

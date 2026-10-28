@@ -206,5 +206,676 @@
         "lon": -123.1494472
       }
     ]
+  },
+  "completedDefault": {
+    "plan": {
+      "settings": {
+        "center": {
+          "lat": 49.299,
+          "lon": -123.133
+        },
+        "start": {
+          "lat": 49.284686871869006,
+          "lon": -123.13299999999998
+        },
+        "radiusM": 2149,
+        "targetKm": 10,
+        "tolerance": 0.2,
+        "surface": "mixed",
+        "style": "quiet",
+        "circleRadiusM": 1591.5494309189535
+      },
+      "initialCost": {
+        "vertices": 97,
+        "areaM2": 7940427.686644177
+      },
+      "expandedCost": {
+        "vertices": 99,
+        "areaM2": 14541699.24999973
+      },
+      "expanded": {
+        "kind": "corridor",
+        "center": {
+          "lat": 49.299,
+          "lon": -123.133
+        },
+        "line": [
+          {
+            "lat": 49.313313,
+            "lon": -123.133
+          },
+          {
+            "lat": 49.313282,
+            "lon": -123.131564
+          },
+          {
+            "lat": 49.313191,
+            "lon": -123.130134
+          },
+          {
+            "lat": 49.313038,
+            "lon": -123.128717
+          },
+          {
+            "lat": 49.312825,
+            "lon": -123.127318
+          },
+          {
+            "lat": 49.312553,
+            "lon": -123.125943
+          },
+          {
+            "lat": 49.312223,
+            "lon": -123.124598
+          },
+          {
+            "lat": 49.311837,
+            "lon": -123.12329
+          },
+          {
+            "lat": 49.311395,
+            "lon": -123.122023
+          },
+          {
+            "lat": 49.3109,
+            "lon": -123.120803
+          },
+          {
+            "lat": 49.310355,
+            "lon": -123.119635
+          },
+          {
+            "lat": 49.30976,
+            "lon": -123.118525
+          },
+          {
+            "lat": 49.30912,
+            "lon": -123.117477
+          },
+          {
+            "lat": 49.308436,
+            "lon": -123.116495
+          },
+          {
+            "lat": 49.307712,
+            "lon": -123.115584
+          },
+          {
+            "lat": 49.306951,
+            "lon": -123.114747
+          },
+          {
+            "lat": 49.306155,
+            "lon": -123.113989
+          },
+          {
+            "lat": 49.305329,
+            "lon": -123.113312
+          },
+          {
+            "lat": 49.304476,
+            "lon": -123.11272
+          },
+          {
+            "lat": 49.303599,
+            "lon": -123.112214
+          },
+          {
+            "lat": 49.302703,
+            "lon": -123.111797
+          },
+          {
+            "lat": 49.30179,
+            "lon": -123.111472
+          },
+          {
+            "lat": 49.300866,
+            "lon": -123.111238
+          },
+          {
+            "lat": 49.299934,
+            "lon": -123.111098
+          },
+          {
+            "lat": 49.298998,
+            "lon": -123.111051
+          },
+          {
+            "lat": 49.298062,
+            "lon": -123.111099
+          },
+          {
+            "lat": 49.29713,
+            "lon": -123.11124
+          },
+          {
+            "lat": 49.296206,
+            "lon": -123.111474
+          },
+          {
+            "lat": 49.295294,
+            "lon": -123.111801
+          },
+          {
+            "lat": 49.294397,
+            "lon": -123.112218
+          },
+          {
+            "lat": 49.293521,
+            "lon": -123.112724
+          },
+          {
+            "lat": 49.292668,
+            "lon": -123.113317
+          },
+          {
+            "lat": 49.291842,
+            "lon": -123.113994
+          },
+          {
+            "lat": 49.291047,
+            "lon": -123.114753
+          },
+          {
+            "lat": 49.290285,
+            "lon": -123.11559
+          },
+          {
+            "lat": 49.289562,
+            "lon": -123.116501
+          },
+          {
+            "lat": 49.288878,
+            "lon": -123.117483
+          },
+          {
+            "lat": 49.288238,
+            "lon": -123.118531
+          },
+          {
+            "lat": 49.287644,
+            "lon": -123.119641
+          },
+          {
+            "lat": 49.287098,
+            "lon": -123.120809
+          },
+          {
+            "lat": 49.286604,
+            "lon": -123.122028
+          },
+          {
+            "lat": 49.286163,
+            "lon": -123.123295
+          },
+          {
+            "lat": 49.285776,
+            "lon": -123.124603
+          },
+          {
+            "lat": 49.285446,
+            "lon": -123.125947
+          },
+          {
+            "lat": 49.285174,
+            "lon": -123.127321
+          },
+          {
+            "lat": 49.284962,
+            "lon": -123.128719
+          },
+          {
+            "lat": 49.284809,
+            "lon": -123.130136
+          },
+          {
+            "lat": 49.284718,
+            "lon": -123.131565
+          },
+          {
+            "lat": 49.284687,
+            "lon": -123.133
+          },
+          {
+            "lat": 49.284718,
+            "lon": -123.134435
+          },
+          {
+            "lat": 49.284809,
+            "lon": -123.135864
+          },
+          {
+            "lat": 49.284962,
+            "lon": -123.137281
+          },
+          {
+            "lat": 49.285174,
+            "lon": -123.138679
+          },
+          {
+            "lat": 49.285446,
+            "lon": -123.140053
+          },
+          {
+            "lat": 49.285776,
+            "lon": -123.141397
+          },
+          {
+            "lat": 49.286163,
+            "lon": -123.142705
+          },
+          {
+            "lat": 49.286604,
+            "lon": -123.143972
+          },
+          {
+            "lat": 49.287098,
+            "lon": -123.145191
+          },
+          {
+            "lat": 49.287644,
+            "lon": -123.146359
+          },
+          {
+            "lat": 49.288238,
+            "lon": -123.147469
+          },
+          {
+            "lat": 49.288878,
+            "lon": -123.148517
+          },
+          {
+            "lat": 49.289562,
+            "lon": -123.149499
+          },
+          {
+            "lat": 49.290285,
+            "lon": -123.15041
+          },
+          {
+            "lat": 49.291047,
+            "lon": -123.151247
+          },
+          {
+            "lat": 49.291842,
+            "lon": -123.152006
+          },
+          {
+            "lat": 49.292668,
+            "lon": -123.152683
+          },
+          {
+            "lat": 49.293521,
+            "lon": -123.153276
+          },
+          {
+            "lat": 49.294397,
+            "lon": -123.153782
+          },
+          {
+            "lat": 49.295294,
+            "lon": -123.154199
+          },
+          {
+            "lat": 49.296206,
+            "lon": -123.154526
+          },
+          {
+            "lat": 49.29713,
+            "lon": -123.15476
+          },
+          {
+            "lat": 49.298062,
+            "lon": -123.154901
+          },
+          {
+            "lat": 49.298998,
+            "lon": -123.154949
+          },
+          {
+            "lat": 49.299934,
+            "lon": -123.154902
+          },
+          {
+            "lat": 49.300866,
+            "lon": -123.154762
+          },
+          {
+            "lat": 49.30179,
+            "lon": -123.154528
+          },
+          {
+            "lat": 49.302703,
+            "lon": -123.154203
+          },
+          {
+            "lat": 49.303599,
+            "lon": -123.153786
+          },
+          {
+            "lat": 49.304476,
+            "lon": -123.15328
+          },
+          {
+            "lat": 49.305329,
+            "lon": -123.152688
+          },
+          {
+            "lat": 49.306155,
+            "lon": -123.152011
+          },
+          {
+            "lat": 49.306951,
+            "lon": -123.151253
+          },
+          {
+            "lat": 49.307712,
+            "lon": -123.150416
+          },
+          {
+            "lat": 49.308436,
+            "lon": -123.149505
+          },
+          {
+            "lat": 49.30912,
+            "lon": -123.148523
+          },
+          {
+            "lat": 49.30976,
+            "lon": -123.147475
+          },
+          {
+            "lat": 49.310355,
+            "lon": -123.146365
+          },
+          {
+            "lat": 49.3109,
+            "lon": -123.145197
+          },
+          {
+            "lat": 49.311395,
+            "lon": -123.143977
+          },
+          {
+            "lat": 49.311837,
+            "lon": -123.14271
+          },
+          {
+            "lat": 49.312223,
+            "lon": -123.141402
+          },
+          {
+            "lat": 49.312553,
+            "lon": -123.140057
+          },
+          {
+            "lat": 49.312825,
+            "lon": -123.138682
+          },
+          {
+            "lat": 49.313038,
+            "lon": -123.137283
+          },
+          {
+            "lat": 49.313191,
+            "lon": -123.135866
+          },
+          {
+            "lat": 49.313282,
+            "lon": -123.134436
+          },
+          {
+            "lat": 49.313313,
+            "lon": -123.133
+          }
+        ],
+        "halfWidthM": 375,
+        "clipMarginM": 25,
+        "patches": [
+          {
+            "kind": "disk",
+            "center": {
+              "lat": 49.300546,
+              "lon": -123.150087
+            },
+            "radiusM": 1025
+          },
+          {
+            "kind": "disk",
+            "center": {
+              "lat": 49.295783,
+              "lon": -123.149447
+            },
+            "radiusM": 1025
+          }
+        ]
+      },
+      "queryBytes": 2887,
+      "priorBytes": 1865632,
+      "priorElements": 11581,
+      "remainingBytes": 31688800,
+      "remainingElements": 188419,
+      "initialFileAgeMs": 347070.9206542969,
+      "priorGenerationElapsedMs": 43046
+    },
+    "browser": {
+      "scope": "Reconstruct normal default generation: captured fresh initial response with original 43.046 second stage delay, one actual consolidated expansion; normal 90-second application deadline/budgets, no fake route",
+      "url": "https://stethem.com/great_circle/",
+      "initialSnapshotAgeMs": 404519.9206542969,
+      "initialReplayDelayMs": 43046,
+      "initialElements": 11581,
+      "initialBytes": 1865632,
+      "expandedCost": {
+        "vertices": 99,
+        "areaM2": 14541699.24999973
+      },
+      "realRequests": 1,
+      "blocked": 0,
+      "errors": [],
+      "responses": [
+        {
+          "status": 200,
+          "headers": {
+            "access-control-allow-origin": "*",
+            "access-control-max-age": "600",
+            "content-encoding": "gzip",
+            "content-type": "application/json",
+            "date": "Wed, 28 Oct 2026 05:15:29 GMT",
+            "server": "nginx"
+          },
+          "requestToHeadersMs": 33836,
+          "bytes": 2212903,
+          "requestToBodyMs": 34462,
+          "elements": 14073
+        }
+      ],
+      "elapsedMs": 77831,
+      "status": "No loop found.",
+      "alerts": [
+        "Couldn\u2019t make a loop.No loop found within downloaded coverage. The bounded connection check could not complete a route; wider detours may be needed."
+      ],
+      "timing": [
+        {
+          "network": {
+            "fetchMs": 34388.799999952316,
+            "parseMs": 16.59999990463257,
+            "bytes": 2212903,
+            "cacheHit": false,
+            "elements": 14073,
+            "queryAreaM2": 14541699.24999973,
+            "queryVertices": 99
+          },
+          "networkAttempts": [
+            {
+              "fetchMs": 43091.90000009537,
+              "parseMs": 9.599999904632568,
+              "bytes": 1865632,
+              "cacheHit": false,
+              "elements": 11581,
+              "queryAreaM2": 7940427.686644177,
+              "queryVertices": 97
+            },
+            {
+              "fetchMs": 34388.799999952316,
+              "parseMs": 16.59999990463257,
+              "bytes": 2212903,
+              "cacheHit": false,
+              "elements": 14073,
+              "queryAreaM2": 14541699.24999973,
+              "queryVertices": 99
+            }
+          ],
+          "requests": 2,
+          "bytes": 4078535,
+          "elements": 25654,
+          "elapsedMs": 77723.5,
+          "outcome": "error",
+          "phase": "search",
+          "totalMs": 77723.59999990463
+        }
+      ]
+    },
+    "offline": {
+      "settings": {
+        "center": {
+          "lat": 49.299,
+          "lon": -123.133
+        },
+        "start": {
+          "lat": 49.284686871869006,
+          "lon": -123.13299999999998
+        },
+        "radiusM": 2149,
+        "targetKm": 10,
+        "tolerance": 0.2,
+        "surface": "mixed",
+        "style": "quiet",
+        "circleRadiusM": 1591.5494309189535
+      },
+      "source": "Two actual complete separate snapshots replayed offline, no provider requests",
+      "attempts": [
+        {
+          "elements": 11581,
+          "bytes": 1865632,
+          "coverageKind": "corridor",
+          "patches": [],
+          "cost": {
+            "vertices": 97,
+            "areaM2": 7940427.686644177
+          }
+        },
+        {
+          "elements": 14073,
+          "bytes": 2212903,
+          "coverageKind": "corridor",
+          "patches": [
+            {
+              "kind": "disk",
+              "center": {
+                "lat": 49.300546,
+                "lon": -123.150087
+              },
+              "radiusM": 1025
+            },
+            {
+              "kind": "disk",
+              "center": {
+                "lat": 49.295783,
+                "lon": -123.149447
+              },
+              "radiusM": 1025
+            }
+          ],
+          "cost": {
+            "vertices": 99,
+            "areaM2": 14541699.24999973
+          }
+        }
+      ],
+      "error": "No loop found within downloaded coverage. The bounded connection check could not complete a route; wider detours may be needed.",
+      "phase": "search",
+      "metrics": {
+        "network": {
+          "fetchMs": 0,
+          "parseMs": 0,
+          "bytes": 2212903,
+          "cacheHit": false,
+          "elements": 14073,
+          "queryAreaM2": 14541699.24999973,
+          "queryVertices": 99
+        },
+        "networkAttempts": [
+          {
+            "fetchMs": 0,
+            "parseMs": 0,
+            "bytes": 1865632,
+            "cacheHit": false,
+            "elements": 11581,
+            "queryAreaM2": 7940427.686644177,
+            "queryVertices": 97
+          },
+          {
+            "fetchMs": 0,
+            "parseMs": 0,
+            "bytes": 2212903,
+            "cacheHit": false,
+            "elements": 14073,
+            "queryAreaM2": 14541699.24999973,
+            "queryVertices": 99
+          }
+        ],
+        "requests": 2,
+        "bytes": 4078535,
+        "elements": 25654,
+        "elapsedMs": 63.25758400000001
+      },
+      "component": {
+        "nodes": 2588,
+        "edges": 4764,
+        "snapM": 27.600840564695318
+      },
+      "sectors": [
+        {
+          "angleFromEastDeg": 0,
+          "total": 0,
+          "nearTarget": 0
+        },
+        {
+          "angleFromEastDeg": 45,
+          "total": 0,
+          "nearTarget": 0
+        },
+        {
+          "angleFromEastDeg": 90,
+          "total": 0,
+          "nearTarget": 0
+        },
+        {
+          "angleFromEastDeg": 135,
+          "total": 277,
+          "nearTarget": 277
+        },
+        {
+          "angleFromEastDeg": 180,
+          "total": 509,
+          "nearTarget": 509
+        },
+        {
+          "angleFromEastDeg": 225,
+          "total": 609,
+          "nearTarget": 538
+        },
+        {
+          "angleFromEastDeg": 270,
+          "total": 812,
+          "nearTarget": 812
+        },
+        {
+          "angleFromEastDeg": 315,
+          "total": 381,
+          "nearTarget": 381
+        }
+      ]
+    }
   }
 }
