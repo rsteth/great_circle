@@ -11,7 +11,8 @@
     "test": "vitest run",
     "test:browser": "playwright test",
     "check:live": "tsx scripts/check-live.ts",
-    "check:browser:live": "tsx scripts/check-browser-live.ts"
+    "check:browser:live": "tsx scripts/check-browser-live.ts",
+    "benchmark:routes": "tsx scripts/benchmark-routing.mts"
   },
   "dependencies": {
     "leaflet": "1.9.4",
