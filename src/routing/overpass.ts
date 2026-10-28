@@ -1,6 +1,7 @@
 import { distance } from './geo';
 import type { NetworkTiming, OsmData, Point, Settings } from './types';
 import { validateSettings } from './solve';
+import { MAX_SHARED_QUERY_RADIUS_M } from './limits';
 export const OVERPASS_URL = 'https://overpass-api.de/api/interpreter';
 export const CLIENT_USER_AGENT = 'GreatCircle/0.1 (+https://github.com/rsteth/great_circle; local personal route planner)';
 const REQUEST_COOLDOWN_MS = 30000;
@@ -12,6 +13,7 @@ let nextRequestAt = 0;
 export function queryFor(settings: Settings): string {
   validateSettings(settings);
   const { center, radiusM } = settings;
+  if (radiusM > MAX_SHARED_QUERY_RADIUS_M) throw new Error('This circle is too large for the shared map service. Reduce radius to 4.5 km or less to generate a route. You can still size and inspect circles up to 100 km.');
   return `[out:json][timeout:25][maxsize:33554432];\nway(around:${radiusM + 50},${center.lat.toFixed(6)},${center.lon.toFixed(6)})["highway"~"^(cycleway|residential|living_street|unclassified|service|tertiary|tertiary_link|secondary|secondary_link|primary|primary_link|track|path|footway|pedestrian)$"]->.roads;\nrel(bw.roads)["type"="restriction"]->.turns;\n(.roads;node(w.roads);.turns;);out body;`;
 }
 export async function loadNetwork(settings: Settings, signal: AbortSignal, client?: { userAgent: string }): Promise<{ data: OsmData; cached: boolean; datasetId: string; timing: NetworkTiming }> {

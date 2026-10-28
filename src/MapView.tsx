@@ -1,32 +1,34 @@
 import { useEffect, useRef, useState } from 'react';
 import type { PointerEvent as ReactPointerEvent, KeyboardEvent } from 'react';
 import L from 'leaflet';
+import { createPortal } from 'react-dom';
 import { Crosshair, Layers2, LocateFixed } from 'lucide-react';
-import { angleKey, bearingTo, changeCircle, circleRadius, radiusKey, pointOnCircle } from './circle';
+import { angleKey, bearingTo, changeCircle, circleRadius, radiusKey, pointOnCircle, safeSizeBearing, MIN_CIRCLE_RADIUS, MAX_CIRCLE_RADIUS } from './circle';
 import { distance } from './routing/geo';
 import type { Point, Route, Settings } from './routing/types';
 import PlaceSearch from './PlaceSearch';
 type Props = { settings: Settings; route?: Route; busy: boolean; onChange: (settings: Settings) => void };
-type Frame = { center: L.Point; start: L.Point; resize: L.Point };
-type Gesture = { pointer: number; kind: 'start' | 'size'; before: Settings; last: Settings; offset: number; button: HTMLButtonElement; handlers: { handler: L.Handler; enabled: boolean }[] };
+type Frame = { center: L.Point; start: L.Point; resize: L.Point; ring: string };
+type Gesture = { pointer: number; kind: 'start' | 'size'; before: Settings; last: Settings; offset: number; sizeBearingBefore: number; button: HTMLButtonElement; handlers: { handler: L.Handler; enabled: boolean }[] };
 export default function MapView({ settings, route, busy, onChange }: Props) {
   const host = useRef<HTMLDivElement>(null);
   const map = useRef<L.Map | null>(null);
   const layers = useRef<L.LayerGroup | null>(null);
   const latest = useRef({ settings, busy, onChange });
   const gesture = useRef<Gesture | null>(null);
-  const project = useRef<() => void>(() => {});
+  const project = useRef<(settings?: Settings) => void>(() => {});
   const fit = useRef<(settings: Settings) => void>(() => {});
   const sizeBearing = useRef(135);
   const locationSequence = useRef(0);
   const [locating, setLocating] = useState(false);
   const [locationError, setLocationError] = useState('');
+  const [sizeFocused, setSizeFocused] = useState(false);
+  const [circlePane, setCirclePane] = useState<HTMLElement>();
   const [frame, setFrame] = useState<Frame>();
   const [tileFailed, setTileFailed] = useState(false);
   const [showIdeal, setShowIdeal] = useState(true);
   const [ready, setReady] = useState(false);
   const previousCenter = useRef<Point | undefined>(undefined);
-  const previousRadius = useRef<number | undefined>(undefined);
   const lastRoute = useRef<Route | undefined>(undefined);
   useEffect(() => { latest.current = { settings, busy, onChange }; }, [settings, busy, onChange]);
   function finish(cancel: boolean) {
@@ -35,13 +37,14 @@ export default function MapView({ settings, route, busy, onChange }: Props) {
     gesture.current = null;
     if (active.button.hasPointerCapture(active.pointer)) active.button.releasePointerCapture(active.pointer);
     for (const { handler, enabled } of active.handlers) if (enabled) handler.enable();
-    if (cancel) latest.current.onChange(active.before);
-    else if (active.kind === 'size') fit.current(active.last);
+    if (cancel) { sizeBearing.current = active.sizeBearingBefore; latest.current.onChange(active.before); project.current(active.before); }
+    else project.current(active.last);
   }
   useEffect(() => {
     if (!host.current) return;
-    const instance = L.map(host.current, { zoomControl: false, minZoom: 3, maxZoom: 18, zoomSnap: 0.25 }).setView([49.299, -123.133], 13);
+    const instance = L.map(host.current, { zoomControl: false, minZoom: 3, maxZoom: 18, zoomSnap: 0.25, zoomAnimation: false, markerZoomAnimation: false, trackResize: false }).setView([49.299, -123.133], 13);
     map.current = instance;
+    const pane = instance.createPane('circle-controls'); pane.style.zIndex = '450'; pane.style.pointerEvents = 'none'; setCirclePane(pane);
     L.control.zoom({ position: 'bottomright' }).addTo(instance);
     L.control.scale({ position: 'bottomleft', imperial: false }).addTo(instance);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -49,29 +52,27 @@ export default function MapView({ settings, route, busy, onChange }: Props) {
       maxZoom: 19, updateWhenIdle: true, keepBuffer: 1,
     }).on('tileerror', () => setTileFailed(true)).addTo(instance);
     layers.current = L.layerGroup().addTo(instance);
-    project.current = () => {
-      const current = latest.current.settings;
-      const center = instance.latLngToContainerPoint([current.center.lat, current.center.lon]);
-      const start = instance.latLngToContainerPoint([current.start.lat, current.start.lon]);
-      const toScreen = (angle: number) => { const p = pointOnCircle(current.center, circleRadius(current), angle); return instance.latLngToContainerPoint([p.lat, p.lon]); };
+    project.current = selected => {
+      const current = selected ?? latest.current.settings;
+      const projectPoint = (p: Point) => instance.project([p.lat, current.center.lon + ((p.lon - current.center.lon + 540) % 360 - 180)]).subtract(instance.getPixelOrigin());
+      const toScreen = (angle: number) => projectPoint(pointOnCircle(current.center, circleRadius(current), angle));
+      const center = projectPoint(current.center);
+      const start = projectPoint(current.start);
+      const oldBearing = sizeBearing.current;
+      sizeBearing.current = safeSizeBearing(oldBearing, bearingTo(current.center, current.start), center.distanceTo(start), oldBearing);
       let resize = toScreen(sizeBearing.current);
-      // Keep two 44px hit targets separate, even when start rotates past Size.
-      if (!gesture.current || gesture.current.kind !== 'size') {
-        if (resize.distanceTo(start) < 60) {
-          const startAngle = bearingTo(current.center, current.start);
-          const radiusPx = Math.max(1, center.distanceTo(start));
-          const separation = Math.min(180, 2 * Math.asin(Math.min(1, 32 / radiusPx)) * 180 / Math.PI);
-          sizeBearing.current = startAngle + separation;
-          resize = toScreen(sizeBearing.current);
-        }
-      }
-      setFrame({ center, start, resize });
+      // Account for geodesic/Mercator distortion at large radii/high latitudes.
+      const side = Math.sin((sizeBearing.current - bearingTo(current.center, current.start)) * Math.PI / 180) >= 0 ? 1 : -1;
+      for (let i = 0; i < 180 && resize.distanceTo(start) < 60 && center.distanceTo(start) >= 34; i++) { sizeBearing.current += side; resize = toScreen(sizeBearing.current); }
+      const angles = [...Array.from({ length: 120 }, (_, index) => index * 3), bearingTo(current.center, current.start), ((sizeBearing.current % 360) + 360) % 360].sort((a, b) => a - b);
+      const ring = angles.map((angle, index) => { const point = toScreen(angle); return `${index ? 'L' : 'M'}${point.x},${point.y}`; }).join(' ') + ' Z';
+      setFrame({ center, start, resize, ring });
     };
     fit.current = current => {
       const bounds = L.latLng(current.center.lat, current.center.lon).toBounds(circleRadius(current) * 2);
       instance.fitBounds(bounds, { padding: [40, 40], animate: false });
     };
-    instance.on('move zoom resize', () => project.current());
+    instance.on('move zoom viewreset resize', () => project.current());
     instance.on('click', event => {
       if (latest.current.busy || gesture.current) return;
       const current = latest.current.settings;
@@ -87,7 +88,7 @@ export default function MapView({ settings, route, busy, onChange }: Props) {
       locationSequence.current++; setLocating(false); setLocationError('');
       latest.current.onChange(changeCircle(current, { center: { lat: event.latlng.lat, lon: event.latlng.lng } }));
     });
-    const observer = new ResizeObserver(() => { instance.invalidateSize(); if (!gesture.current) fit.current(latest.current.settings); project.current(); });
+    const observer = new ResizeObserver(() => { instance.invalidateSize({ animate: false, pan: true }); project.current(); });
     observer.observe(host.current);
     const onEscape = (event: globalThis.KeyboardEvent) => { if (event.key === 'Escape' && gesture.current) { event.preventDefault(); finish(true); } };
     const onBlur = () => finish(true);
@@ -104,8 +105,6 @@ export default function MapView({ settings, route, busy, onChange }: Props) {
     const group = layers.current, instance = map.current;
     if (!group || !instance) return;
     group.clearLayers();
-    L.circle([settings.center.lat, settings.center.lon], { radius: circleRadius(settings), color: '#60a5fa', fillColor: '#18181b', fillOpacity: 0.15, weight: 2, interactive: false }).addTo(group);
-    L.circleMarker([settings.center.lat, settings.center.lon], { radius: 4, color: '#dbeafe', fillColor: '#3b82f6', fillOpacity: 1, weight: 1, interactive: false }).addTo(group);
     if (route) {
       if (showIdeal) L.circle([route.circleCenter.lat, route.circleCenter.lon], { radius: route.circleRadiusM, color: '#facc15', weight: 1.5, dashArray: '4 6', fill: false, interactive: false }).addTo(group);
       const points: L.LatLngTuple[] = route.points.map(p => [p.lat, p.lon]);
@@ -114,9 +113,8 @@ export default function MapView({ settings, route, busy, onChange }: Props) {
       L.circleMarker(points[0], { radius: 7, color: '#fff', weight: 2.5, fillColor: '#2563eb', fillOpacity: 1 }).bindTooltip('Route start & finish').addTo(group);
       if (lastRoute.current !== route) fit.current(settings);
     }
-    if (!gesture.current && (!previousCenter.current || distance(previousCenter.current, settings.center) > 0.01 || previousRadius.current !== circleRadius(settings))) fit.current(settings);
+    if (!gesture.current && (!previousCenter.current || distance(previousCenter.current, settings.center) > 0.01)) fit.current(settings);
     previousCenter.current = settings.center;
-    previousRadius.current = circleRadius(settings);
     lastRoute.current = route;
     project.current();
   }, [settings, route, showIdeal, ready]);
@@ -135,7 +133,7 @@ export default function MapView({ settings, route, busy, onChange }: Props) {
     const current = latest.current.settings;
     const handlers = [instance.dragging, instance.touchZoom, instance.doubleClickZoom, instance.scrollWheelZoom, instance.boxZoom, instance.keyboard].map(handler => ({ handler, enabled: handler.enabled() }));
     handlers.forEach(({ handler }) => handler.disable());
-    gesture.current = { pointer: event.pointerId, kind, before: current, last: current, offset: kind === 'start' ? bearingTo(current.center, point) - bearingTo(current.center, current.start) : distance(current.center, point) - circleRadius(current), button: event.currentTarget, handlers };
+    gesture.current = { pointer: event.pointerId, kind, before: current, last: current, offset: kind === 'start' ? bearingTo(current.center, point) - bearingTo(current.center, current.start) : distance(current.center, point) - circleRadius(current), sizeBearingBefore: sizeBearing.current, button: event.currentTarget, handlers };
     event.currentTarget.focus({ preventScroll: true });
     event.currentTarget.setPointerCapture(event.pointerId);
   }
@@ -147,9 +145,11 @@ export default function MapView({ settings, route, busy, onChange }: Props) {
     if (!point) return;
     if (active.kind === 'start' && distance(point, active.before.center) < circleRadius(active.before) * 0.1) return;
     const next = changeCircle(latest.current.settings, active.kind === 'start' ? { bearing: bearingTo(active.before.center, point) - active.offset } : { radiusM: distance(active.before.center, point) - active.offset });
-    if (Math.abs(circleRadius(next) - circleRadius(active.last)) < 0.001 && distance(next.start, active.last.start) < 0.001) return;
+    if (active.kind === 'size') sizeBearing.current = safeSizeBearing(bearingTo(active.before.center, point), bearingTo(next.center, next.start), frame?.center.distanceTo(frame.start) ?? 100, sizeBearing.current);
+    const changed = Math.abs(circleRadius(next) - circleRadius(active.last)) >= 0.001 || distance(next.start, active.last.start) >= 0.001;
     active.last = next;
-    latest.current.onChange(next);
+    if (changed) latest.current.onChange(next);
+    project.current(next);
   }
   function key(event: KeyboardEvent<HTMLButtonElement>, kind: 'start' | 'size') {
     if (event.key === 'Escape') { finish(true); return; }
@@ -159,7 +159,7 @@ export default function MapView({ settings, route, busy, onChange }: Props) {
     event.preventDefault(); event.stopPropagation();
     const next = changeCircle(current, kind === 'start' ? { bearing: value } : { radiusM: value });
     latest.current.onChange(next);
-    if (kind === 'size') fit.current(next);
+    project.current(next);
   }
   function recenter(center: Point) {
     if (latest.current.busy || gesture.current) return;
@@ -187,13 +187,13 @@ export default function MapView({ settings, route, busy, onChange }: Props) {
   const bearing = bearingTo(settings.center, settings.start);
   return <div className={`map-shell ${busy ? 'working' : ''}`}>
     <div ref={host} className="map" aria-label="Circle map. Click to move the center, drag S around the edge to choose a start, or focus Size and use arrow keys to resize." />
-    {frame && <div className="circle-overlay">
-      <svg className="clock-lines" aria-hidden="true"><defs><marker id="size-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 1 L 9 5 L 0 9" fill="none" stroke="#60a5fa" strokeWidth="1.5" /></marker></defs><line x1={frame.center.x} y1={frame.center.y} x2={frame.resize.x} y2={frame.resize.y} className="size-radius" />{frame.resize.distanceTo(frame.center) >= 34 && <line x1={frame.center.x + (frame.resize.x - frame.center.x) * 7 / frame.resize.distanceTo(frame.center)} y1={frame.center.y + (frame.resize.y - frame.center.y) * 7 / frame.resize.distanceTo(frame.center)} x2={frame.resize.x - (frame.resize.x - frame.center.x) * 25 / frame.resize.distanceTo(frame.center)} y2={frame.resize.y - (frame.resize.y - frame.center.y) * 25 / frame.resize.distanceTo(frame.center)} className="size-arrow-guide" markerStart="url(#size-arrow)" markerEnd="url(#size-arrow)" />}</svg>
+    {frame && circlePane && createPortal(<div className="circle-overlay circle-layer">
+      <svg className="clock-lines" aria-hidden="true"><path className="target-ring" d={frame.ring} /><circle className="target-center" cx={frame.center.x} cy={frame.center.y} r="4" /><defs><marker id="size-arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 1 L 9 5 L 0 9" fill="none" stroke="#60a5fa" strokeWidth="1.5" /></marker></defs><line x1={frame.center.x} y1={frame.center.y} x2={frame.resize.x} y2={frame.resize.y} className="size-radius" />{frame.resize.distanceTo(frame.center) >= 34 && <line x1={frame.center.x + (frame.resize.x - frame.center.x) * 7 / frame.resize.distanceTo(frame.center)} y1={frame.center.y + (frame.resize.y - frame.center.y) * 7 / frame.resize.distanceTo(frame.center)} x2={frame.resize.x - (frame.resize.x - frame.center.x) * 25 / frame.resize.distanceTo(frame.center)} y2={frame.resize.y - (frame.resize.y - frame.center.y) * 25 / frame.resize.distanceTo(frame.center)} className="size-arrow-guide" markerStart="url(#size-arrow)" markerEnd="url(#size-arrow)" />}</svg>
       {(['start', 'size'] as const).map(kind => {
         const point = kind === 'start' ? frame.start : frame.resize;
-        return <button key={kind} type="button" hidden={kind === 'size' && frame.resize.distanceTo(frame.center) < 34} className={`circle-handle ${kind}-handle`} style={{ left: point.x, top: point.y }} role="slider" aria-label={kind === 'start' ? 'Start angle' : 'Circle radius'} aria-valuemin={kind === 'start' ? 0 : 500} aria-valuemax={kind === 'start' ? 359 : 4500} aria-valuenow={Math.round(kind === 'start' ? bearing : circleRadius(settings))} aria-valuetext={kind === 'start' ? `${Math.round(bearing)} degrees clockwise from north` : `${(circleRadius(settings) / 1000).toFixed(2)} kilometers`} disabled={busy} title={kind === 'start' ? 'Drag around the circle to choose a start. Arrow keys rotate.' : 'Drag outward or inward to resize. Arrow keys resize.'} onPointerDown={event => begin(event, kind)} onPointerMove={move} onPointerUp={event => { event.stopPropagation(); if (gesture.current?.pointer === event.pointerId) { if (event.currentTarget.hasPointerCapture(event.pointerId)) { move(event); finish(false); } else finish(true); } }} onPointerCancel={event => { if (gesture.current?.pointer === event.pointerId) finish(true); }} onLostPointerCapture={event => { if (gesture.current?.pointer === event.pointerId) finish(true); }} onKeyDown={event => key(event, kind)} onClick={event => event.stopPropagation()}><span aria-hidden="true">{kind === 'start' ? 'S' : '↔'}</span><small aria-hidden="true">{kind === 'start' ? 'Start' : 'Size'}</small></button>;
+        return <button key={kind} type="button" hidden={kind === 'size' && frame.resize.distanceTo(frame.center) < 34 && gesture.current?.kind !== 'size' && !sizeFocused} className={`circle-handle ${kind}-handle ${kind === 'size' && frame.resize.distanceTo(frame.center) < 34 && gesture.current?.kind !== 'size' ? 'size-too-small' : ''}`} style={{ left: point.x, top: point.y }} role="slider" aria-label={kind === 'start' ? 'Start angle' : 'Circle radius'} aria-valuemin={kind === 'start' ? 0 : MIN_CIRCLE_RADIUS} aria-valuemax={kind === 'start' ? 359 : MAX_CIRCLE_RADIUS} aria-valuenow={Math.round(kind === 'start' ? bearing : circleRadius(settings))} aria-valuetext={kind === 'start' ? `${Math.round(bearing)} degrees clockwise from north` : `${(circleRadius(settings) / 1000).toFixed(2)} kilometers`} disabled={busy} title={kind === 'start' ? 'Drag around the circle to choose a start. Arrow keys rotate.' : 'Drag outward or inward to resize. Arrow keys resize.'} onFocus={() => { if (kind === 'size') setSizeFocused(true); }} onBlur={() => { if (kind === 'size') setSizeFocused(false); }} onPointerDown={event => begin(event, kind)} onPointerMove={move} onPointerUp={event => { event.stopPropagation(); if (gesture.current?.pointer === event.pointerId) { if (event.currentTarget.hasPointerCapture(event.pointerId)) { move(event); finish(false); } else finish(true); } }} onPointerCancel={event => { if (gesture.current?.pointer === event.pointerId) finish(true); }} onLostPointerCapture={event => { if (gesture.current?.pointer === event.pointerId) finish(true); }} onKeyDown={event => key(event, kind)} onClick={event => event.stopPropagation()}><span aria-hidden="true">{kind === 'start' ? 'S' : '↔'}</span><small aria-hidden="true">{kind === 'start' ? 'Start' : 'Size'}</small></button>;
       })}
-    </div>}
+    </div>, circlePane)}
     <div className="map-topline"><PlaceSearch busy={busy} onSelect={recenter} /><button className="map-button" onClick={() => fit.current(settings)} title="Fit circle" aria-label="Fit circle"><Crosshair size={17} /></button></div>
     <button type="button" className="locate-button map-button" aria-label={locating ? 'Cancel locating' : 'Locate me'} aria-pressed={locating} disabled={busy} onClick={locate}><LocateFixed size={18} /></button>
     {locationError && <div className="location-error" role="status">{locationError}<button type="button" aria-label="Dismiss location message" onClick={() => setLocationError('')}>×</button></div>}

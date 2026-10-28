@@ -17,7 +17,7 @@ npm run dev
 
 Open the localhost URL Vite prints (normally `http://127.0.0.1:5173`). `--ignore-scripts` skips third-party lifecycle scripts; the published platform-specific esbuild package works without its postinstall script on this Mac.
 
-1. Drag the blue **Size** handle on the circle edge inward/outward to resize (0.5–4.5 km radius). Tap elsewhere on the edge to move that handle; a protected area around Start prevents accidental resizing. Only Size has a radial guide, with two arrowheads. The readout shows radius; circumference supplies the target distance.
+1. Drag the blue **Size** handle on the circle edge inward/outward to resize (0.5–100 km radius). Tap elsewhere on the edge to move that handle; a protected area around Start prevents accidental resizing. Only Size has a radial guide, with two arrowheads. Ring and handles share the same map-coordinate layer. Tap the readout to enter kilometers; Enter/valid blur commits and Escape cancels. Circumference supplies target distance. Resizing keeps the map camera fixed; Fit circle is explicit.
 2. Drag the floating lime **S / Start** around the edge. This changes only bearing, never size. North is 0°, east 90°, south 180°, west 270°.
 3. Submit **Search here** to find a place globally, click the map away from the edge to move center, or open **Coordinates**. **Locate me** requests location only when clicked. These actions preserve size and start angle. **Fit circle** brings controls back into view.
 4. Focus a map handle and use arrows (Shift for larger steps), Page Up/Down, Home or End as a keyboard alternative. Start also has a numeric angle field and cardinal buttons. Escape, pointer cancellation, lost capture or blur restores pre-drag settings. Only the captured pointer can change its own handle; map pan/pinch resume afterward.
@@ -139,3 +139,7 @@ At very small on-screen circle sizes the Size handle is hidden to protect Start'
 ## Main branch publication
 
 The verified UI lineage is integrated into `main` by fast-forward, preserving the original Python sketch and all TypeScript history. Pages now publishes pushes to `main`; optimization work starts on a separate local feature branch and needs a separate publication decision.
+
+## Current local refinements
+
+See [radius/map behavior and large-area boundary](docs/radius-map-refinement.md) and [local routing-efficiency work](docs/routing-efficiency-local.md). Circle planning/editing supports a 100 km **radius**; the shared public map downloader still supports circles up to 4.5 km radius and rejects larger downloads before fetching. Efficiency and this newest UI revision remain local pending a separate publication decision.

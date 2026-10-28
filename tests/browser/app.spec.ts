@@ -12,9 +12,9 @@ test.beforeEach(async ({ page }) => {
 });
 async function frame(page: Page) {
   return page.locator('.map-shell').evaluate(element => {
-    const box = element.getBoundingClientRect(), line = element.querySelector('.size-radius')!;
-    const x = Number(line.getAttribute('x1')), y = Number(line.getAttribute('y1'));
-    return { x: box.left + x, y: box.top + y, radius: Math.hypot(Number(line.getAttribute('x2')) - x, Number(line.getAttribute('y2')) - y) };
+    const center = element.querySelector('.target-center')!.getBoundingClientRect(), handle = element.querySelector('.start-handle')!.getBoundingClientRect();
+    const x = center.x + center.width / 2, y = center.y + center.height / 2;
+    return { x, y, radius: Math.hypot(handle.x + handle.width / 2 - x, handle.y + handle.height / 2 - y) };
   });
 }
 function point(f: {x:number;y:number;radius:number}, a: number, scale = 1) { return { x: f.x + Math.sin(a * Math.PI / 180) * f.radius * scale, y: f.y - Math.cos(a * Math.PI / 180) * f.radius * scale }; }
@@ -33,7 +33,8 @@ test('one radius line, on-ring size selection, safe start exclusion and independ
   await expect(page.locator('.size-arrow-guide')).toHaveAttribute('marker-end', 'url(#size-arrow)');
   let f=await frame(page), b=(await size(page).boundingBox())!;
   expect(b.x+b.width/2).toBeGreaterThan(f.x); expect(b.y+b.height/2).toBeGreaterThan(f.y);
-  expect(Math.hypot(b.x+b.width/2-f.x,b.y+b.height/2-f.y)).toBeCloseTo(f.radius,0);
+  // Geodesic/Mercator projection and integer layer pixels differ slightly by bearing.
+  expect(Math.abs(Math.hypot(b.x+b.width/2-f.x,b.y+b.height/2-f.y)-f.radius)).toBeLessThan(1.5);
   const initialRadius=await radius(page);
   const p=point(f,270); await page.mouse.click(p.x,p.y);
   b=(await size(page).boundingBox())!; expect(Math.abs(b.x+b.width/2-p.x)).toBeLessThan(3); expect(Math.abs(b.y+b.height/2-p.y)).toBeLessThan(3);

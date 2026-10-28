@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { angleKey, bearingTo, changeCircle, circleRadius, normalizeBearing, pointOnCircle, radiusKey } from '../src/circle';
+import { angleKey, bearingTo, changeCircle, circleRadius, normalizeBearing, pointOnCircle, radiusKey, safeSizeBearing } from '../src/circle';
 import { distance } from '../src/routing/geo';
 import { solve, validateSettings } from '../src/routing/solve';
 import { circleFixture } from './fixtures';
@@ -29,12 +29,12 @@ describe('circle size and clock hand', () => {
   it('preserves angle when resizing or moving center, with padded search limits', () => {
     let { settings } = circleFixture();
     settings = changeCircle(settings, { radiusM: 1000, bearing: 37 });
-    for (const radiusM of [500, 1500, 4500, 10000, 1]) {
+    for (const radiusM of [500, 1500, 4500, 10000, 100000, 100001, 1]) {
       settings = changeCircle(settings, { radiusM });
       expect(bearingTo(settings.center, settings.start)).toBeCloseTo(37, 5);
       expect(settings.targetKm).toBeCloseTo(circleRadius(settings) * 2 * Math.PI / 1000, 8);
       expect(settings.radiusM).toBeGreaterThan(circleRadius(settings));
-      expect(settings.radiusM).toBeLessThanOrEqual(6000);
+      expect(settings.radiusM).toBeLessThanOrEqual(135000);
       validateSettings(settings);
     }
     settings = changeCircle(settings, { center: { lat: 50, lon: -124 } });
@@ -48,7 +48,7 @@ describe('circle size and clock hand', () => {
     expect(angleKey('Home', 180, false)).toBe(0);
     expect(angleKey('End', 180, false)).toBe(359);
     expect(radiusKey('Home', 1000, false)).toBe(500);
-    expect(radiusKey('End', 1000, false)).toBe(4500);
+    expect(radiusKey('End', 1000, false)).toBe(100000);
     expect(radiusKey('ArrowUp', 1000, true)).toBe(1250);
     expect(angleKey('Tab', 40, false)).toBeUndefined();
   });
@@ -70,5 +70,29 @@ describe('circle size and clock hand', () => {
     const selected = changeCircle(settings, { radiusM: 1000, bearing: 0 });
     expect(() => validateSettings({ ...selected, start: selected.center })).toThrow('start on its edge');
     expect(() => validateSettings({ ...selected, targetKm: 20 })).toThrow('valid circle size');
+  });
+});
+
+describe('100 km circle planning and safe perimeter angle', () => {
+  it('uses 100 km radius, not diameter; rejects invalid configured circles', () => {
+    const { settings } = circleFixture();
+    const large = changeCircle(settings, { radiusM: 100000, bearing: 135 });
+    expect(large.circleRadiusM).toBe(100000); expect(distance(large.center, large.start)).toBeCloseTo(100000, 5);
+    expect(large.targetKm).toBeCloseTo(628.3185307, 6); expect(large.radiusM).toBe(135000); validateSettings(large);
+    expect(changeCircle(large, { radiusM: 100001 }).circleRadiusM).toBe(100000);
+    expect(() => validateSettings({ ...large, circleRadiusM: 100001 })).toThrow();
+    expect(() => validateSettings({ ...large, circleRadiusM: NaN })).toThrow();
+    expect(radiusKey('ArrowUp', 100000, false)).toBe(100000);
+  });
+  it('tracks the nearest safe perimeter angle with stable handoff in both directions', () => {
+    for (const angles of [[330,350,359,0,1,10,30,60], [60,30,10,1,0,359,350,330]]) {
+      let previous = angles[0];
+      for (const desired of angles) {
+        const actual = safeSizeBearing(desired, 0, 100, previous);
+        expect(Math.hypot(Math.sin(actual * Math.PI / 180) * 100, (Math.cos(actual * Math.PI / 180) - 1) * 100)).toBeGreaterThanOrEqual(63.99);
+        if (desired === 60) expect(actual).toBe(desired);
+        previous = actual;
+      }
+    }
   });
 });

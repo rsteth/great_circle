@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { ArrowDownToLine, ArrowUpRight, Check, ChevronDown, CircleDashed, Flag, LoaderCircle, MoveUpRight, RotateCcw, Route as RouteIcon, SlidersHorizontal, X } from 'lucide-react';
 import MapView from './MapView';
 import NumberControl from './NumberControl';
+import RadiusControl from './RadiusControl';
 import SettingsDrawer from './SettingsDrawer';
 import useMobileLayout from './useMobileLayout';
 import { bearingTo, changeCircle, circleRadius } from './circle';
@@ -114,7 +115,7 @@ export default function App() {
     link.download = `great-circle-${(route.lengthM / 1000).toFixed(1)}km.gpx`; link.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000); setDownloaded(true);
   }
-  const scaleControls = <div className="variation-control"><label htmlFor="variation">Route variation<input id="variation" aria-label="Route variation" aria-valuetext={settings.tolerance === 0.1 ? 'Tight' : settings.tolerance === 0.3 ? 'Flexible' : 'Moderate'} type="range" min="0.1" max="0.3" step="0.1" value={settings.tolerance} onChange={event => update({ tolerance: Number(event.target.value) })} /></label><output aria-label="Circle size">{(circleRadius(settings) / 1000).toFixed(2)} <small>km radius</small></output></div>;
+  const scaleControls = <div className="variation-control"><label htmlFor="variation">Route variation<input id="variation" aria-label="Route variation" aria-valuetext={settings.tolerance === 0.1 ? 'Tight' : settings.tolerance === 0.3 ? 'Flexible' : 'Moderate'} type="range" min="0.1" max="0.3" step="0.1" value={settings.tolerance} onChange={event => update({ tolerance: Number(event.target.value) })} /></label><RadiusControl value={circleRadius(settings) / 1000} disabled={busy} onCommit={km => circle({ radiusM: km * 1000 })} /></div>;
   const primaryAction = <>{busy ? <button className="primary cancel" onClick={cancel}><X size={17} /> Cancel</button> : <button className="primary" onClick={generate}><CircleDashed size={18} /> Generate loop <MoveUpRight size={18} /></button>}</>;
   const desktopFields = <><fieldset disabled={busy}>
           <section className="control-section"><div className="section-label"><span className="step">01</span><h2>Circle size</h2></div>{scaleControls}<p className="helper">~{settings.targetKm.toFixed(1)} km loop. Resize on the map.</p><Coordinates point={settings.center} onApply={center => circle({ center })} /></section>

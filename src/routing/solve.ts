@@ -1,4 +1,5 @@
 import { angleDelta, distance, offset, roundness, trackLength, xy } from './geo';
+import { MAX_CIRCLE_RADIUS_M, MAX_SHARED_QUERY_RADIUS_M } from './limits';
 import { buildGraph, turnAllowed } from './graph';
 import type { Edge, Graph, OsmData, Point, Route, Settings, SolveTiming } from './types';
 
@@ -157,10 +158,10 @@ export function returnableComponent(graph: Graph, start: number): Graph {
 
 export function validateSettings(settings: Settings) {
   for (const point of [settings.center, settings.start]) if (!Number.isFinite(point.lat) || !Number.isFinite(point.lon) || Math.abs(point.lat) > 75 || Math.abs(point.lon) > 180) throw new Error('Choose coordinates between 75°S and 75°N, with longitude between −180° and 180°.');
-  if (!Number.isFinite(settings.radiusM) || settings.radiusM < 1000 || settings.radiusM > 6000) throw new Error('Choose a search radius between 1 and 6 km.');
-  if (!Number.isFinite(settings.targetKm) || settings.targetKm < 3 || settings.targetKm > 40) throw new Error('Choose a target distance between 3 and 40 km.');
+  if (!Number.isFinite(settings.radiusM) || settings.radiusM < 1000 || settings.radiusM > MAX_CIRCLE_RADIUS_M * 1.35 || (settings.circleRadiusM === undefined && settings.radiusM > MAX_SHARED_QUERY_RADIUS_M)) throw new Error('Choose a valid search radius: 1–6 km, or a padded boundary for an explicit circle up to 100 km radius.');
+  if (!Number.isFinite(settings.targetKm) || settings.targetKm < 3 || settings.targetKm > MAX_CIRCLE_RADIUS_M * 2 * Math.PI / 1000) throw new Error('Choose a valid target distance for a circle up to 100 km radius.');
   if (![0.1, 0.2, 0.3].includes(settings.tolerance) || !['mixed', 'paved'].includes(settings.surface) || !['quiet', 'balanced'].includes(settings.style)) throw new Error('Choose valid route preferences.');
-  if (settings.circleRadiusM !== undefined && (!Number.isFinite(settings.circleRadiusM) || settings.circleRadiusM < 500 || settings.circleRadiusM > 4500 || settings.circleRadiusM >= settings.radiusM || Math.abs(distance(settings.start, settings.center) - settings.circleRadiusM) > 2 || Math.abs(settings.targetKm * 1000 - settings.circleRadiusM * 2 * Math.PI) > 10)) throw new Error('Choose a valid circle size and a start on its edge.');
+  if (settings.circleRadiusM !== undefined && (!Number.isFinite(settings.circleRadiusM) || settings.circleRadiusM < 500 || settings.circleRadiusM > MAX_CIRCLE_RADIUS_M || settings.circleRadiusM >= settings.radiusM || Math.abs(distance(settings.start, settings.center) - settings.circleRadiusM) > 2 || Math.abs(settings.targetKm * 1000 - settings.circleRadiusM * 2 * Math.PI) > 10)) throw new Error('Choose a valid circle size and a start on its edge.');
   if (distance(settings.start, settings.center) > settings.radiusM) throw new Error('Your start is outside the search area. Move the start or expand the area.');
   if (Math.abs(settings.center.lon) + settings.radiusM / (111000 * Math.cos(settings.center.lat * Math.PI / 180)) >= 180) throw new Error('Choose an area that does not cross the date line.');
 }
