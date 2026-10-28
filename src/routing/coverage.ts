@@ -1,3 +1,4 @@
+import type { CoverageStrategy } from './strategies';
 import { distance, xy } from './geo';
 import { pointOnCircle } from '../circle';
 import type { Point, Settings } from './types';
@@ -9,11 +10,13 @@ export const MAX_CORRIDOR_VERTICES = 128;
 export const MAX_PATCHES = 2;
 const roundPoint = (point: Point): Point => ({ lat: Number(point.lat.toFixed(6)), lon: Number(point.lon.toFixed(6)) });
 export class CoverageGapError extends Error {
-  constructor(message: string, readonly gaps: Point[]) { super(message); this.name = 'CoverageGapError'; }
+  constructor(message: string, readonly gaps: Point[], readonly startNodeId?: number) { super(message); this.name = 'CoverageGapError'; }
 }
 export const coverageKey = (coverage: Coverage | undefined) => coverage ? JSON.stringify(coverage) : 'legacy-disk';
-export function initialCoverage(settings: Settings): Coverage {
-  if (settings.circleRadiusM === undefined) return { kind: 'disk', center: roundPoint(settings.center), radiusM: settings.radiusM + 50 };
+export function initialCoverage(settings: Settings, strategy: CoverageStrategy = 'corridor'): Coverage {
+  if (strategy === 'hybrid-small' && settings.circleRadiusM !== undefined && settings.circleRadiusM <= 1000 && settings.radiusM > Math.max(1000, settings.circleRadiusM * 1.35) + 1) throw new Error('Small-area comparison exceeds the existing padded circle boundary.');
+  // Complete disk is fetched explicitly, never inferred from an annular cache.
+  if (settings.circleRadiusM === undefined || (strategy === 'hybrid-small' && settings.circleRadiusM <= 1000)) return { kind: 'disk', center: roundPoint(settings.center), radiusM: settings.radiusM + 50 };
   const radius = settings.circleRadiusM;
   const line = Array.from({ length: 96 }, (_, index) => roundPoint(pointOnCircle(settings.center, radius, index * 360 / 96)));
   line.push({ ...line[0] });

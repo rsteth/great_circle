@@ -1,3 +1,4 @@
+import type { SearchOptions } from './strategies';
 import { CoverageGapError } from './coverage';
 import type { NetworkResult } from './overpass';
 import type { Route, Settings, SolveTiming, WorkerResponse } from './types';
@@ -13,7 +14,7 @@ export class SearchClient {
     this.worker?.terminate(); this.worker = undefined; this.dataset = '';
     active?.reject(active.signal.reason ?? new DOMException('Cancelled', 'AbortError'));
   }
-  search = (network: NetworkResult, settings: Settings, signal: AbortSignal, progress: (message: string) => void): Promise<SearchResult> => {
+  search = (network: NetworkResult, settings: Settings, signal: AbortSignal, progress: (message: string) => void, options: SearchOptions = {}): Promise<SearchResult> => {
     if (signal.aborted) return Promise.reject(signal.reason ?? new DOMException('Cancelled', 'AbortError'));
     if (this.active) return Promise.reject(new Error('A route search is already running.'));
     const instance = this.worker ?? new Worker(new URL('./worker.ts', import.meta.url), { type: 'module' });
@@ -30,7 +31,7 @@ export class SearchClient {
         if (message.type === 'progress') { progress(message.message); return; }
         clear();
         if (message.type === 'result') resolve({ route: message.route, timing: message.timing, transferMs });
-        else reject(message.gaps?.length ? new CoverageGapError(message.message, message.gaps) : new Error(message.message));
+        else reject(message.gaps?.length ? new CoverageGapError(message.message, message.gaps, message.startNodeId) : new Error(message.message));
       };
       instance.onerror = event => {
         if (this.active?.id !== id) return;
@@ -39,7 +40,7 @@ export class SearchClient {
       };
       try {
         const started = performance.now();
-        instance.postMessage({ id, datasetId: network.datasetId, data: this.dataset === network.datasetId ? undefined : network.data, sourceCoverage: network.sourceCoverage, coverage: network.coverage, settings });
+        instance.postMessage({ id, datasetId: network.datasetId, data: this.dataset === network.datasetId ? undefined : network.data, sourceCoverage: network.sourceCoverage, coverage: network.coverage, settings, options });
         transferMs = performance.now() - started; this.dataset = network.datasetId;
       } catch (error) { clear(); instance.terminate(); this.worker = undefined; this.dataset = ''; reject(error); }
     });

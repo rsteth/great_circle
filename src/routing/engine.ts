@@ -1,3 +1,4 @@
+import type { SearchOptions } from './strategies';
 import { coverageKey, covers, type Coverage } from './coverage';
 import { buildGraph } from './graph';
 import { loopCore, solve, validateSettings } from './solve';
@@ -9,7 +10,7 @@ export class RoutingEngine {
   private sourceCoverage?: Coverage;
   private graphs = new Map<string, { graph: Graph; edges: number }>();
   setData(data: OsmData, sourceCoverage?: Coverage) { if (this.data !== data || coverageKey(this.sourceCoverage) !== coverageKey(sourceCoverage)) { this.data = data; this.sourceCoverage = sourceCoverage; this.graphs.clear(); } }
-  solve(settings: Settings, progress: (message: string) => void = () => {}, coverage?: Coverage) {
+  solve(settings: Settings, progress: (message: string) => void = () => {}, coverage?: Coverage, options: SearchOptions = {}) {
     validateSettings(settings);
     if (!this.data) throw new Error('Map data is missing. Generate again.');
     if (coverage && (!this.sourceCoverage || !covers(this.sourceCoverage, coverage))) throw new Error('Dataset does not cover the requested corridor.');
@@ -29,7 +30,7 @@ export class RoutingEngine {
       }
     }
     const timing: SolveTiming = { graphMs: performance.now() - started, graphCached: cached, snapComponentMs: 0, searchMs: 0, totalMs: 0, anchorNodeProjections: 0, pathExpansions: 0 };
-    const route = solve(this.data, settings, progress, { graph: entry.graph, timing });
+    const route = solve(this.data, settings, progress, { graph: entry.graph, timing, ...options });
     timing.totalMs = performance.now() - started;
     return { route, timing };
   }

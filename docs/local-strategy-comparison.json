@@ -1,0 +1,1243 @@
+{
+  "protocol": "One cold offline diagnostic per arm; 25m corridor margin unchanged. No provider requests, server latency, warmed graph, isolated timing or statistical speedup claim. Local timings can overlap unrelated machine work. Query counts/normalized JSON bytes are mock data-volume measures; real query/index work and response formatting differ. Historical disk is a different date and footprint: not a paired network comparison.",
+  "realOrderedEngine": "unmeasured; mock contract tests only",
+  "realRoundTripEngine": "unmeasured; mock contract tests only",
+  "results": [
+    {
+      "name": "dense-grid-1km",
+      "coverageStrategy": "corridor",
+      "strategy": "nearest",
+      "success": false,
+      "mockRequests": 1,
+      "localDiagnosticMs": 9.227082999999993,
+      "stages": [
+        {
+          "coverage": "corridor",
+          "patches": 0,
+          "normalizedJsonBytes": 26090,
+          "elements": 304,
+          "queryCostProxy": {
+            "vertices": 97,
+            "areaM2": 5153341.447775862
+          },
+          "timing": {
+            "graphMs": 2.550708,
+            "graphCached": false,
+            "snapComponentMs": 0.16595800000000338,
+            "searchMs": 2.4117920000000055,
+            "totalMs": 2.623874999999998,
+            "anchorNodeProjections": 76,
+            "pathExpansions": 2238
+          },
+          "preparedNodes": 76,
+          "preparedDirectedEdges": 240,
+          "error": "Error: No sufficiently circular closed loop found within ±20% of your target. Closest closed candidate was 27% from the target. Try a smaller circle, move its center or Start, increase Route variation, or use mixed surfaces. No loop was found within downloaded coverage; wider detours are unknown."
+        }
+      ],
+      "error": "Error: No sufficiently circular closed loop found within ±20% of your target. Closest closed candidate was 27% from the target. Try a smaller circle, move its center or Start, increase Route variation, or use mixed surfaces. No loop was found within downloaded coverage; wider detours are unknown."
+    },
+    {
+      "name": "dense-grid-1km",
+      "coverageStrategy": "corridor",
+      "strategy": "joint",
+      "success": true,
+      "mockRequests": 1,
+      "localDiagnosticMs": 13.902457999999996,
+      "stages": [
+        {
+          "coverage": "corridor",
+          "patches": 0,
+          "normalizedJsonBytes": 26090,
+          "elements": 304,
+          "queryCostProxy": {
+            "vertices": 97,
+            "areaM2": 5153341.447775862
+          },
+          "timing": {
+            "graphMs": 1.3368340000000103,
+            "graphCached": false,
+            "snapComponentMs": 0.09254200000000878,
+            "searchMs": 10.236457999999999,
+            "totalMs": 10.33550000000001,
+            "anchorNodeProjections": 76,
+            "pathExpansions": 27343
+          },
+          "preparedNodes": 76,
+          "preparedDirectedEdges": 240
+        }
+      ],
+      "route": {
+        "lengthM": 6499.999978521347,
+        "error": 0.034507126678885953,
+        "roundness": 0.7063936190843866,
+        "repeated": 0,
+        "snapM": 0.09123878504327891,
+        "startNodeId": 317,
+        "radialDeviation": {
+          "minM": 749.9999994143479,
+          "maxM": 1060.6964595245877,
+          "meanAbsoluteM": 124.9227048366955
+        },
+        "points": 27,
+        "closed": true,
+        "gpxSha256": "675c0459848133214cc7d429a29305940fab0c6f95b68919a9cdda68d4baa130"
+      }
+    },
+    {
+      "name": "dense-grid-1km",
+      "coverageStrategy": "hybrid-small",
+      "strategy": "nearest",
+      "success": false,
+      "mockRequests": 1,
+      "localDiagnosticMs": 2.568375000000003,
+      "stages": [
+        {
+          "coverage": "disk",
+          "patches": 0,
+          "normalizedJsonBytes": 29707,
+          "elements": 345,
+          "queryCostProxy": {
+            "vertices": 1,
+            "areaM2": 6157521.6010359945
+          },
+          "timing": {
+            "graphMs": 0.3451249999999959,
+            "graphCached": false,
+            "snapComponentMs": 0.11583400000000665,
+            "searchMs": 1.5692909999999927,
+            "totalMs": 1.6904170000000107,
+            "anchorNodeProjections": 97,
+            "pathExpansions": 2574
+          },
+          "preparedNodes": 97,
+          "preparedDirectedEdges": 344,
+          "error": "Error: No sufficiently circular closed loop found within ±20% of your target. Closest closed candidate was 27% from the target. Try a smaller circle, move its center or Start, increase Route variation, or use mixed surfaces."
+        }
+      ],
+      "error": "Error: No sufficiently circular closed loop found within ±20% of your target. Closest closed candidate was 27% from the target. Try a smaller circle, move its center or Start, increase Route variation, or use mixed surfaces."
+    },
+    {
+      "name": "dense-grid-1km",
+      "coverageStrategy": "hybrid-small",
+      "strategy": "joint",
+      "success": true,
+      "mockRequests": 1,
+      "localDiagnosticMs": 10.485874999999993,
+      "stages": [
+        {
+          "coverage": "disk",
+          "patches": 0,
+          "normalizedJsonBytes": 29707,
+          "elements": 345,
+          "queryCostProxy": {
+            "vertices": 1,
+            "areaM2": 6157521.6010359945
+          },
+          "timing": {
+            "graphMs": 0.2804999999999893,
+            "graphCached": false,
+            "snapComponentMs": 0.22791599999999335,
+            "searchMs": 9.69166700000001,
+            "totalMs": 9.924916999999994,
+            "anchorNodeProjections": 97,
+            "pathExpansions": 33440
+          },
+          "preparedNodes": 97,
+          "preparedDirectedEdges": 344
+        }
+      ],
+      "route": {
+        "lengthM": 6499.999978521347,
+        "error": 0.034507126678885953,
+        "roundness": 0.7063936190843866,
+        "repeated": 0,
+        "snapM": 0.09123878504327891,
+        "startNodeId": 317,
+        "radialDeviation": {
+          "minM": 749.9999994143479,
+          "maxM": 1060.6964595245877,
+          "meanAbsoluteM": 124.9227048366955
+        },
+        "points": 27,
+        "closed": true,
+        "gpxSha256": "675c0459848133214cc7d429a29305940fab0c6f95b68919a9cdda68d4baa130"
+      }
+    },
+    {
+      "name": "river-bridge-1km",
+      "coverageStrategy": "corridor",
+      "strategy": "nearest",
+      "success": true,
+      "mockRequests": 1,
+      "localDiagnosticMs": 1.5464580000000012,
+      "stages": [
+        {
+          "coverage": "corridor",
+          "patches": 0,
+          "normalizedJsonBytes": 9747,
+          "elements": 118,
+          "queryCostProxy": {
+            "vertices": 97,
+            "areaM2": 5153341.447775862
+          },
+          "timing": {
+            "graphMs": 0.6353749999999962,
+            "graphCached": false,
+            "snapComponentMs": 0.038792000000000826,
+            "searchMs": 0.3991660000000081,
+            "totalMs": 0.44233299999999076,
+            "anchorNodeProjections": 59,
+            "pathExpansions": 447
+          },
+          "preparedNodes": 59,
+          "preparedDirectedEdges": 118
+        }
+      ],
+      "route": {
+        "lengthM": 6813.152476088438,
+        "error": 0.0843468946082612,
+        "roundness": 0.895897964306394,
+        "repeated": 0,
+        "snapM": 0.09123878504327891,
+        "startNodeId": 1,
+        "radialDeviation": {
+          "minM": 998.760474447281,
+          "maxM": 1259.5294914125673,
+          "meanAbsoluteM": 35.79318264110626
+        },
+        "points": 60,
+        "closed": true,
+        "gpxSha256": "6a689f0b38bf930517c8350657d4822cd25d82f437cb119d09d3e05a71f0e551"
+      }
+    },
+    {
+      "name": "river-bridge-1km",
+      "coverageStrategy": "corridor",
+      "strategy": "joint",
+      "success": true,
+      "mockRequests": 1,
+      "localDiagnosticMs": 3.2661250000000024,
+      "stages": [
+        {
+          "coverage": "corridor",
+          "patches": 0,
+          "normalizedJsonBytes": 9747,
+          "elements": 118,
+          "queryCostProxy": {
+            "vertices": 97,
+            "areaM2": 5153341.447775862
+          },
+          "timing": {
+            "graphMs": 0.5833749999999895,
+            "graphCached": false,
+            "snapComponentMs": 0.04245799999999633,
+            "searchMs": 2.369333999999995,
+            "totalMs": 2.4202920000000034,
+            "anchorNodeProjections": 59,
+            "pathExpansions": 8951
+          },
+          "preparedNodes": 59,
+          "preparedDirectedEdges": 118
+        }
+      ],
+      "route": {
+        "lengthM": 6813.152476088438,
+        "error": 0.0843468946082612,
+        "roundness": 0.895897964306394,
+        "repeated": 0,
+        "snapM": 0.09123878504327891,
+        "startNodeId": 1,
+        "radialDeviation": {
+          "minM": 998.760474447281,
+          "maxM": 1259.5294914125673,
+          "meanAbsoluteM": 35.79318264110626
+        },
+        "points": 60,
+        "closed": true,
+        "gpxSha256": "6a689f0b38bf930517c8350657d4822cd25d82f437cb119d09d3e05a71f0e551"
+      }
+    },
+    {
+      "name": "river-bridge-1km",
+      "coverageStrategy": "hybrid-small",
+      "strategy": "nearest",
+      "success": true,
+      "mockRequests": 1,
+      "localDiagnosticMs": 0.6171250000000015,
+      "stages": [
+        {
+          "coverage": "disk",
+          "patches": 0,
+          "normalizedJsonBytes": 9747,
+          "elements": 118,
+          "queryCostProxy": {
+            "vertices": 1,
+            "areaM2": 6157521.6010359945
+          },
+          "timing": {
+            "graphMs": 0.07841700000000174,
+            "graphCached": false,
+            "snapComponentMs": 0.03970900000000199,
+            "searchMs": 0.4415830000000085,
+            "totalMs": 0.48920799999999076,
+            "anchorNodeProjections": 59,
+            "pathExpansions": 447
+          },
+          "preparedNodes": 59,
+          "preparedDirectedEdges": 118
+        }
+      ],
+      "route": {
+        "lengthM": 6813.152476088438,
+        "error": 0.0843468946082612,
+        "roundness": 0.895897964306394,
+        "repeated": 0,
+        "snapM": 0.09123878504327891,
+        "startNodeId": 1,
+        "radialDeviation": {
+          "minM": 998.760474447281,
+          "maxM": 1259.5294914125673,
+          "meanAbsoluteM": 35.79318264110626
+        },
+        "points": 60,
+        "closed": true,
+        "gpxSha256": "6a689f0b38bf930517c8350657d4822cd25d82f437cb119d09d3e05a71f0e551"
+      }
+    },
+    {
+      "name": "river-bridge-1km",
+      "coverageStrategy": "hybrid-small",
+      "strategy": "joint",
+      "success": true,
+      "mockRequests": 1,
+      "localDiagnosticMs": 1.8149580000000043,
+      "stages": [
+        {
+          "coverage": "disk",
+          "patches": 0,
+          "normalizedJsonBytes": 9747,
+          "elements": 118,
+          "queryCostProxy": {
+            "vertices": 1,
+            "areaM2": 6157521.6010359945
+          },
+          "timing": {
+            "graphMs": 0.08729200000000503,
+            "graphCached": false,
+            "snapComponentMs": 0.04866699999999469,
+            "searchMs": 1.6319579999999974,
+            "totalMs": 1.6830830000000105,
+            "anchorNodeProjections": 59,
+            "pathExpansions": 8951
+          },
+          "preparedNodes": 59,
+          "preparedDirectedEdges": 118
+        }
+      ],
+      "route": {
+        "lengthM": 6813.152476088438,
+        "error": 0.0843468946082612,
+        "roundness": 0.895897964306394,
+        "repeated": 0,
+        "snapM": 0.09123878504327891,
+        "startNodeId": 1,
+        "radialDeviation": {
+          "minM": 998.760474447281,
+          "maxM": 1259.5294914125673,
+          "meanAbsoluteM": 35.79318264110626
+        },
+        "points": 60,
+        "closed": true,
+        "gpxSha256": "6a689f0b38bf930517c8350657d4822cd25d82f437cb119d09d3e05a71f0e551"
+      }
+    },
+    {
+      "name": "peninsula-tree-1km",
+      "coverageStrategy": "corridor",
+      "strategy": "nearest",
+      "success": false,
+      "mockRequests": 2,
+      "localDiagnosticMs": 0.5797090000000082,
+      "stages": [
+        {
+          "coverage": "corridor",
+          "patches": 0,
+          "normalizedJsonBytes": 2667,
+          "elements": 34,
+          "queryCostProxy": {
+            "vertices": 97,
+            "areaM2": 5153341.447775862
+          },
+          "timing": {
+            "graphMs": 0.11029200000000117,
+            "graphCached": false,
+            "snapComponentMs": 0,
+            "searchMs": 0,
+            "totalMs": 0,
+            "anchorNodeProjections": 0,
+            "pathExpansions": 0
+          },
+          "preparedNodes": 0,
+          "preparedDirectedEdges": 0,
+          "error": "CoverageGapError: No returnable start in the downloaded corridor."
+        },
+        {
+          "coverage": "corridor",
+          "patches": 2,
+          "normalizedJsonBytes": 5811,
+          "elements": 74,
+          "queryCostProxy": {
+            "vertices": 99,
+            "areaM2": 11754613.011131415
+          },
+          "timing": {
+            "graphMs": 0.13179199999999014,
+            "graphCached": false,
+            "snapComponentMs": 0,
+            "searchMs": 0,
+            "totalMs": 0,
+            "anchorNodeProjections": 0,
+            "pathExpansions": 0
+          },
+          "preparedNodes": 0,
+          "preparedDirectedEdges": 0,
+          "error": "CoverageGapError: No returnable start in the downloaded corridor."
+        }
+      ],
+      "error": "CoverageGapError: No returnable start in the downloaded corridor."
+    },
+    {
+      "name": "peninsula-tree-1km",
+      "coverageStrategy": "corridor",
+      "strategy": "joint",
+      "success": false,
+      "mockRequests": 2,
+      "localDiagnosticMs": 0.42679099999999437,
+      "stages": [
+        {
+          "coverage": "corridor",
+          "patches": 0,
+          "normalizedJsonBytes": 2667,
+          "elements": 34,
+          "queryCostProxy": {
+            "vertices": 97,
+            "areaM2": 5153341.447775862
+          },
+          "timing": {
+            "graphMs": 0.14224999999999,
+            "graphCached": false,
+            "snapComponentMs": 0,
+            "searchMs": 0,
+            "totalMs": 0,
+            "anchorNodeProjections": 0,
+            "pathExpansions": 0
+          },
+          "preparedNodes": 0,
+          "preparedDirectedEdges": 0,
+          "error": "CoverageGapError: No returnable start in the downloaded corridor."
+        },
+        {
+          "coverage": "corridor",
+          "patches": 2,
+          "normalizedJsonBytes": 5811,
+          "elements": 74,
+          "queryCostProxy": {
+            "vertices": 99,
+            "areaM2": 11754613.011131415
+          },
+          "timing": {
+            "graphMs": 0.10120799999999974,
+            "graphCached": false,
+            "snapComponentMs": 0,
+            "searchMs": 0,
+            "totalMs": 0,
+            "anchorNodeProjections": 0,
+            "pathExpansions": 0
+          },
+          "preparedNodes": 0,
+          "preparedDirectedEdges": 0,
+          "error": "CoverageGapError: No returnable start in the downloaded corridor."
+        }
+      ],
+      "error": "CoverageGapError: No returnable start in the downloaded corridor."
+    },
+    {
+      "name": "peninsula-tree-1km",
+      "coverageStrategy": "hybrid-small",
+      "strategy": "nearest",
+      "success": false,
+      "mockRequests": 1,
+      "localDiagnosticMs": 0.06358299999999417,
+      "stages": [
+        {
+          "coverage": "disk",
+          "patches": 0,
+          "normalizedJsonBytes": 4487,
+          "elements": 57,
+          "queryCostProxy": {
+            "vertices": 1,
+            "areaM2": 6157521.6010359945
+          },
+          "timing": {
+            "graphMs": 0.034000000000006025,
+            "graphCached": false,
+            "snapComponentMs": 0,
+            "searchMs": 0,
+            "totalMs": 0,
+            "anchorNodeProjections": 0,
+            "pathExpansions": 0
+          },
+          "preparedNodes": 0,
+          "preparedDirectedEdges": 0,
+          "error": "Error: No usable cycling loop start within 300 m of your pin. Move the start onto a mapped road or permitted cycle path."
+        }
+      ],
+      "error": "Error: No usable cycling loop start within 300 m of your pin. Move the start onto a mapped road or permitted cycle path."
+    },
+    {
+      "name": "peninsula-tree-1km",
+      "coverageStrategy": "hybrid-small",
+      "strategy": "joint",
+      "success": false,
+      "mockRequests": 1,
+      "localDiagnosticMs": 0.0609579999999994,
+      "stages": [
+        {
+          "coverage": "disk",
+          "patches": 0,
+          "normalizedJsonBytes": 4487,
+          "elements": 57,
+          "queryCostProxy": {
+            "vertices": 1,
+            "areaM2": 6157521.6010359945
+          },
+          "timing": {
+            "graphMs": 0.03558400000000006,
+            "graphCached": false,
+            "snapComponentMs": 0,
+            "searchMs": 0,
+            "totalMs": 0,
+            "anchorNodeProjections": 0,
+            "pathExpansions": 0
+          },
+          "preparedNodes": 0,
+          "preparedDirectedEdges": 0,
+          "error": "Error: No usable cycling loop start within 300 m of your pin. Move the start onto a mapped road or permitted cycle path."
+        }
+      ],
+      "error": "Error: No usable cycling loop start within 300 m of your pin. Move the start onto a mapped road or permitted cycle path."
+    },
+    {
+      "name": "disconnected-from-start-1km",
+      "coverageStrategy": "corridor",
+      "strategy": "nearest",
+      "success": false,
+      "mockRequests": 1,
+      "localDiagnosticMs": 0.06566600000000733,
+      "stages": [
+        {
+          "coverage": "corridor",
+          "patches": 0,
+          "normalizedJsonBytes": 69,
+          "elements": 0,
+          "queryCostProxy": {
+            "vertices": 97,
+            "areaM2": 5153341.447775862
+          },
+          "timing": {
+            "graphMs": 0,
+            "graphCached": false,
+            "snapComponentMs": 0,
+            "searchMs": 0,
+            "totalMs": 0,
+            "anchorNodeProjections": 0,
+            "pathExpansions": 0
+          },
+          "error": "Error: No usable cycling network within downloaded coverage. Roads outside it are unknown. Try another area or start."
+        }
+      ],
+      "error": "Error: No usable cycling network within downloaded coverage. Roads outside it are unknown. Try another area or start."
+    },
+    {
+      "name": "disconnected-from-start-1km",
+      "coverageStrategy": "corridor",
+      "strategy": "joint",
+      "success": false,
+      "mockRequests": 1,
+      "localDiagnosticMs": 0.05924999999999159,
+      "stages": [
+        {
+          "coverage": "corridor",
+          "patches": 0,
+          "normalizedJsonBytes": 69,
+          "elements": 0,
+          "queryCostProxy": {
+            "vertices": 97,
+            "areaM2": 5153341.447775862
+          },
+          "timing": {
+            "graphMs": 0,
+            "graphCached": false,
+            "snapComponentMs": 0,
+            "searchMs": 0,
+            "totalMs": 0,
+            "anchorNodeProjections": 0,
+            "pathExpansions": 0
+          },
+          "error": "Error: No usable cycling network within downloaded coverage. Roads outside it are unknown. Try another area or start."
+        }
+      ],
+      "error": "Error: No usable cycling network within downloaded coverage. Roads outside it are unknown. Try another area or start."
+    },
+    {
+      "name": "disconnected-from-start-1km",
+      "coverageStrategy": "hybrid-small",
+      "strategy": "nearest",
+      "success": false,
+      "mockRequests": 1,
+      "localDiagnosticMs": 0.02533299999998917,
+      "stages": [
+        {
+          "coverage": "disk",
+          "patches": 0,
+          "normalizedJsonBytes": 69,
+          "elements": 0,
+          "queryCostProxy": {
+            "vertices": 1,
+            "areaM2": 6157521.6010359945
+          },
+          "timing": {
+            "graphMs": 0,
+            "graphCached": false,
+            "snapComponentMs": 0,
+            "searchMs": 0,
+            "totalMs": 0,
+            "anchorNodeProjections": 0,
+            "pathExpansions": 0
+          },
+          "error": "Error: No usable cycling network in this area with these preferences. Try mixed surfaces or a different area."
+        }
+      ],
+      "error": "Error: No usable cycling network in this area with these preferences. Try mixed surfaces or a different area."
+    },
+    {
+      "name": "disconnected-from-start-1km",
+      "coverageStrategy": "hybrid-small",
+      "strategy": "joint",
+      "success": false,
+      "mockRequests": 1,
+      "localDiagnosticMs": 0.023625000000009777,
+      "stages": [
+        {
+          "coverage": "disk",
+          "patches": 0,
+          "normalizedJsonBytes": 69,
+          "elements": 0,
+          "queryCostProxy": {
+            "vertices": 1,
+            "areaM2": 6157521.6010359945
+          },
+          "timing": {
+            "graphMs": 0,
+            "graphCached": false,
+            "snapComponentMs": 0,
+            "searchMs": 0,
+            "totalMs": 0,
+            "anchorNodeProjections": 0,
+            "pathExpansions": 0
+          },
+          "error": "Error: No usable cycling network in this area with these preferences. Try mixed surfaces or a different area."
+        }
+      ],
+      "error": "Error: No usable cycling network in this area with these preferences. Try mixed surfaces or a different area."
+    },
+    {
+      "name": "directed-ring-1km",
+      "coverageStrategy": "corridor",
+      "strategy": "nearest",
+      "success": true,
+      "mockRequests": 1,
+      "localDiagnosticMs": 1.0222910000000098,
+      "stages": [
+        {
+          "coverage": "corridor",
+          "patches": 0,
+          "normalizedJsonBytes": 5043,
+          "elements": 65,
+          "queryCostProxy": {
+            "vertices": 97,
+            "areaM2": 5153341.447775862
+          },
+          "timing": {
+            "graphMs": 0.2788749999999993,
+            "graphCached": false,
+            "snapComponentMs": 0.028165999999998803,
+            "searchMs": 0.688834,
+            "totalMs": 0.7179169999999999,
+            "anchorNodeProjections": 64,
+            "pathExpansions": 1584
+          },
+          "preparedNodes": 64,
+          "preparedDirectedEdges": 64
+        }
+      ],
+      "route": {
+        "lengthM": 6280.662291415634,
+        "error": 0.0004015504303316816,
+        "roundness": 0.9991966876422534,
+        "repeated": 0,
+        "snapM": 0.09123878504327891,
+        "startNodeId": 1,
+        "radialDeviation": {
+          "minM": 998.760474447281,
+          "maxM": 1000.035041649514,
+          "meanAbsoluteM": 0.7576006895291332
+        },
+        "points": 65,
+        "closed": true,
+        "gpxSha256": "7032cb591644570ec0ae1ce85e074b297389dddfd95a077d7686440451d3f323"
+      }
+    },
+    {
+      "name": "directed-ring-1km",
+      "coverageStrategy": "corridor",
+      "strategy": "joint",
+      "success": true,
+      "mockRequests": 1,
+      "localDiagnosticMs": 1.4562909999999931,
+      "stages": [
+        {
+          "coverage": "corridor",
+          "patches": 0,
+          "normalizedJsonBytes": 5043,
+          "elements": 65,
+          "queryCostProxy": {
+            "vertices": 97,
+            "areaM2": 5153341.447775862
+          },
+          "timing": {
+            "graphMs": 0.25637500000000557,
+            "graphCached": false,
+            "snapComponentMs": 0.025249999999999773,
+            "searchMs": 1.1487500000000068,
+            "totalMs": 1.1751249999999942,
+            "anchorNodeProjections": 64,
+            "pathExpansions": 7344
+          },
+          "preparedNodes": 64,
+          "preparedDirectedEdges": 64
+        }
+      ],
+      "route": {
+        "lengthM": 6280.662291415634,
+        "error": 0.0004015504303316816,
+        "roundness": 0.9991966876422534,
+        "repeated": 0,
+        "snapM": 0.09123878504327891,
+        "startNodeId": 1,
+        "radialDeviation": {
+          "minM": 998.760474447281,
+          "maxM": 1000.035041649514,
+          "meanAbsoluteM": 0.7576006895291332
+        },
+        "points": 65,
+        "closed": true,
+        "gpxSha256": "7032cb591644570ec0ae1ce85e074b297389dddfd95a077d7686440451d3f323"
+      }
+    },
+    {
+      "name": "directed-ring-1km",
+      "coverageStrategy": "hybrid-small",
+      "strategy": "nearest",
+      "success": true,
+      "mockRequests": 1,
+      "localDiagnosticMs": 0.6962089999999961,
+      "stages": [
+        {
+          "coverage": "disk",
+          "patches": 0,
+          "normalizedJsonBytes": 5043,
+          "elements": 65,
+          "queryCostProxy": {
+            "vertices": 1,
+            "areaM2": 6157521.6010359945
+          },
+          "timing": {
+            "graphMs": 0.06812499999999488,
+            "graphCached": false,
+            "snapComponentMs": 0.029124999999993406,
+            "searchMs": 0.5768750000000011,
+            "totalMs": 0.6082079999999905,
+            "anchorNodeProjections": 64,
+            "pathExpansions": 1584
+          },
+          "preparedNodes": 64,
+          "preparedDirectedEdges": 64
+        }
+      ],
+      "route": {
+        "lengthM": 6280.662291415634,
+        "error": 0.0004015504303316816,
+        "roundness": 0.9991966876422534,
+        "repeated": 0,
+        "snapM": 0.09123878504327891,
+        "startNodeId": 1,
+        "radialDeviation": {
+          "minM": 998.760474447281,
+          "maxM": 1000.035041649514,
+          "meanAbsoluteM": 0.7576006895291332
+        },
+        "points": 65,
+        "closed": true,
+        "gpxSha256": "7032cb591644570ec0ae1ce85e074b297389dddfd95a077d7686440451d3f323"
+      }
+    },
+    {
+      "name": "directed-ring-1km",
+      "coverageStrategy": "hybrid-small",
+      "strategy": "joint",
+      "success": true,
+      "mockRequests": 1,
+      "localDiagnosticMs": 1.223832999999999,
+      "stages": [
+        {
+          "coverage": "disk",
+          "patches": 0,
+          "normalizedJsonBytes": 5043,
+          "elements": 65,
+          "queryCostProxy": {
+            "vertices": 1,
+            "areaM2": 6157521.6010359945
+          },
+          "timing": {
+            "graphMs": 0.06187500000000057,
+            "graphCached": false,
+            "snapComponentMs": 0.02729200000000276,
+            "searchMs": 1.1180829999999986,
+            "totalMs": 1.1466250000000144,
+            "anchorNodeProjections": 64,
+            "pathExpansions": 7344
+          },
+          "preparedNodes": 64,
+          "preparedDirectedEdges": 64
+        }
+      ],
+      "route": {
+        "lengthM": 6280.662291415634,
+        "error": 0.0004015504303316816,
+        "roundness": 0.9991966876422534,
+        "repeated": 0,
+        "snapM": 0.09123878504327891,
+        "startNodeId": 1,
+        "radialDeviation": {
+          "minM": 998.760474447281,
+          "maxM": 1000.035041649514,
+          "meanAbsoluteM": 0.7576006895291332
+        },
+        "points": 65,
+        "closed": true,
+        "gpxSha256": "7032cb591644570ec0ae1ce85e074b297389dddfd95a077d7686440451d3f323"
+      }
+    },
+    {
+      "name": "saved-Vancouver-2026-10-28-adaptive-replay",
+      "coverageStrategy": "corridor",
+      "strategy": "nearest",
+      "success": true,
+      "mockRequests": 2,
+      "localDiagnosticMs": 114.49154100000001,
+      "stages": [
+        {
+          "coverage": "corridor",
+          "patches": 0,
+          "normalizedJsonBytes": 1125785,
+          "elements": 8478,
+          "queryCostProxy": {
+            "vertices": 97,
+            "areaM2": 2797527.9534456604
+          },
+          "timing": {
+            "graphMs": 20.74837500000001,
+            "graphCached": false,
+            "snapComponentMs": 1.7027499999999804,
+            "searchMs": 24.454082999999997,
+            "totalMs": 26.161250000000024,
+            "anchorNodeProjections": 1466,
+            "pathExpansions": 56922
+          },
+          "preparedNodes": 1515,
+          "preparedDirectedEdges": 2971,
+          "error": "CoverageGapError: A connection reaches the downloaded corridor boundary."
+        },
+        {
+          "coverage": "corridor",
+          "patches": 2,
+          "normalizedJsonBytes": 1892856,
+          "elements": 13875,
+          "queryCostProxy": {
+            "vertices": 99,
+            "areaM2": 9398799.516801214
+          },
+          "timing": {
+            "graphMs": 21.16941700000001,
+            "graphCached": false,
+            "snapComponentMs": 2.756500000000017,
+            "searchMs": 26.881666999999993,
+            "totalMs": 29.641333000000003,
+            "anchorNodeProjections": 2683,
+            "pathExpansions": 64878
+          },
+          "preparedNodes": 2917,
+          "preparedDirectedEdges": 5552
+        }
+      ],
+      "route": {
+        "lengthM": 3729.6444202340294,
+        "error": 0.18718269091070397,
+        "roundness": 0.39607301703338554,
+        "repeated": 0.009774537101037054,
+        "snapM": 6.367329448521571,
+        "startNodeId": 5697946446,
+        "radialDeviation": {
+          "minM": 135.4470366967039,
+          "maxM": 615.0220441668221,
+          "meanAbsoluteM": 130.57171307166547
+        },
+        "points": 197,
+        "closed": true,
+        "gpxSha256": "c694ec13f8376818a767951b35abb426968c48ee66ad30f51290bf4c76444cae"
+      }
+    },
+    {
+      "name": "saved-Vancouver-FIXED-known-expanded-graph-NOT-query-count-comparison",
+      "coverageStrategy": "corridor",
+      "strategy": "nearest",
+      "success": true,
+      "mockRequests": 1,
+      "localDiagnosticMs": 60.20308299999999,
+      "stages": [
+        {
+          "coverage": "corridor",
+          "patches": 2,
+          "normalizedJsonBytes": 1892856,
+          "elements": 13875,
+          "queryCostProxy": {
+            "vertices": 99,
+            "areaM2": 9398799.516801214
+          },
+          "timing": {
+            "graphMs": 26.311999999999983,
+            "graphCached": false,
+            "snapComponentMs": 2.6074579999999514,
+            "searchMs": 23.059416999999996,
+            "totalMs": 25.671291999999994,
+            "anchorNodeProjections": 2683,
+            "pathExpansions": 64878
+          },
+          "preparedNodes": 2917,
+          "preparedDirectedEdges": 5552
+        }
+      ],
+      "route": {
+        "lengthM": 3729.6444202340294,
+        "error": 0.18718269091070397,
+        "roundness": 0.39607301703338554,
+        "repeated": 0.009774537101037054,
+        "snapM": 6.367329448521571,
+        "startNodeId": 5697946446,
+        "radialDeviation": {
+          "minM": 135.4470366967039,
+          "maxM": 615.0220441668221,
+          "meanAbsoluteM": 130.57171307166547
+        },
+        "points": 197,
+        "closed": true,
+        "gpxSha256": "c694ec13f8376818a767951b35abb426968c48ee66ad30f51290bf4c76444cae"
+      }
+    },
+    {
+      "name": "historical-Vancouver-2026-10-25-disk-NOT-same-snapshot",
+      "coverageStrategy": "hybrid-small",
+      "strategy": "nearest",
+      "success": true,
+      "mockRequests": 1,
+      "localDiagnosticMs": 41.66375000000005,
+      "stages": [
+        {
+          "coverage": "disk",
+          "patches": 0,
+          "normalizedJsonBytes": 1623304,
+          "elements": 12148,
+          "queryCostProxy": {
+            "vertices": 1,
+            "areaM2": 3463605.900582747
+          },
+          "timing": {
+            "graphMs": 7.8215000000000146,
+            "graphCached": false,
+            "snapComponentMs": 1.748833999999988,
+            "searchMs": 24.396165999999994,
+            "totalMs": 26.148750000000007,
+            "anchorNodeProjections": 2296,
+            "pathExpansions": 67963
+          },
+          "preparedNodes": 2351,
+          "preparedDirectedEdges": 4677
+        }
+      ],
+      "route": {
+        "lengthM": 3729.6444202340294,
+        "error": 0.18718269091070397,
+        "roundness": 0.39607301703338554,
+        "repeated": 0.009774537101037054,
+        "snapM": 6.367329448521571,
+        "startNodeId": 5697946446,
+        "radialDeviation": {
+          "minM": 135.4470366967039,
+          "maxM": 615.0220441668221,
+          "meanAbsoluteM": 130.57171307166547
+        },
+        "points": 197,
+        "closed": true,
+        "gpxSha256": "c694ec13f8376818a767951b35abb426968c48ee66ad30f51290bf4c76444cae"
+      }
+    },
+    {
+      "name": "saved-old-default-2026-10-28-corridor",
+      "coverageStrategy": "corridor",
+      "strategy": "nearest",
+      "success": false,
+      "mockRequests": 2,
+      "localDiagnosticMs": 55.468665999999985,
+      "stages": [
+        {
+          "coverage": "corridor",
+          "patches": 0,
+          "normalizedJsonBytes": 1412608,
+          "elements": 11581,
+          "queryCostProxy": {
+            "vertices": 97,
+            "areaM2": 7940427.686644177
+          },
+          "timing": {
+            "graphMs": 14.271000000000015,
+            "graphCached": false,
+            "snapComponentMs": 1.2229579999999487,
+            "searchMs": 1.4422500000000014,
+            "totalMs": 2.66862500000002,
+            "anchorNodeProjections": 1408,
+            "pathExpansions": 0
+          },
+          "preparedNodes": 2151,
+          "preparedDirectedEdges": 3956,
+          "error": "CoverageGapError: A connection reaches the downloaded corridor boundary."
+        },
+        {
+          "coverage": "corridor",
+          "patches": 2,
+          "normalizedJsonBytes": 1674975,
+          "elements": 14073,
+          "queryCostProxy": {
+            "vertices": 99,
+            "areaM2": 14541699.24999973
+          },
+          "timing": {
+            "graphMs": 18.48637500000001,
+            "graphCached": false,
+            "snapComponentMs": 1.8325419999999895,
+            "searchMs": 2.690291000000002,
+            "totalMs": 4.526541000000009,
+            "anchorNodeProjections": 2588,
+            "pathExpansions": 0
+          },
+          "preparedNodes": 2774,
+          "preparedDirectedEdges": 5080,
+          "error": "CoverageGapError: A connection reaches the downloaded corridor boundary."
+        }
+      ],
+      "error": "CoverageGapError: A connection reaches the downloaded corridor boundary."
+    },
+    {
+      "name": "saved-Vancouver-2026-10-28-adaptive-replay",
+      "coverageStrategy": "corridor",
+      "strategy": "joint",
+      "success": false,
+      "mockRequests": 1,
+      "localDiagnosticMs": 192.27625,
+      "stages": [
+        {
+          "coverage": "corridor",
+          "patches": 0,
+          "normalizedJsonBytes": 1125785,
+          "elements": 8478,
+          "queryCostProxy": {
+            "vertices": 97,
+            "areaM2": 2797527.9534456604
+          },
+          "timing": {
+            "graphMs": 14.973000000000013,
+            "graphCached": false,
+            "snapComponentMs": 1.1653749999999832,
+            "searchMs": 170.39008399999994,
+            "totalMs": 171.560875,
+            "anchorNodeProjections": 1466,
+            "pathExpansions": 800068
+          },
+          "preparedNodes": 1515,
+          "preparedDirectedEdges": 2971,
+          "error": "CoverageGapError: A connection reaches the downloaded corridor boundary."
+        }
+      ],
+      "error": "UNMEASURED: proposed expansion is not covered by the saved response. No request was made and no complete/no-loop conclusion is available."
+    },
+    {
+      "name": "saved-Vancouver-FIXED-known-expanded-graph-NOT-query-count-comparison",
+      "coverageStrategy": "corridor",
+      "strategy": "joint",
+      "success": true,
+      "mockRequests": 1,
+      "localDiagnosticMs": 281.61416599999995,
+      "stages": [
+        {
+          "coverage": "corridor",
+          "patches": 2,
+          "normalizedJsonBytes": 1892856,
+          "elements": 13875,
+          "queryCostProxy": {
+            "vertices": 99,
+            "areaM2": 9398799.516801214
+          },
+          "timing": {
+            "graphMs": 18.513500000000022,
+            "graphCached": false,
+            "snapComponentMs": 2.3898750000000746,
+            "searchMs": 252.59229099999993,
+            "totalMs": 254.98624999999993,
+            "anchorNodeProjections": 2683,
+            "pathExpansions": 1149961
+          },
+          "preparedNodes": 2917,
+          "preparedDirectedEdges": 5552
+        }
+      ],
+      "route": {
+        "lengthM": 3690.371257116256,
+        "error": 0.17468165482860806,
+        "roundness": 0.40606553264430756,
+        "repeated": 0.005222957717723833,
+        "snapM": 6.367329448521571,
+        "startNodeId": 5697946446,
+        "radialDeviation": {
+          "minM": 135.4470366967039,
+          "maxM": 615.0220441668221,
+          "meanAbsoluteM": 130.12225267211696
+        },
+        "points": 192,
+        "closed": true,
+        "gpxSha256": "203e1edc9032da672dd39044e49d5eac1306d0607a497a3cc53f14149f79685a"
+      }
+    },
+    {
+      "name": "historical-Vancouver-2026-10-25-disk-NOT-same-snapshot",
+      "coverageStrategy": "hybrid-small",
+      "strategy": "joint",
+      "success": true,
+      "mockRequests": 1,
+      "localDiagnosticMs": 265.14245800000003,
+      "stages": [
+        {
+          "coverage": "disk",
+          "patches": 0,
+          "normalizedJsonBytes": 1623304,
+          "elements": 12148,
+          "queryCostProxy": {
+            "vertices": 1,
+            "areaM2": 3463605.900582747
+          },
+          "timing": {
+            "graphMs": 6.153957999999989,
+            "graphCached": false,
+            "snapComponentMs": 1.8162079999999605,
+            "searchMs": 249.68866700000012,
+            "totalMs": 251.50912499999993,
+            "anchorNodeProjections": 2296,
+            "pathExpansions": 1133121
+          },
+          "preparedNodes": 2351,
+          "preparedDirectedEdges": 4677
+        }
+      ],
+      "route": {
+        "lengthM": 3690.371257116256,
+        "error": 0.17468165482860806,
+        "roundness": 0.40606553264430756,
+        "repeated": 0.005222957717723833,
+        "snapM": 6.367329448521571,
+        "startNodeId": 5697946446,
+        "radialDeviation": {
+          "minM": 135.4470366967039,
+          "maxM": 615.0220441668221,
+          "meanAbsoluteM": 130.12225267211696
+        },
+        "points": 192,
+        "closed": true,
+        "gpxSha256": "203e1edc9032da672dd39044e49d5eac1306d0607a497a3cc53f14149f79685a"
+      }
+    },
+    {
+      "name": "saved-old-default-2026-10-28-corridor",
+      "coverageStrategy": "corridor",
+      "strategy": "joint",
+      "success": false,
+      "mockRequests": 2,
+      "localDiagnosticMs": 199.04862500000013,
+      "stages": [
+        {
+          "coverage": "corridor",
+          "patches": 0,
+          "normalizedJsonBytes": 1412608,
+          "elements": 11581,
+          "queryCostProxy": {
+            "vertices": 97,
+            "areaM2": 7940427.686644177
+          },
+          "timing": {
+            "graphMs": 12.445666000000074,
+            "graphCached": false,
+            "snapComponentMs": 1.1812499999998636,
+            "searchMs": 26.672500000000127,
+            "totalMs": 27.858833000000004,
+            "anchorNodeProjections": 1408,
+            "pathExpansions": 112249
+          },
+          "preparedNodes": 2151,
+          "preparedDirectedEdges": 3956,
+          "error": "CoverageGapError: A connection reaches the downloaded corridor boundary."
+        },
+        {
+          "coverage": "corridor",
+          "patches": 2,
+          "normalizedJsonBytes": 1674975,
+          "elements": 14073,
+          "queryCostProxy": {
+            "vertices": 99,
+            "areaM2": 14541699.24999973
+          },
+          "timing": {
+            "graphMs": 26.349624999999833,
+            "graphCached": false,
+            "snapComponentMs": 2.2065000000000055,
+            "searchMs": 115.59508400000004,
+            "totalMs": 117.80845799999997,
+            "anchorNodeProjections": 2588,
+            "pathExpansions": 490820
+          },
+          "preparedNodes": 2774,
+          "preparedDirectedEdges": 5080,
+          "error": "CoverageGapError: A connection reaches the downloaded corridor boundary."
+        }
+      ],
+      "error": "CoverageGapError: A connection reaches the downloaded corridor boundary."
+    }
+  ]
+}

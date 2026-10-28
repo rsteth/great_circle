@@ -1,3 +1,4 @@
+import type { SearchOptions } from './strategies';
 import type { Coverage } from './coverage';
 export type Point = { lat: number; lon: number };
 export type Tags = Record<string, string>;
@@ -38,8 +39,11 @@ export type Route = {
   candidates: number;
   notes: string[];
   dataTimestamp?: string;
+  startNodeId?: number;
+  radialDeviation?: { minM: number; maxM: number; meanAbsoluteM: number };
+  searchStrategy?: 'nearest' | 'joint';
 };
 export type NetworkTiming = { fetchMs: number; parseMs: number; bytes: number; cacheHit: boolean; elements: number; queryAreaM2: number; queryVertices: number };
 export type SolveTiming = { graphMs: number; graphCached: boolean; snapComponentMs: number; searchMs: number; totalMs: number; anchorNodeProjections: number; pathExpansions: number };
-export type WorkerRequest = { id: number; datasetId: string; data?: OsmData; sourceCoverage?: Coverage; coverage?: Coverage; settings: Settings };
-export type WorkerResponse = { id: number } & ({ type: 'progress'; message: string } | { type: 'result'; route: Route; timing: SolveTiming } | { type: 'error'; message: string; gaps?: Point[] });
+export type WorkerRequest = { id: number; datasetId: string; data?: OsmData; sourceCoverage?: Coverage; coverage?: Coverage; settings: Settings; options?: SearchOptions };
+export type WorkerResponse = { id: number } & ({ type: 'progress'; message: string } | { type: 'result'; route: Route; timing: SolveTiming } | { type: 'error'; message: string; gaps?: Point[]; startNodeId?: number });
