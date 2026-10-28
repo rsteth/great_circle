@@ -1,0 +1,1095 @@
+{
+  "engine": "GraphHopper11.1 verified pinned artifact",
+  "profile": "strict synthetic bicycle, restricted roads excluded; turn_costs vehicle_types bicycle",
+  "network": "only loopback requests, no map/provider/elevation calls",
+  "elapsedSeconds": 7.165915832854807,
+  "fixtures": [
+    {
+      "fixture": "grid-bounded",
+      "startupSeconds": 0.5634285840205848,
+      "peakRssBytes": 169148416,
+      "stagingBytes": 99656244,
+      "results": [
+        {
+          "kind": "ordered-waypoints",
+          "repetition": 0,
+          "classification": "first-call-per-arm",
+          "elapsedMs": 56.73320799999999,
+          "status": 200,
+          "responseBytes": 2469,
+          "serverTookMs": 13,
+          "visitedNodes": 80,
+          "audit": {
+            "accepted": false,
+            "legal": false,
+            "issues": [
+              "illegal turn, partial-edge reversal or immediate backtracking",
+              "distance outside selected tolerance"
+            ],
+            "startErrorM": 0.007553515328941996,
+            "endErrorM": 0.007553515328941996,
+            "closureErrorM": 0,
+            "lengthM": 7999.836967645387,
+            "reportedDistanceM": 7999.89,
+            "error": 0.2732135973300422,
+            "roundness": 0.5767958543057188,
+            "repeated": 0.031246454318423583,
+            "points": 38,
+            "knownTraversals": 37,
+            "radialDeviation": {
+              "minM": 749.9875366489919,
+              "maxM": 1249.9333487057352,
+              "meanAbsoluteM": 99.55287381545293
+            }
+          }
+        },
+        {
+          "kind": "ordered-waypoints",
+          "repetition": 1,
+          "classification": "immediate-repeat",
+          "elapsedMs": 5.004458999999997,
+          "status": 200,
+          "responseBytes": 2468,
+          "serverTookMs": 2,
+          "visitedNodes": 80,
+          "audit": {
+            "accepted": false,
+            "legal": false,
+            "issues": [
+              "illegal turn, partial-edge reversal or immediate backtracking",
+              "distance outside selected tolerance"
+            ],
+            "startErrorM": 0.007553515328941996,
+            "endErrorM": 0.007553515328941996,
+            "closureErrorM": 0,
+            "lengthM": 7999.836967645387,
+            "reportedDistanceM": 7999.89,
+            "error": 0.2732135973300422,
+            "roundness": 0.5767958543057188,
+            "repeated": 0.031246454318423583,
+            "points": 38,
+            "knownTraversals": 37,
+            "radialDeviation": {
+              "minM": 749.9875366489919,
+              "maxM": 1249.9333487057352,
+              "meanAbsoluteM": 99.55287381545293
+            }
+          }
+        },
+        {
+          "kind": "round-trip",
+          "repetition": 0,
+          "classification": "first-call-per-arm",
+          "elapsedMs": 5.939582999999999,
+          "status": 200,
+          "responseBytes": 1997,
+          "serverTookMs": 3,
+          "visitedNodes": 178,
+          "audit": {
+            "accepted": true,
+            "legal": true,
+            "issues": [],
+            "startErrorM": 0.007553515328941996,
+            "endErrorM": 0.007553515328941996,
+            "closureErrorM": 0,
+            "lengthM": 6999.796825033325,
+            "reportedDistanceM": 6999.704,
+            "error": 0.11405226534300864,
+            "roundness": 0.4328038890934895,
+            "repeated": 0,
+            "points": 31,
+            "knownTraversals": 30,
+            "radialDeviation": {
+              "minM": 0,
+              "maxM": 1346.3091146842714,
+              "meanAbsoluteM": 343.23649276050406
+            }
+          }
+        },
+        {
+          "kind": "round-trip",
+          "repetition": 1,
+          "classification": "immediate-repeat",
+          "elapsedMs": 4.167667000000023,
+          "status": 200,
+          "responseBytes": 1997,
+          "serverTookMs": 2,
+          "visitedNodes": 178,
+          "audit": {
+            "accepted": true,
+            "legal": true,
+            "issues": [],
+            "startErrorM": 0.007553515328941996,
+            "endErrorM": 0.007553515328941996,
+            "closureErrorM": 0,
+            "lengthM": 6999.796825033325,
+            "reportedDistanceM": 6999.704,
+            "error": 0.11405226534300864,
+            "roundness": 0.4328038890934895,
+            "repeated": 0,
+            "points": 31,
+            "knownTraversals": 30,
+            "radialDeviation": {
+              "minM": 0,
+              "maxM": 1346.3091146842714,
+              "meanAbsoluteM": 343.23649276050406
+            }
+          }
+        }
+      ],
+      "importMetrics": {
+        "command": [
+          "java",
+          "-Xms64m",
+          "-Xmx512m",
+          "-XX:ActiveProcessorCount=1",
+          "-jar",
+          "/tmp/great-circle-gh11-local/graphhopper-web-11.1.jar",
+          "import",
+          "/tmp/great-circle-gh11-local/grid-bounded/config.yml"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 0.6779184581246227,
+        "cpuUserSeconds": 1.17197,
+        "cpuSystemSeconds": 0.039525,
+        "maxRssRaw": 141967360,
+        "polledPeakRssBytes": 141803520,
+        "stopped": null,
+        "stagingBytes": 67001055
+      },
+      "serverMetrics": {
+        "exitCode": 143,
+        "elapsedSeconds": 1.0976842499803752,
+        "startupSeconds": 0.5634285840205848,
+        "cpuUserSeconds": 1.526524,
+        "cpuSystemSeconds": 0.047372,
+        "maxRssRaw": 169148416,
+        "polledPeakRssBytes": 168673280,
+        "stopped": "requested stop",
+        "stagingBytes": 99656244
+      },
+      "fixtureSha256": "cc5e241752e4da9fd3de177b654431030778de479d1779a483ed8ca4232c89a4",
+      "acceptedGpx": [
+        {
+          "file": "/tmp/great-circle-gh11-local/grid-bounded/round-trip-0.gpx",
+          "bytes": 2193,
+          "sha256": "240918dce93fd5ac9c4c1f9ffc4fc259b364f2eff4c27a17dd40d39af2a71b1f",
+          "points": 31
+        },
+        {
+          "file": "/tmp/great-circle-gh11-local/grid-bounded/round-trip-1.gpx",
+          "bytes": 2193,
+          "sha256": "240918dce93fd5ac9c4c1f9ffc4fc259b364f2eff4c27a17dd40d39af2a71b1f",
+          "points": 31
+        }
+      ]
+    },
+    {
+      "fixture": "ring",
+      "startupSeconds": 0.5763223329558969,
+      "peakRssBytes": 174178304,
+      "stagingBytes": 99719605,
+      "results": [
+        {
+          "kind": "ordered-waypoints",
+          "repetition": 0,
+          "classification": "first-call-per-arm",
+          "elapsedMs": 57.078458,
+          "status": 200,
+          "responseBytes": 3910,
+          "serverTookMs": 13,
+          "visitedNodes": 88,
+          "audit": {
+            "accepted": true,
+            "legal": true,
+            "issues": [],
+            "startErrorM": 0.007553515328941996,
+            "endErrorM": 0.007553515328941996,
+            "closureErrorM": 0,
+            "lengthM": 6280.67702413825,
+            "reportedDistanceM": 6280.661,
+            "error": 0.00039920564470215654,
+            "roundness": 0.999195312653351,
+            "repeated": 0,
+            "points": 68,
+            "knownTraversals": 67,
+            "radialDeviation": {
+              "minM": 998.7332853000752,
+              "maxM": 1000.0702646354042,
+              "meanAbsoluteM": 0.758754430870584
+            }
+          }
+        },
+        {
+          "kind": "ordered-waypoints",
+          "repetition": 1,
+          "classification": "immediate-repeat",
+          "elapsedMs": 5.533833999999999,
+          "status": 200,
+          "responseBytes": 3909,
+          "serverTookMs": 2,
+          "visitedNodes": 88,
+          "audit": {
+            "accepted": true,
+            "legal": true,
+            "issues": [],
+            "startErrorM": 0.007553515328941996,
+            "endErrorM": 0.007553515328941996,
+            "closureErrorM": 0,
+            "lengthM": 6280.67702413825,
+            "reportedDistanceM": 6280.661,
+            "error": 0.00039920564470215654,
+            "roundness": 0.999195312653351,
+            "repeated": 0,
+            "points": 68,
+            "knownTraversals": 67,
+            "radialDeviation": {
+              "minM": 998.7332853000752,
+              "maxM": 1000.0702646354042,
+              "meanAbsoluteM": 0.758754430870584
+            }
+          }
+        },
+        {
+          "kind": "round-trip",
+          "repetition": 0,
+          "classification": "first-call-per-arm",
+          "elapsedMs": 5.6222080000000005,
+          "status": 200,
+          "responseBytes": 3775,
+          "serverTookMs": 2,
+          "visitedNodes": 74,
+          "audit": {
+            "accepted": true,
+            "legal": true,
+            "issues": [],
+            "startErrorM": 0.007553515328941996,
+            "endErrorM": 0.007553515328941996,
+            "closureErrorM": 0,
+            "lengthM": 6280.674491557772,
+            "reportedDistanceM": 6280.662,
+            "error": 0.00039960871740403155,
+            "roundness": 0.9991971792891745,
+            "repeated": 0,
+            "points": 68,
+            "knownTraversals": 67,
+            "radialDeviation": {
+              "minM": 998.7342962550139,
+              "maxM": 1000.0702646354042,
+              "meanAbsoluteM": 0.7590300297302052
+            }
+          }
+        },
+        {
+          "kind": "round-trip",
+          "repetition": 1,
+          "classification": "immediate-repeat",
+          "elapsedMs": 4.0370829999999955,
+          "status": 200,
+          "responseBytes": 3775,
+          "serverTookMs": 1,
+          "visitedNodes": 74,
+          "audit": {
+            "accepted": true,
+            "legal": true,
+            "issues": [],
+            "startErrorM": 0.007553515328941996,
+            "endErrorM": 0.007553515328941996,
+            "closureErrorM": 0,
+            "lengthM": 6280.674491557772,
+            "reportedDistanceM": 6280.662,
+            "error": 0.00039960871740403155,
+            "roundness": 0.9991971792891745,
+            "repeated": 0,
+            "points": 68,
+            "knownTraversals": 67,
+            "radialDeviation": {
+              "minM": 998.7342962550139,
+              "maxM": 1000.0702646354042,
+              "meanAbsoluteM": 0.7590300297302052
+            }
+          }
+        }
+      ],
+      "importMetrics": {
+        "command": [
+          "java",
+          "-Xms64m",
+          "-Xmx512m",
+          "-XX:ActiveProcessorCount=1",
+          "-jar",
+          "/tmp/great-circle-gh11-local/graphhopper-web-11.1.jar",
+          "import",
+          "/tmp/great-circle-gh11-local/ring/config.yml"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 0.5604375000111759,
+        "cpuUserSeconds": 1.153334,
+        "cpuSystemSeconds": 0.039188,
+        "maxRssRaw": 147587072,
+        "polledPeakRssBytes": 135200768,
+        "stopped": null,
+        "stagingBytes": 73457818
+      },
+      "serverMetrics": {
+        "exitCode": 143,
+        "elapsedSeconds": 1.1198639580979943,
+        "startupSeconds": 0.5763223329558969,
+        "cpuUserSeconds": 1.605532,
+        "cpuSystemSeconds": 0.050879,
+        "maxRssRaw": 174178304,
+        "polledPeakRssBytes": 173686784,
+        "stopped": "requested stop",
+        "stagingBytes": 99719605
+      },
+      "fixtureSha256": "b9a89b389a0de84b4d14df1d3657b8ec0b2ca3701559f5d6665e374df26de87b",
+      "acceptedGpx": [
+        {
+          "file": "/tmp/great-circle-gh11-local/ring/ordered-waypoints-0.gpx",
+          "bytes": 4006,
+          "sha256": "01d500ec64385e16d19c545e2ebc93d3cad5569b9ac0dd2cb8d293c88ccc6179",
+          "points": 68
+        },
+        {
+          "file": "/tmp/great-circle-gh11-local/ring/ordered-waypoints-1.gpx",
+          "bytes": 4006,
+          "sha256": "01d500ec64385e16d19c545e2ebc93d3cad5569b9ac0dd2cb8d293c88ccc6179",
+          "points": 68
+        },
+        {
+          "file": "/tmp/great-circle-gh11-local/ring/round-trip-0.gpx",
+          "bytes": 4006,
+          "sha256": "287adc4af34957a0cdbf5b9559e6e755525711763e75d3bf99e611b2f93ff77f",
+          "points": 68
+        },
+        {
+          "file": "/tmp/great-circle-gh11-local/ring/round-trip-1.gpx",
+          "bytes": 4006,
+          "sha256": "287adc4af34957a0cdbf5b9559e6e755525711763e75d3bf99e611b2f93ff77f",
+          "points": 68
+        }
+      ]
+    },
+    {
+      "fixture": "bridge",
+      "startupSeconds": 0.6858979999087751,
+      "peakRssBytes": 172408832,
+      "stagingBytes": 99780385,
+      "results": [
+        {
+          "kind": "ordered-waypoints",
+          "repetition": 0,
+          "classification": "first-call-per-arm",
+          "elapsedMs": 54.74870799999999,
+          "status": 200,
+          "responseBytes": 3725,
+          "serverTookMs": 11,
+          "visitedNodes": 84,
+          "audit": {
+            "accepted": true,
+            "legal": true,
+            "issues": [],
+            "startErrorM": 0.007553515328941996,
+            "endErrorM": 0.007553515328941996,
+            "closureErrorM": 0,
+            "lengthM": 6813.1562913936905,
+            "reportedDistanceM": 6813.145,
+            "error": 0.0843475018329516,
+            "roundness": 0.8959041712647215,
+            "repeated": 0,
+            "points": 64,
+            "knownTraversals": 63,
+            "radialDeviation": {
+              "minM": 998.7332853000752,
+              "maxM": 1259.5559496666347,
+              "meanAbsoluteM": 35.79567710743005
+            }
+          }
+        },
+        {
+          "kind": "ordered-waypoints",
+          "repetition": 1,
+          "classification": "immediate-repeat",
+          "elapsedMs": 5.277416000000002,
+          "status": 200,
+          "responseBytes": 3724,
+          "serverTookMs": 2,
+          "visitedNodes": 84,
+          "audit": {
+            "accepted": true,
+            "legal": true,
+            "issues": [],
+            "startErrorM": 0.007553515328941996,
+            "endErrorM": 0.007553515328941996,
+            "closureErrorM": 0,
+            "lengthM": 6813.1562913936905,
+            "reportedDistanceM": 6813.145,
+            "error": 0.0843475018329516,
+            "roundness": 0.8959041712647215,
+            "repeated": 0,
+            "points": 64,
+            "knownTraversals": 63,
+            "radialDeviation": {
+              "minM": 998.7332853000752,
+              "maxM": 1259.5559496666347,
+              "meanAbsoluteM": 35.79567710743005
+            }
+          }
+        },
+        {
+          "kind": "round-trip",
+          "repetition": 0,
+          "classification": "first-call-per-arm",
+          "elapsedMs": 5.342583000000019,
+          "status": 200,
+          "responseBytes": 3504,
+          "serverTookMs": 2,
+          "visitedNodes": 70,
+          "audit": {
+            "accepted": true,
+            "legal": true,
+            "issues": [],
+            "startErrorM": 0.007553515328941996,
+            "endErrorM": 0.007553515328941996,
+            "closureErrorM": 0,
+            "lengthM": 6813.153751328966,
+            "reportedDistanceM": 6813.144,
+            "error": 0.0843470975690949,
+            "roundness": 0.8959055137565914,
+            "repeated": 0,
+            "points": 62,
+            "knownTraversals": 61,
+            "radialDeviation": {
+              "minM": 998.7342962550139,
+              "maxM": 1259.5559496666347,
+              "meanAbsoluteM": 35.79616742489455
+            }
+          }
+        },
+        {
+          "kind": "round-trip",
+          "repetition": 1,
+          "classification": "immediate-repeat",
+          "elapsedMs": 4.0707920000000115,
+          "status": 200,
+          "responseBytes": 3504,
+          "serverTookMs": 1,
+          "visitedNodes": 70,
+          "audit": {
+            "accepted": true,
+            "legal": true,
+            "issues": [],
+            "startErrorM": 0.007553515328941996,
+            "endErrorM": 0.007553515328941996,
+            "closureErrorM": 0,
+            "lengthM": 6813.153751328966,
+            "reportedDistanceM": 6813.144,
+            "error": 0.0843470975690949,
+            "roundness": 0.8959055137565914,
+            "repeated": 0,
+            "points": 62,
+            "knownTraversals": 61,
+            "radialDeviation": {
+              "minM": 998.7342962550139,
+              "maxM": 1259.5559496666347,
+              "meanAbsoluteM": 35.79616742489455
+            }
+          }
+        }
+      ],
+      "importMetrics": {
+        "command": [
+          "java",
+          "-Xms64m",
+          "-Xmx512m",
+          "-XX:ActiveProcessorCount=1",
+          "-jar",
+          "/tmp/great-circle-gh11-local/graphhopper-web-11.1.jar",
+          "import",
+          "/tmp/great-circle-gh11-local/bridge/config.yml"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 0.5670940410345793,
+        "cpuUserSeconds": 1.136838,
+        "cpuSystemSeconds": 0.039174,
+        "maxRssRaw": 143327232,
+        "polledPeakRssBytes": 127565824,
+        "stopped": null,
+        "stagingBytes": 79873245
+      },
+      "serverMetrics": {
+        "exitCode": 143,
+        "elapsedSeconds": 1.0215775829274207,
+        "startupSeconds": 0.6858979999087751,
+        "cpuUserSeconds": 1.514027,
+        "cpuSystemSeconds": 0.04797,
+        "maxRssRaw": 172408832,
+        "polledPeakRssBytes": 171851776,
+        "stopped": "requested stop",
+        "stagingBytes": 99780385
+      },
+      "fixtureSha256": "d1bfd038c7477f7670e3be4c5534f8d6897752112182354a8245d43d6a2a042e",
+      "acceptedGpx": [
+        {
+          "file": "/tmp/great-circle-gh11-local/bridge/ordered-waypoints-0.gpx",
+          "bytes": 3810,
+          "sha256": "d63fc4815401f519ceab2f6d787f81f51330890be1bdf28f5ebf59deaa532301",
+          "points": 64
+        },
+        {
+          "file": "/tmp/great-circle-gh11-local/bridge/ordered-waypoints-1.gpx",
+          "bytes": 3810,
+          "sha256": "d63fc4815401f519ceab2f6d787f81f51330890be1bdf28f5ebf59deaa532301",
+          "points": 64
+        },
+        {
+          "file": "/tmp/great-circle-gh11-local/bridge/round-trip-0.gpx",
+          "bytes": 3712,
+          "sha256": "e78081c108e644d732b5c1d962f2e2f3adf99fc259c7b8c803d32fc8ea4331c4",
+          "points": 62
+        },
+        {
+          "file": "/tmp/great-circle-gh11-local/bridge/round-trip-1.gpx",
+          "bytes": 3712,
+          "sha256": "e78081c108e644d732b5c1d962f2e2f3adf99fc259c7b8c803d32fc8ea4331c4",
+          "points": 62
+        }
+      ]
+    },
+    {
+      "fixture": "directed",
+      "startupSeconds": 0.680787457851693,
+      "peakRssBytes": 172933120,
+      "stagingBytes": 100060548,
+      "results": [
+        {
+          "kind": "ordered-waypoints",
+          "repetition": 0,
+          "classification": "first-call-per-arm",
+          "elapsedMs": 60.292874999999995,
+          "status": 200,
+          "responseBytes": 24587,
+          "serverTookMs": 14,
+          "visitedNodes": 492,
+          "audit": {
+            "accepted": false,
+            "legal": true,
+            "issues": [
+              "distance outside selected tolerance",
+              "roundness below .3",
+              "repetition exceeds .2"
+            ],
+            "startErrorM": 0.007553515328941996,
+            "endErrorM": 0.007553515328941996,
+            "closureErrorM": 0,
+            "lengthM": 43964.73916896773,
+            "reportedDistanceM": 43964.629,
+            "error": 5.997205560487082,
+            "roundness": 0.1427421875219074,
+            "repeated": 0.8568786309057184,
+            "points": 470,
+            "knownTraversals": 469,
+            "radialDeviation": {
+              "minM": 998.7332853000752,
+              "maxM": 1000.0702646354042,
+              "meanAbsoluteM": 0.7587544308705814
+            }
+          }
+        },
+        {
+          "kind": "ordered-waypoints",
+          "repetition": 1,
+          "classification": "immediate-repeat",
+          "elapsedMs": 7.071416999999997,
+          "status": 200,
+          "responseBytes": 24586,
+          "serverTookMs": 3,
+          "visitedNodes": 492,
+          "audit": {
+            "accepted": false,
+            "legal": true,
+            "issues": [
+              "distance outside selected tolerance",
+              "roundness below .3",
+              "repetition exceeds .2"
+            ],
+            "startErrorM": 0.007553515328941996,
+            "endErrorM": 0.007553515328941996,
+            "closureErrorM": 0,
+            "lengthM": 43964.73916896773,
+            "reportedDistanceM": 43964.629,
+            "error": 5.997205560487082,
+            "roundness": 0.1427421875219074,
+            "repeated": 0.8568786309057184,
+            "points": 470,
+            "knownTraversals": 469,
+            "radialDeviation": {
+              "minM": 998.7332853000752,
+              "maxM": 1000.0702646354042,
+              "meanAbsoluteM": 0.7587544308705814
+            }
+          }
+        },
+        {
+          "kind": "round-trip",
+          "repetition": 0,
+          "classification": "first-call-per-arm",
+          "elapsedMs": 5.1815,
+          "status": 200,
+          "responseBytes": 10588,
+          "serverTookMs": 2,
+          "visitedNodes": 212,
+          "audit": {
+            "accepted": false,
+            "legal": true,
+            "issues": [
+              "distance outside selected tolerance",
+              "repetition exceeds .2"
+            ],
+            "startErrorM": 0.007553515328941996,
+            "endErrorM": 0.007553515328941996,
+            "closureErrorM": 0,
+            "lengthM": 18842.023474673308,
+            "reportedDistanceM": 18841.985,
+            "error": 1.9988011738477867,
+            "roundness": 0.33306572642972526,
+            "repeated": 0.666461426110805,
+            "points": 202,
+            "knownTraversals": 201,
+            "radialDeviation": {
+              "minM": 998.7342962550139,
+              "maxM": 1000.0702646354042,
+              "meanAbsoluteM": 0.7590300297302054
+            }
+          }
+        },
+        {
+          "kind": "round-trip",
+          "repetition": 1,
+          "classification": "immediate-repeat",
+          "elapsedMs": 3.8220000000000027,
+          "status": 200,
+          "responseBytes": 10588,
+          "serverTookMs": 1,
+          "visitedNodes": 212,
+          "audit": {
+            "accepted": false,
+            "legal": true,
+            "issues": [
+              "distance outside selected tolerance",
+              "repetition exceeds .2"
+            ],
+            "startErrorM": 0.007553515328941996,
+            "endErrorM": 0.007553515328941996,
+            "closureErrorM": 0,
+            "lengthM": 18842.023474673308,
+            "reportedDistanceM": 18841.985,
+            "error": 1.9988011738477867,
+            "roundness": 0.33306572642972526,
+            "repeated": 0.666461426110805,
+            "points": 202,
+            "knownTraversals": 201,
+            "radialDeviation": {
+              "minM": 998.7342962550139,
+              "maxM": 1000.0702646354042,
+              "meanAbsoluteM": 0.7590300297302054
+            }
+          }
+        },
+        {
+          "kind": "ordered-reverse-diagnostic",
+          "status": 200,
+          "elapsedMs": 3.815082999999987,
+          "audit": {
+            "accepted": true,
+            "legal": true,
+            "issues": [],
+            "startErrorM": 0.007553515328941996,
+            "endErrorM": 0.007553515328941996,
+            "closureErrorM": 0,
+            "lengthM": 6280.677024138249,
+            "reportedDistanceM": 6280.661,
+            "error": 0.00039920564470230133,
+            "roundness": 0.9991953126533516,
+            "repeated": 0,
+            "points": 68,
+            "knownTraversals": 67,
+            "radialDeviation": {
+              "minM": 998.7332853000752,
+              "maxM": 1000.0702646354042,
+              "meanAbsoluteM": 0.758754430870584
+            }
+          }
+        }
+      ],
+      "importMetrics": {
+        "command": [
+          "java",
+          "-Xms64m",
+          "-Xmx512m",
+          "-XX:ActiveProcessorCount=1",
+          "-jar",
+          "/tmp/great-circle-gh11-local/graphhopper-web-11.1.jar",
+          "import",
+          "/tmp/great-circle-gh11-local/directed/config.yml"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 0.5642823751550168,
+        "cpuUserSeconds": 1.119591,
+        "cpuSystemSeconds": 0.039328999999999996,
+        "maxRssRaw": 136855552,
+        "polledPeakRssBytes": 125091840,
+        "stopped": null,
+        "stagingBytes": 86285306
+      },
+      "serverMetrics": {
+        "exitCode": 143,
+        "elapsedSeconds": 1.1380103330593556,
+        "startupSeconds": 0.680787457851693,
+        "cpuUserSeconds": 1.604194,
+        "cpuSystemSeconds": 0.049239,
+        "maxRssRaw": 172933120,
+        "polledPeakRssBytes": 170950656,
+        "stopped": "requested stop",
+        "stagingBytes": 100060548
+      },
+      "fixtureSha256": "39d5538a764e4046637f1727656dbdf3a728f1e94c8158de4bd8f9be39080fb1",
+      "acceptedGpx": [
+        {
+          "file": "/tmp/great-circle-gh11-local/directed/ordered-reverse-diagnostic.gpx",
+          "bytes": 4006,
+          "sha256": "9602c0e7448bfea3e6ea4229fd5a11b92a3303581ba0949867f82b526759f076",
+          "points": 68
+        }
+      ]
+    },
+    {
+      "fixture": "restriction",
+      "startupSeconds": 0.6912608749698848,
+      "peakRssBytes": 171851776,
+      "stagingBytes": 100075518,
+      "results": [
+        {
+          "kind": "ordered-waypoints",
+          "repetition": 0,
+          "classification": "first-call-per-arm",
+          "elapsedMs": 51.036959,
+          "status": 400,
+          "responseBytes": 187,
+          "message": "Connection between locations not found"
+        },
+        {
+          "kind": "ordered-waypoints",
+          "repetition": 1,
+          "classification": "immediate-repeat",
+          "elapsedMs": 6.900999999999996,
+          "status": 400,
+          "responseBytes": 187,
+          "message": "Connection between locations not found"
+        },
+        {
+          "kind": "round-trip",
+          "repetition": 0,
+          "classification": "first-call-per-arm",
+          "elapsedMs": 4.317207999999994,
+          "status": 400,
+          "responseBytes": 187,
+          "message": "Connection between locations not found"
+        },
+        {
+          "kind": "round-trip",
+          "repetition": 1,
+          "classification": "immediate-repeat",
+          "elapsedMs": 3.055209000000005,
+          "status": 400,
+          "responseBytes": 187,
+          "message": "Connection between locations not found"
+        },
+        {
+          "kind": "targeted-access/turn-control",
+          "elapsedMs": 1.8383749999999992,
+          "status": 400,
+          "message": "Connection between locations not found",
+          "passed": true
+        }
+      ],
+      "importMetrics": {
+        "command": [
+          "java",
+          "-Xms64m",
+          "-Xmx512m",
+          "-XX:ActiveProcessorCount=1",
+          "-jar",
+          "/tmp/great-circle-gh11-local/graphhopper-web-11.1.jar",
+          "import",
+          "/tmp/great-circle-gh11-local/restriction/config.yml"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 0.5498209588695318,
+        "cpuUserSeconds": 1.134164,
+        "cpuSystemSeconds": 0.03923,
+        "maxRssRaw": 137609216,
+        "polledPeakRssBytes": 124780544,
+        "stopped": null,
+        "stagingBytes": 92759597
+      },
+      "serverMetrics": {
+        "exitCode": 143,
+        "elapsedSeconds": 1.1329690420534462,
+        "startupSeconds": 0.6912608749698848,
+        "cpuUserSeconds": 1.508748,
+        "cpuSystemSeconds": 0.047349999999999996,
+        "maxRssRaw": 171851776,
+        "polledPeakRssBytes": 171425792,
+        "stopped": "requested stop",
+        "stagingBytes": 100075518
+      },
+      "fixtureSha256": "cda06ecf00cfab1eedd4e2dcbb49aac116cad0b4011ce78e277b16038a94654f",
+      "acceptedGpx": []
+    },
+    {
+      "fixture": "access",
+      "startupSeconds": 0.6733687501400709,
+      "peakRssBytes": 169000960,
+      "stagingBytes": 100137551,
+      "results": [
+        {
+          "kind": "ordered-waypoints",
+          "repetition": 0,
+          "classification": "first-call-per-arm",
+          "elapsedMs": 56.190999999999995,
+          "status": 200,
+          "responseBytes": 3910,
+          "serverTookMs": 11,
+          "visitedNodes": 88,
+          "audit": {
+            "accepted": true,
+            "legal": true,
+            "issues": [],
+            "startErrorM": 0.007553515328941996,
+            "endErrorM": 0.007553515328941996,
+            "closureErrorM": 0,
+            "lengthM": 6280.67702413825,
+            "reportedDistanceM": 6280.661,
+            "error": 0.00039920564470215654,
+            "roundness": 0.999195312653351,
+            "repeated": 0,
+            "points": 68,
+            "knownTraversals": 67,
+            "radialDeviation": {
+              "minM": 998.7332853000752,
+              "maxM": 1000.0702646354042,
+              "meanAbsoluteM": 0.758754430870584
+            }
+          }
+        },
+        {
+          "kind": "ordered-waypoints",
+          "repetition": 1,
+          "classification": "immediate-repeat",
+          "elapsedMs": 5.278832999999992,
+          "status": 200,
+          "responseBytes": 3909,
+          "serverTookMs": 2,
+          "visitedNodes": 88,
+          "audit": {
+            "accepted": true,
+            "legal": true,
+            "issues": [],
+            "startErrorM": 0.007553515328941996,
+            "endErrorM": 0.007553515328941996,
+            "closureErrorM": 0,
+            "lengthM": 6280.67702413825,
+            "reportedDistanceM": 6280.661,
+            "error": 0.00039920564470215654,
+            "roundness": 0.999195312653351,
+            "repeated": 0,
+            "points": 68,
+            "knownTraversals": 67,
+            "radialDeviation": {
+              "minM": 998.7332853000752,
+              "maxM": 1000.0702646354042,
+              "meanAbsoluteM": 0.758754430870584
+            }
+          }
+        },
+        {
+          "kind": "round-trip",
+          "repetition": 0,
+          "classification": "first-call-per-arm",
+          "elapsedMs": 5.266583000000011,
+          "status": 200,
+          "responseBytes": 3775,
+          "serverTookMs": 2,
+          "visitedNodes": 74,
+          "audit": {
+            "accepted": true,
+            "legal": true,
+            "issues": [],
+            "startErrorM": 0.007553515328941996,
+            "endErrorM": 0.007553515328941996,
+            "closureErrorM": 0,
+            "lengthM": 6280.674491557772,
+            "reportedDistanceM": 6280.662,
+            "error": 0.00039960871740403155,
+            "roundness": 0.9991971792891745,
+            "repeated": 0,
+            "points": 68,
+            "knownTraversals": 67,
+            "radialDeviation": {
+              "minM": 998.7342962550139,
+              "maxM": 1000.0702646354042,
+              "meanAbsoluteM": 0.7590300297302052
+            }
+          }
+        },
+        {
+          "kind": "round-trip",
+          "repetition": 1,
+          "classification": "immediate-repeat",
+          "elapsedMs": 3.961624999999998,
+          "status": 200,
+          "responseBytes": 3775,
+          "serverTookMs": 1,
+          "visitedNodes": 74,
+          "audit": {
+            "accepted": true,
+            "legal": true,
+            "issues": [],
+            "startErrorM": 0.007553515328941996,
+            "endErrorM": 0.007553515328941996,
+            "closureErrorM": 0,
+            "lengthM": 6280.674491557772,
+            "reportedDistanceM": 6280.662,
+            "error": 0.00039960871740403155,
+            "roundness": 0.9991971792891745,
+            "repeated": 0,
+            "points": 68,
+            "knownTraversals": 67,
+            "radialDeviation": {
+              "minM": 998.7342962550139,
+              "maxM": 1000.0702646354042,
+              "meanAbsoluteM": 0.7590300297302052
+            }
+          }
+        },
+        {
+          "kind": "targeted-access/turn-control",
+          "elapsedMs": 2.8510410000000093,
+          "status": 200,
+          "distanceM": 3140.086,
+          "wayIds": [
+            10000,
+            10001,
+            10002,
+            10003,
+            10004,
+            10005,
+            10006,
+            10007,
+            10008,
+            10009,
+            10010,
+            10011,
+            10012,
+            10013,
+            10014,
+            10015,
+            10016,
+            10017,
+            10018,
+            10019,
+            10020,
+            10021,
+            10022,
+            10023,
+            10024,
+            10025,
+            10026,
+            10027,
+            10028,
+            10029,
+            10030,
+            10031
+          ],
+          "passed": true
+        }
+      ],
+      "importMetrics": {
+        "command": [
+          "java",
+          "-Xms64m",
+          "-Xmx512m",
+          "-XX:ActiveProcessorCount=1",
+          "-jar",
+          "/tmp/great-circle-gh11-local/graphhopper-web-11.1.jar",
+          "import",
+          "/tmp/great-circle-gh11-local/access/config.yml"
+        ],
+        "exitCode": 0,
+        "elapsedSeconds": 0.5595565831754357,
+        "cpuUserSeconds": 1.139876,
+        "cpuSystemSeconds": 0.039597,
+        "maxRssRaw": 140017664,
+        "polledPeakRssBytes": 125763584,
+        "stopped": null,
+        "stagingBytes": 99129320
+      },
+      "serverMetrics": {
+        "exitCode": 143,
+        "elapsedSeconds": 1.1227189160417765,
+        "startupSeconds": 0.6733687501400709,
+        "cpuUserSeconds": 1.52426,
+        "cpuSystemSeconds": 0.048877,
+        "maxRssRaw": 169000960,
+        "polledPeakRssBytes": 168525824,
+        "stopped": "requested stop",
+        "stagingBytes": 100137551
+      },
+      "fixtureSha256": "f7de65ae4cf074ddfbe7855b8b8204a00076d4fe6ceb4d48e6b2af54b080521b",
+      "acceptedGpx": [
+        {
+          "file": "/tmp/great-circle-gh11-local/access/ordered-waypoints-0.gpx",
+          "bytes": 4006,
+          "sha256": "01d500ec64385e16d19c545e2ebc93d3cad5569b9ac0dd2cb8d293c88ccc6179",
+          "points": 68
+        },
+        {
+          "file": "/tmp/great-circle-gh11-local/access/ordered-waypoints-1.gpx",
+          "bytes": 4006,
+          "sha256": "01d500ec64385e16d19c545e2ebc93d3cad5569b9ac0dd2cb8d293c88ccc6179",
+          "points": 68
+        },
+        {
+          "file": "/tmp/great-circle-gh11-local/access/round-trip-0.gpx",
+          "bytes": 4006,
+          "sha256": "287adc4af34957a0cdbf5b9559e6e755525711763e75d3bf99e611b2f93ff77f",
+          "points": 68
+        },
+        {
+          "file": "/tmp/great-circle-gh11-local/access/round-trip-1.gpx",
+          "bytes": 4006,
+          "sha256": "287adc4af34957a0cdbf5b9559e6e755525711763e75d3bf99e611b2f93ff77f",
+          "points": 68
+        }
+      ]
+    }
+  ],
+  "artifact": {
+    "url": "https://repo1.maven.org/maven2/com/graphhopper/graphhopper-web/11.1/graphhopper-web-11.1.jar",
+    "version": "11.1",
+    "bytes": 47331301,
+    "sha256": "8462f758d9ea49edaded557cec5c687a0a24f004ec371cd4daaeb0534824ea33",
+    "sha1": "6e6c173c2b46cb0a3c1df124b2144d557931597e",
+    "state": "downloaded; exact size and official SHA-256 verified; not executed"
+  },
+  "setupNotes": [
+    "Initial profile incorrectly excluded BikeRoadAccess.MISSING; corrected before comparison; original setup evidence retained in dedicated staging.",
+    "Initial precise circle waypoints fell <1mm outside seven-decimal stored synthetic bounds. Final requests rounded to7decimaldegrees, <=1cm normalization. First batch retained; final batch measured separately.",
+    "Final sequence24normal localhost route requests (6fixtures x2arms x2repetitions), plus one reversed-order diagnostic and two access/turn controls. Earlier batch26requests plus2setup probes retained. No hosted routing/provider calls.",
+    "Immediate backtracking is rejected by existing GreatCircle loop policy; this does not imply every native turnaround is an OSM access violation.",
+    "This native harness is experimental and not wired into the static app. APIHTTP200 alone is not a validated GreatCircle route."
+  ],
+  "finalStagingBytes": 100146610,
+  "cleanup": "All owned JVMs and temporaryVite server stopped; ports8989,8990,4187 confirmed no listeners. Dedicated staging retained; no user files removed."
+}

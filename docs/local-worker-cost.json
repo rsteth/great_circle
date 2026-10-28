@@ -1,0 +1,964 @@
+{
+  "node": {
+    "protocol": "12 alternated measured samples, 3 per strategy/mode, plus one excluded warmup per retained worker. Node worker_threads run identical solver/engine against exact fixed captured expanded Vancouver graph. Thread CPU brackets graph+solve only; wall including worker brackets startup/transfer/result, total process CPU includes parent/idle-worker activity. No network. Heap before/after is current isolate used heap, not peak or retained memory; GC can make delta negative. Not browser or phone CPU.",
+    "hardware": {
+      "model": "Apple M5",
+      "logicalCpus": 10,
+      "totalMemoryBytes": 34359738368,
+      "platform": "darwin",
+      "osRelease": "25.6.0",
+      "node": "v25.9.0",
+      "arch": "arm64"
+    },
+    "summaries": [
+      {
+        "mode": "cold-worker-cold-graph",
+        "strategy": "nearest",
+        "includingWorkerWallMs": {
+          "median": 85.88087499999983,
+          "min": 85.15291699999989,
+          "max": 91.43104200000005,
+          "n": 3
+        },
+        "graphAndSearchWallMs": {
+          "median": 67.11341700000003,
+          "min": 66.75920900000006,
+          "max": 71.45508299999995,
+          "n": 3
+        },
+        "searchWallMs": {
+          "median": 31.065166999999747,
+          "min": 30.967833000000155,
+          "max": 34.761708,
+          "n": 3
+        },
+        "solverThreadCpuMs": {
+          "median": 67.09299999999999,
+          "min": 66.59100000000001,
+          "max": 70.056,
+          "n": 3
+        },
+        "totalProcessCpuMs": {
+          "median": 187.255,
+          "min": 176.055,
+          "max": 195.316,
+          "n": 3
+        },
+        "isolateHeapDeltaBytes": {
+          "median": 19595888,
+          "min": 16623048,
+          "max": 20937272,
+          "n": 3
+        },
+        "quality": {
+          "lengthM": 3729.6444202340294,
+          "error": 0.18718269091070397,
+          "roundness": 0.39607301703338554,
+          "repeated": 0.009774537101037054,
+          "points": 197,
+          "start": 5697946446,
+          "gpxSha256": "c694ec13f8376818a767951b35abb426968c48ee66ad30f51290bf4c76444cae"
+        },
+        "expansions": 64878
+      },
+      {
+        "mode": "cold-worker-cold-graph",
+        "strategy": "joint",
+        "includingWorkerWallMs": {
+          "median": 327.667375,
+          "min": 321.9454159999999,
+          "max": 328.5312909999998,
+          "n": 3
+        },
+        "graphAndSearchWallMs": {
+          "median": 308.0383750000001,
+          "min": 303.49016700000004,
+          "max": 308.6577910000001,
+          "n": 3
+        },
+        "searchWallMs": {
+          "median": 271.77254199999993,
+          "min": 267.556875,
+          "max": 272.4786250000002,
+          "n": 3
+        },
+        "solverThreadCpuMs": {
+          "median": 306.37899999999996,
+          "min": 302.86699999999996,
+          "max": 307.934,
+          "n": 3
+        },
+        "totalProcessCpuMs": {
+          "median": 462.812,
+          "min": 441.47,
+          "max": 466.28200000000004,
+          "n": 3
+        },
+        "isolateHeapDeltaBytes": {
+          "median": 13939296,
+          "min": 10212072,
+          "max": 14353328,
+          "n": 3
+        },
+        "quality": {
+          "lengthM": 3690.371257116256,
+          "error": 0.17468165482860806,
+          "roundness": 0.40606553264430756,
+          "repeated": 0.005222957717723833,
+          "points": 192,
+          "start": 5697946446,
+          "gpxSha256": "203e1edc9032da672dd39044e49d5eac1306d0607a497a3cc53f14149f79685a"
+        },
+        "expansions": 1149961
+      },
+      {
+        "mode": "warm-worker-cached-graph",
+        "strategy": "nearest",
+        "includingWorkerWallMs": {
+          "median": 25.66208299999994,
+          "min": 24.235000000000127,
+          "max": 33.23037499999998,
+          "n": 3
+        },
+        "graphAndSearchWallMs": {
+          "median": 25.398832999999968,
+          "min": 24.021250000000236,
+          "max": 33.00400000000002,
+          "n": 3
+        },
+        "searchWallMs": {
+          "median": 22.292000000000144,
+          "min": 21.48754199999985,
+          "max": 30.004167000000052,
+          "n": 3
+        },
+        "solverThreadCpuMs": {
+          "median": 25.117,
+          "min": 23.948,
+          "max": 32.483,
+          "n": 3
+        },
+        "totalProcessCpuMs": {
+          "median": 27.538,
+          "min": 24.624000000000002,
+          "max": 63.117999999999995,
+          "n": 3
+        },
+        "isolateHeapDeltaBytes": {
+          "median": 14593784,
+          "min": -8063784,
+          "max": 23703864,
+          "n": 3
+        },
+        "quality": {
+          "lengthM": 3729.6444202340294,
+          "error": 0.18718269091070397,
+          "roundness": 0.39607301703338554,
+          "repeated": 0.009774537101037054,
+          "points": 197,
+          "start": 5697946446,
+          "gpxSha256": "c694ec13f8376818a767951b35abb426968c48ee66ad30f51290bf4c76444cae"
+        },
+        "expansions": 64878
+      },
+      {
+        "mode": "warm-worker-cached-graph",
+        "strategy": "joint",
+        "includingWorkerWallMs": {
+          "median": 271.09954199999993,
+          "min": 268.43066599999975,
+          "max": 271.2565830000001,
+          "n": 3
+        },
+        "graphAndSearchWallMs": {
+          "median": 270.8234160000002,
+          "min": 268.13591700000006,
+          "max": 270.96345799999995,
+          "n": 3
+        },
+        "searchWallMs": {
+          "median": 267.7741659999999,
+          "min": 265.3058329999999,
+          "max": 267.790209,
+          "n": 3
+        },
+        "solverThreadCpuMs": {
+          "median": 269.978,
+          "min": 267.505,
+          "max": 270.053,
+          "n": 3
+        },
+        "totalProcessCpuMs": {
+          "median": 302.03000000000003,
+          "min": 295.7,
+          "max": 310.672,
+          "n": 3
+        },
+        "isolateHeapDeltaBytes": {
+          "median": 21602320,
+          "min": 14223424,
+          "max": 25453968,
+          "n": 3
+        },
+        "quality": {
+          "lengthM": 3690.371257116256,
+          "error": 0.17468165482860806,
+          "roundness": 0.40606553264430756,
+          "repeated": 0.005222957717723833,
+          "points": 192,
+          "start": 5697946446,
+          "gpxSha256": "203e1edc9032da672dd39044e49d5eac1306d0607a497a3cc53f14149f79685a"
+        },
+        "expansions": 1149961
+      }
+    ],
+    "samples": [
+      {
+        "mode": "cold-worker-cold-graph",
+        "round": 0,
+        "strategy": "nearest",
+        "elapsedIncludingWorkerMs": 91.43104200000005,
+        "processCpuUserMs": 186.292,
+        "processCpuSystemMs": 9.024,
+        "id": 1,
+        "wallMs": 71.45508299999995,
+        "cpuUserMs": 64.61,
+        "cpuSystemMs": 5.446,
+        "heapBeforeBytes": 9912760,
+        "heapAfterBytes": 26535808,
+        "heapDeltaBytes": 16623048,
+        "timing": {
+          "graphMs": 32.87483300000008,
+          "graphCached": false,
+          "snapComponentMs": 3.430417000000034,
+          "searchMs": 34.761708,
+          "totalMs": 71.32070800000008,
+          "anchorNodeProjections": 2683,
+          "pathExpansions": 64878
+        },
+        "quality": {
+          "lengthM": 3729.6444202340294,
+          "error": 0.18718269091070397,
+          "roundness": 0.39607301703338554,
+          "repeated": 0.009774537101037054,
+          "points": 197,
+          "start": 5697946446,
+          "gpxSha256": "c694ec13f8376818a767951b35abb426968c48ee66ad30f51290bf4c76444cae"
+        }
+      },
+      {
+        "mode": "warm-worker-cached-graph",
+        "round": 0,
+        "strategy": "nearest",
+        "elapsedIncludingWorkerMs": 33.23037499999998,
+        "processCpuUserMs": 62.827,
+        "processCpuSystemMs": 0.291,
+        "id": 2,
+        "wallMs": 33.00400000000002,
+        "cpuUserMs": 32.385,
+        "cpuSystemMs": 0.098,
+        "heapBeforeBytes": 11985264,
+        "heapAfterBytes": 26579048,
+        "heapDeltaBytes": 14593784,
+        "timing": {
+          "graphMs": 0.014042000000017651,
+          "graphCached": true,
+          "snapComponentMs": 2.9427500000000464,
+          "searchMs": 30.004167000000052,
+          "totalMs": 32.97783400000003,
+          "anchorNodeProjections": 2683,
+          "pathExpansions": 64878
+        },
+        "quality": {
+          "lengthM": 3729.6444202340294,
+          "error": 0.18718269091070397,
+          "roundness": 0.39607301703338554,
+          "repeated": 0.009774537101037054,
+          "points": 197,
+          "start": 5697946446,
+          "gpxSha256": "c694ec13f8376818a767951b35abb426968c48ee66ad30f51290bf4c76444cae"
+        }
+      },
+      {
+        "mode": "cold-worker-cold-graph",
+        "round": 0,
+        "strategy": "joint",
+        "elapsedIncludingWorkerMs": 321.9454159999999,
+        "processCpuUserMs": 436.66,
+        "processCpuSystemMs": 4.81,
+        "id": 1,
+        "wallMs": 303.49016700000004,
+        "cpuUserMs": 300.258,
+        "cpuSystemMs": 2.609,
+        "heapBeforeBytes": 9938880,
+        "heapAfterBytes": 23878176,
+        "heapDeltaBytes": 13939296,
+        "timing": {
+          "graphMs": 32.18012500000009,
+          "graphCached": false,
+          "snapComponentMs": 3.3500830000000406,
+          "searchMs": 267.556875,
+          "totalMs": 303.35462500000017,
+          "anchorNodeProjections": 2683,
+          "pathExpansions": 1149961
+        },
+        "quality": {
+          "lengthM": 3690.371257116256,
+          "error": 0.17468165482860806,
+          "roundness": 0.40606553264430756,
+          "repeated": 0.005222957717723833,
+          "points": 192,
+          "start": 5697946446,
+          "gpxSha256": "203e1edc9032da672dd39044e49d5eac1306d0607a497a3cc53f14149f79685a"
+        }
+      },
+      {
+        "mode": "warm-worker-cached-graph",
+        "round": 0,
+        "strategy": "joint",
+        "elapsedIncludingWorkerMs": 271.09954199999993,
+        "processCpuUserMs": 307.125,
+        "processCpuSystemMs": 3.547,
+        "id": 2,
+        "wallMs": 270.8234160000002,
+        "cpuUserMs": 267.315,
+        "cpuSystemMs": 2.663,
+        "heapBeforeBytes": 12270792,
+        "heapAfterBytes": 37724760,
+        "heapDeltaBytes": 25453968,
+        "timing": {
+          "graphMs": 0.012958999999909793,
+          "graphCached": true,
+          "snapComponentMs": 2.967040999999881,
+          "searchMs": 267.790209,
+          "totalMs": 270.7939590000001,
+          "anchorNodeProjections": 2683,
+          "pathExpansions": 1149961
+        },
+        "quality": {
+          "lengthM": 3690.371257116256,
+          "error": 0.17468165482860806,
+          "roundness": 0.40606553264430756,
+          "repeated": 0.005222957717723833,
+          "points": 192,
+          "start": 5697946446,
+          "gpxSha256": "203e1edc9032da672dd39044e49d5eac1306d0607a497a3cc53f14149f79685a"
+        }
+      },
+      {
+        "mode": "cold-worker-cold-graph",
+        "round": 1,
+        "strategy": "joint",
+        "elapsedIncludingWorkerMs": 327.667375,
+        "processCpuUserMs": 457.319,
+        "processCpuSystemMs": 8.963,
+        "id": 1,
+        "wallMs": 308.0383750000001,
+        "cpuUserMs": 300.734,
+        "cpuSystemMs": 5.645,
+        "heapBeforeBytes": 9905704,
+        "heapAfterBytes": 20117776,
+        "heapDeltaBytes": 10212072,
+        "timing": {
+          "graphMs": 32.518499999999904,
+          "graphCached": false,
+          "snapComponentMs": 3.3445409999999356,
+          "searchMs": 271.77254199999993,
+          "totalMs": 307.9038330000001,
+          "anchorNodeProjections": 2683,
+          "pathExpansions": 1149961
+        },
+        "quality": {
+          "lengthM": 3690.371257116256,
+          "error": 0.17468165482860806,
+          "roundness": 0.40606553264430756,
+          "repeated": 0.005222957717723833,
+          "points": 192,
+          "start": 5697946446,
+          "gpxSha256": "203e1edc9032da672dd39044e49d5eac1306d0607a497a3cc53f14149f79685a"
+        }
+      },
+      {
+        "mode": "warm-worker-cached-graph",
+        "round": 1,
+        "strategy": "joint",
+        "elapsedIncludingWorkerMs": 271.2565830000001,
+        "processCpuUserMs": 299.004,
+        "processCpuSystemMs": 3.026,
+        "id": 3,
+        "wallMs": 270.96345799999995,
+        "cpuUserMs": 267.955,
+        "cpuSystemMs": 2.098,
+        "heapBeforeBytes": 11599800,
+        "heapAfterBytes": 33202120,
+        "heapDeltaBytes": 21602320,
+        "timing": {
+          "graphMs": 0.01329200000009223,
+          "graphCached": true,
+          "snapComponentMs": 3.112916999999925,
+          "searchMs": 267.7741659999999,
+          "totalMs": 270.92991699999993,
+          "anchorNodeProjections": 2683,
+          "pathExpansions": 1149961
+        },
+        "quality": {
+          "lengthM": 3690.371257116256,
+          "error": 0.17468165482860806,
+          "roundness": 0.40606553264430756,
+          "repeated": 0.005222957717723833,
+          "points": 192,
+          "start": 5697946446,
+          "gpxSha256": "203e1edc9032da672dd39044e49d5eac1306d0607a497a3cc53f14149f79685a"
+        }
+      },
+      {
+        "mode": "cold-worker-cold-graph",
+        "round": 1,
+        "strategy": "nearest",
+        "elapsedIncludingWorkerMs": 85.15291699999989,
+        "processCpuUserMs": 173.46,
+        "processCpuSystemMs": 2.595,
+        "id": 1,
+        "wallMs": 66.75920900000006,
+        "cpuUserMs": 65.885,
+        "cpuSystemMs": 0.706,
+        "heapBeforeBytes": 9903640,
+        "heapAfterBytes": 29499528,
+        "heapDeltaBytes": 19595888,
+        "timing": {
+          "graphMs": 31.972292000000152,
+          "graphCached": false,
+          "snapComponentMs": 3.4385839999999916,
+          "searchMs": 30.967833000000155,
+          "totalMs": 66.628375,
+          "anchorNodeProjections": 2683,
+          "pathExpansions": 64878
+        },
+        "quality": {
+          "lengthM": 3729.6444202340294,
+          "error": 0.18718269091070397,
+          "roundness": 0.39607301703338554,
+          "repeated": 0.009774537101037054,
+          "points": 197,
+          "start": 5697946446,
+          "gpxSha256": "c694ec13f8376818a767951b35abb426968c48ee66ad30f51290bf4c76444cae"
+        }
+      },
+      {
+        "mode": "warm-worker-cached-graph",
+        "round": 1,
+        "strategy": "nearest",
+        "elapsedIncludingWorkerMs": 25.66208299999994,
+        "processCpuUserMs": 26.277,
+        "processCpuSystemMs": 1.261,
+        "id": 3,
+        "wallMs": 25.398832999999968,
+        "cpuUserMs": 24.113,
+        "cpuSystemMs": 1.004,
+        "heapBeforeBytes": 26698112,
+        "heapAfterBytes": 18634328,
+        "heapDeltaBytes": -8063784,
+        "timing": {
+          "graphMs": 0.019375000000081855,
+          "graphCached": true,
+          "snapComponentMs": 3.035957999999937,
+          "searchMs": 22.292000000000144,
+          "totalMs": 25.36154099999999,
+          "anchorNodeProjections": 2683,
+          "pathExpansions": 64878
+        },
+        "quality": {
+          "lengthM": 3729.6444202340294,
+          "error": 0.18718269091070397,
+          "roundness": 0.39607301703338554,
+          "repeated": 0.009774537101037054,
+          "points": 197,
+          "start": 5697946446,
+          "gpxSha256": "c694ec13f8376818a767951b35abb426968c48ee66ad30f51290bf4c76444cae"
+        }
+      },
+      {
+        "mode": "cold-worker-cold-graph",
+        "round": 2,
+        "strategy": "nearest",
+        "elapsedIncludingWorkerMs": 85.88087499999983,
+        "processCpuUserMs": 184.522,
+        "processCpuSystemMs": 2.733,
+        "id": 1,
+        "wallMs": 67.11341700000003,
+        "cpuUserMs": 66.484,
+        "cpuSystemMs": 0.609,
+        "heapBeforeBytes": 9919824,
+        "heapAfterBytes": 30857096,
+        "heapDeltaBytes": 20937272,
+        "timing": {
+          "graphMs": 32.398083999999926,
+          "graphCached": false,
+          "snapComponentMs": 3.2720829999998386,
+          "searchMs": 31.065166999999747,
+          "totalMs": 66.98075000000017,
+          "anchorNodeProjections": 2683,
+          "pathExpansions": 64878
+        },
+        "quality": {
+          "lengthM": 3729.6444202340294,
+          "error": 0.18718269091070397,
+          "roundness": 0.39607301703338554,
+          "repeated": 0.009774537101037054,
+          "points": 197,
+          "start": 5697946446,
+          "gpxSha256": "c694ec13f8376818a767951b35abb426968c48ee66ad30f51290bf4c76444cae"
+        }
+      },
+      {
+        "mode": "warm-worker-cached-graph",
+        "round": 2,
+        "strategy": "nearest",
+        "elapsedIncludingWorkerMs": 24.235000000000127,
+        "processCpuUserMs": 24.498,
+        "processCpuSystemMs": 0.126,
+        "id": 4,
+        "wallMs": 24.021250000000236,
+        "cpuUserMs": 23.901,
+        "cpuSystemMs": 0.047,
+        "heapBeforeBytes": 18731856,
+        "heapAfterBytes": 42435720,
+        "heapDeltaBytes": 23703864,
+        "timing": {
+          "graphMs": 0.012541999999939435,
+          "graphCached": true,
+          "snapComponentMs": 2.4842499999999745,
+          "searchMs": 21.48754199999985,
+          "totalMs": 23.991292000000158,
+          "anchorNodeProjections": 2683,
+          "pathExpansions": 64878
+        },
+        "quality": {
+          "lengthM": 3729.6444202340294,
+          "error": 0.18718269091070397,
+          "roundness": 0.39607301703338554,
+          "repeated": 0.009774537101037054,
+          "points": 197,
+          "start": 5697946446,
+          "gpxSha256": "c694ec13f8376818a767951b35abb426968c48ee66ad30f51290bf4c76444cae"
+        }
+      },
+      {
+        "mode": "cold-worker-cold-graph",
+        "round": 2,
+        "strategy": "joint",
+        "elapsedIncludingWorkerMs": 328.5312909999998,
+        "processCpuUserMs": 457.021,
+        "processCpuSystemMs": 5.791,
+        "id": 1,
+        "wallMs": 308.6577910000001,
+        "cpuUserMs": 305.014,
+        "cpuSystemMs": 2.92,
+        "heapBeforeBytes": 9930408,
+        "heapAfterBytes": 24283736,
+        "heapDeltaBytes": 14353328,
+        "timing": {
+          "graphMs": 32.50883399999975,
+          "graphCached": false,
+          "snapComponentMs": 3.2707080000000133,
+          "searchMs": 272.4786250000002,
+          "totalMs": 308.521667,
+          "anchorNodeProjections": 2683,
+          "pathExpansions": 1149961
+        },
+        "quality": {
+          "lengthM": 3690.371257116256,
+          "error": 0.17468165482860806,
+          "roundness": 0.40606553264430756,
+          "repeated": 0.005222957717723833,
+          "points": 192,
+          "start": 5697946446,
+          "gpxSha256": "203e1edc9032da672dd39044e49d5eac1306d0607a497a3cc53f14149f79685a"
+        }
+      },
+      {
+        "mode": "warm-worker-cached-graph",
+        "round": 2,
+        "strategy": "joint",
+        "elapsedIncludingWorkerMs": 268.43066599999975,
+        "processCpuUserMs": 293.037,
+        "processCpuSystemMs": 2.663,
+        "id": 4,
+        "wallMs": 268.13591700000006,
+        "cpuUserMs": 265.564,
+        "cpuSystemMs": 1.941,
+        "heapBeforeBytes": 33321536,
+        "heapAfterBytes": 47544960,
+        "heapDeltaBytes": 14223424,
+        "timing": {
+          "graphMs": 0.012582999999722233,
+          "graphCached": true,
+          "snapComponentMs": 2.7691250000002583,
+          "searchMs": 265.3058329999999,
+          "totalMs": 268.10254199999963,
+          "anchorNodeProjections": 2683,
+          "pathExpansions": 1149961
+        },
+        "quality": {
+          "lengthM": 3690.371257116256,
+          "error": 0.17468165482860806,
+          "roundness": 0.40606553264430756,
+          "repeated": 0.005222957717723833,
+          "points": 192,
+          "start": 5697946446,
+          "gpxSha256": "203e1edc9032da672dd39044e49d5eac1306d0607a497a3cc53f14149f79685a"
+        }
+      }
+    ]
+  },
+  "chromium": {
+    "browser": "147.0.7727.15",
+    "protocol": "Actual isolated Chromium browser workers, 3 alternated samples per arm/mode plus excluded warmups; no network/provider calls. RAF/longtask observations are local desktop responsiveness, not phone CPU.",
+    "samples": [
+      {
+        "mode": "cold-worker-cold-graph",
+        "strategy": "nearest",
+        "round": 0,
+        "totalWallMs": 69.10000014305115,
+        "timing": {
+          "graphMs": 25,
+          "graphCached": false,
+          "snapComponentMs": 2.8999998569488525,
+          "searchMs": 27.200000047683716,
+          "totalMs": 55.200000047683716,
+          "anchorNodeProjections": 2683,
+          "pathExpansions": 64878
+        },
+        "transferMs": 2.3999998569488525,
+        "frames": 6,
+        "maxFrameGapMs": 17.100000000000023,
+        "longTasks": [],
+        "quality": {
+          "lengthM": 3729.6444202340294,
+          "error": 0.18718269091070397,
+          "repeated": 0.009774537101037054,
+          "roundness": 0.39607301703338554,
+          "points": 197
+        }
+      },
+      {
+        "mode": "warm-worker-cached-graph",
+        "strategy": "nearest",
+        "round": 0,
+        "totalWallMs": 26.299999952316284,
+        "timing": {
+          "graphMs": 0,
+          "graphCached": true,
+          "snapComponentMs": 3.0999999046325684,
+          "searchMs": 22.90000009536743,
+          "totalMs": 26,
+          "anchorNodeProjections": 2683,
+          "pathExpansions": 64878
+        },
+        "transferMs": 0,
+        "frames": 3,
+        "maxFrameGapMs": 16.700000000000045,
+        "longTasks": [],
+        "quality": {
+          "lengthM": 3729.6444202340294,
+          "error": 0.18718269091070397,
+          "repeated": 0.009774537101037054,
+          "roundness": 0.39607301703338554,
+          "points": 197
+        }
+      },
+      {
+        "mode": "cold-worker-cold-graph",
+        "strategy": "joint",
+        "round": 0,
+        "totalWallMs": 272,
+        "timing": {
+          "graphMs": 25.100000143051147,
+          "graphCached": false,
+          "snapComponentMs": 2.6999998092651367,
+          "searchMs": 230.10000014305115,
+          "totalMs": 258.10000014305115,
+          "anchorNodeProjections": 2683,
+          "pathExpansions": 1149961
+        },
+        "transferMs": 2.700000047683716,
+        "frames": 18,
+        "maxFrameGapMs": 16.700000000000045,
+        "longTasks": [],
+        "quality": {
+          "lengthM": 3690.3712571162555,
+          "error": 0.1746816548286079,
+          "repeated": 0.005222957717723833,
+          "roundness": 0.4060655326443076,
+          "points": 192
+        }
+      },
+      {
+        "mode": "warm-worker-cached-graph",
+        "strategy": "joint",
+        "round": 0,
+        "totalWallMs": 223.60000014305115,
+        "timing": {
+          "graphMs": 0.10000014305114746,
+          "graphCached": true,
+          "snapComponentMs": 2.8999998569488525,
+          "searchMs": 220.40000009536743,
+          "totalMs": 223.40000009536743,
+          "anchorNodeProjections": 2683,
+          "pathExpansions": 1149961
+        },
+        "transferMs": 0,
+        "frames": 15,
+        "maxFrameGapMs": 16.899999999999864,
+        "longTasks": [],
+        "quality": {
+          "lengthM": 3690.3712571162555,
+          "error": 0.1746816548286079,
+          "repeated": 0.005222957717723833,
+          "roundness": 0.4060655326443076,
+          "points": 192
+        }
+      },
+      {
+        "mode": "cold-worker-cold-graph",
+        "strategy": "joint",
+        "round": 1,
+        "totalWallMs": 272.40000009536743,
+        "timing": {
+          "graphMs": 25.100000143051147,
+          "graphCached": false,
+          "snapComponentMs": 2.9000000953674316,
+          "searchMs": 230.59999990463257,
+          "totalMs": 258.7999999523163,
+          "anchorNodeProjections": 2683,
+          "pathExpansions": 1149961
+        },
+        "transferMs": 2.6000001430511475,
+        "frames": 18,
+        "maxFrameGapMs": 17.799999999999955,
+        "longTasks": [],
+        "quality": {
+          "lengthM": 3690.3712571162555,
+          "error": 0.1746816548286079,
+          "repeated": 0.005222957717723833,
+          "roundness": 0.4060655326443076,
+          "points": 192
+        }
+      },
+      {
+        "mode": "warm-worker-cached-graph",
+        "strategy": "joint",
+        "round": 1,
+        "totalWallMs": 222.20000004768372,
+        "timing": {
+          "graphMs": 0,
+          "graphCached": true,
+          "snapComponentMs": 2.3999998569488525,
+          "searchMs": 219.5,
+          "totalMs": 222,
+          "anchorNodeProjections": 2683,
+          "pathExpansions": 1149961
+        },
+        "transferMs": 0,
+        "frames": 15,
+        "maxFrameGapMs": 16.700000000000273,
+        "longTasks": [],
+        "quality": {
+          "lengthM": 3690.3712571162555,
+          "error": 0.1746816548286079,
+          "repeated": 0.005222957717723833,
+          "roundness": 0.4060655326443076,
+          "points": 192
+        }
+      },
+      {
+        "mode": "cold-worker-cold-graph",
+        "strategy": "nearest",
+        "round": 1,
+        "totalWallMs": 67.39999985694885,
+        "timing": {
+          "graphMs": 25,
+          "graphCached": false,
+          "snapComponentMs": 2.799999952316284,
+          "searchMs": 25.700000047683716,
+          "totalMs": 53.799999952316284,
+          "anchorNodeProjections": 2683,
+          "pathExpansions": 64878
+        },
+        "transferMs": 2.700000047683716,
+        "frames": 5,
+        "maxFrameGapMs": 16.700000000000273,
+        "longTasks": [],
+        "quality": {
+          "lengthM": 3729.6444202340294,
+          "error": 0.18718269091070397,
+          "repeated": 0.009774537101037054,
+          "roundness": 0.39607301703338554,
+          "points": 197
+        }
+      },
+      {
+        "mode": "warm-worker-cached-graph",
+        "strategy": "nearest",
+        "round": 1,
+        "totalWallMs": 21.700000047683716,
+        "timing": {
+          "graphMs": 0,
+          "graphCached": true,
+          "snapComponentMs": 2.200000047683716,
+          "searchMs": 19.399999856948853,
+          "totalMs": 21.59999990463257,
+          "anchorNodeProjections": 2683,
+          "pathExpansions": 64878
+        },
+        "transferMs": 0,
+        "frames": 3,
+        "maxFrameGapMs": 16.699999999999818,
+        "longTasks": [],
+        "quality": {
+          "lengthM": 3729.6444202340294,
+          "error": 0.18718269091070397,
+          "repeated": 0.009774537101037054,
+          "roundness": 0.39607301703338554,
+          "points": 197
+        }
+      },
+      {
+        "mode": "cold-worker-cold-graph",
+        "strategy": "nearest",
+        "round": 2,
+        "totalWallMs": 66.90000009536743,
+        "timing": {
+          "graphMs": 25,
+          "graphCached": false,
+          "snapComponentMs": 2.6999998092651367,
+          "searchMs": 25.800000190734863,
+          "totalMs": 53.700000047683716,
+          "anchorNodeProjections": 2683,
+          "pathExpansions": 64878
+        },
+        "transferMs": 2.6000001430511475,
+        "frames": 6,
+        "maxFrameGapMs": 16.700000000000273,
+        "longTasks": [],
+        "quality": {
+          "lengthM": 3729.6444202340294,
+          "error": 0.18718269091070397,
+          "repeated": 0.009774537101037054,
+          "roundness": 0.39607301703338554,
+          "points": 197
+        }
+      },
+      {
+        "mode": "warm-worker-cached-graph",
+        "strategy": "nearest",
+        "round": 2,
+        "totalWallMs": 23.300000190734863,
+        "timing": {
+          "graphMs": 0,
+          "graphCached": true,
+          "snapComponentMs": 2.5,
+          "searchMs": 20.59999990463257,
+          "totalMs": 23.09999990463257,
+          "anchorNodeProjections": 2683,
+          "pathExpansions": 64878
+        },
+        "transferMs": 0,
+        "frames": 3,
+        "maxFrameGapMs": 18.40000000000009,
+        "longTasks": [],
+        "quality": {
+          "lengthM": 3729.6444202340294,
+          "error": 0.18718269091070397,
+          "repeated": 0.009774537101037054,
+          "roundness": 0.39607301703338554,
+          "points": 197
+        }
+      },
+      {
+        "mode": "cold-worker-cold-graph",
+        "strategy": "joint",
+        "round": 2,
+        "totalWallMs": 277.2999999523163,
+        "timing": {
+          "graphMs": 25.600000143051147,
+          "graphCached": false,
+          "snapComponentMs": 2.8999998569488525,
+          "searchMs": 232.20000004768372,
+          "totalMs": 261,
+          "anchorNodeProjections": 2683,
+          "pathExpansions": 1149961
+        },
+        "transferMs": 2.6000001430511475,
+        "frames": 18,
+        "maxFrameGapMs": 17.59999999999991,
+        "longTasks": [],
+        "quality": {
+          "lengthM": 3690.3712571162555,
+          "error": 0.1746816548286079,
+          "repeated": 0.005222957717723833,
+          "roundness": 0.4060655326443076,
+          "points": 192
+        }
+      },
+      {
+        "mode": "warm-worker-cached-graph",
+        "strategy": "joint",
+        "round": 2,
+        "totalWallMs": 217.60000014305115,
+        "timing": {
+          "graphMs": 0,
+          "graphCached": true,
+          "snapComponentMs": 2.299999952316284,
+          "searchMs": 215.20000004768372,
+          "totalMs": 217.5,
+          "anchorNodeProjections": 2683,
+          "pathExpansions": 1149961
+        },
+        "transferMs": 0,
+        "frames": 15,
+        "maxFrameGapMs": 18.200000000000273,
+        "longTasks": [],
+        "quality": {
+          "lengthM": 3690.3712571162555,
+          "error": 0.1746816548286079,
+          "repeated": 0.005222957717723833,
+          "roundness": 0.4060655326443076,
+          "points": 192
+        }
+      }
+    ],
+    "cancel": {
+      "delayMs": 24.799999952316284,
+      "rejectLatencyMs": 3.799999952316284,
+      "outcome": "AbortError"
+    },
+    "recovery": {
+      "mode": "after-cancel",
+      "strategy": "nearest",
+      "round": 0,
+      "totalWallMs": 75.59999990463257,
+      "timing": {
+        "graphMs": 26.40000009536743,
+        "graphCached": false,
+        "snapComponentMs": 3.200000047683716,
+        "searchMs": 28.799999952316284,
+        "totalMs": 58.700000047683716,
+        "anchorNodeProjections": 2683,
+        "pathExpansions": 64878
+      },
+      "transferMs": 2.700000047683716,
+      "frames": 7,
+      "maxFrameGapMs": 18,
+      "longTasks": [],
+      "quality": {
+        "lengthM": 3729.6444202340294,
+        "error": 0.18718269091070397,
+        "repeated": 0.009774537101037054,
+        "roundness": 0.39607301703338554,
+        "points": 197
+      }
+    }
+  },
+  "environmentNote": "Ant timing released; no other validation/Java/browser benchmark overlapped modes. Preflight observed background macOS Virtualization process at 15.7% CPU; no claim of idle OS or phone-equivalent execution. MacOS26.6.2, AppleM5/10logicalCPUs/32GiB."
+}

@@ -1,5 +1,7 @@
 # Local routing strategy comparison
 
+This records the initial comparison at `4224a98`. The subsequently approved CPU and real synthetic GraphHopper experiments are now complete: see [local-worker-and-engine-measurements.md](local-worker-and-engine-measurements.md). Statements below about pending installation/unmeasured engines describe the initial checkpoint.
+
 Local only, based on published `b918255` plus the unpublished HTTP-error patch `1568c555`. Neither main nor the remote is changed. No provider requests, accounts, credentials, installations or deployments were used in this comparison. The app still defaults to nearest-anchor search and corridor coverage.
 
 ## Run and select independently
