@@ -1,4 +1,4 @@
-import type { SearchOptions } from './strategies';
+import { normalizeSearchLimits, SearchFailure, searchLimitMessage, type SearchOptions } from './strategies';
 import { CoverageGapError } from './coverage';
 import type { NetworkResult } from './overpass';
 import type { Route, Settings, SolveTiming, WorkerResponse } from './types';
@@ -7,15 +7,17 @@ export class SearchClient {
   private worker?: Worker;
   private dataset = '';
   private sequence = 0;
-  private active?: { id: number; reject: (error: unknown) => void; signal: AbortSignal; abort: () => void };
+  private active?: { id: number; reject: (error: unknown) => void; signal: AbortSignal; abort: () => void; timer?: ReturnType<typeof setTimeout> };
   cancel() {
     const active = this.active; this.active = undefined;
-    if (active) active.signal.removeEventListener('abort', active.abort);
+    if (active) { active.signal.removeEventListener('abort', active.abort); clearTimeout(active.timer); }
     this.worker?.terminate(); this.worker = undefined; this.dataset = '';
     active?.reject(active.signal.reason ?? new DOMException('Cancelled', 'AbortError'));
   }
   search = (network: NetworkResult, settings: Settings, signal: AbortSignal, progress: (message: string) => void, options: SearchOptions = {}): Promise<SearchResult> => {
+    const requestedAt = performance.now(), limits = normalizeSearchLimits(options.limits);
     if (signal.aborted) return Promise.reject(signal.reason ?? new DOMException('Cancelled', 'AbortError'));
+    if (limits.timeMs <= 0 || limits.expansions <= 0) return Promise.reject(new SearchFailure(searchLimitMessage, undefined, limits.timeMs <= 0));
     if (this.active) return Promise.reject(new Error('A route search is already running.'));
     const instance = this.worker ?? new Worker(new URL('./worker.ts', import.meta.url), { type: 'module' });
     this.worker = instance;
@@ -23,15 +25,21 @@ export class SearchClient {
     return new Promise((resolve, reject) => {
       const abort = () => this.cancel();
       this.active = { id, reject, signal, abort }; signal.addEventListener('abort', abort, { once: true });
-      const clear = () => { signal.removeEventListener('abort', abort); if (this.active?.id === id) this.active = undefined; };
+      const clear = () => { signal.removeEventListener('abort', abort); if (this.active?.id === id) { clearTimeout(this.active.timer); this.active = undefined; } };
+      this.active.timer = setTimeout(() => {
+        if (this.active?.id !== id) return;
+        clear(); instance.terminate(); this.worker = undefined; this.dataset = '';
+        reject(new SearchFailure(searchLimitMessage, undefined, true));
+      }, Math.max(0, limits.timeMs - (performance.now() - requestedAt)));
       let transferMs = 0;
       instance.onmessage = (event: MessageEvent<WorkerResponse>) => {
         const message = event.data;
         if (signal.aborted || this.active?.id !== id || message.id !== id) return;
         if (message.type === 'progress') { progress(message.message); return; }
         clear();
+        if (message.timing) message.timing.clientElapsedMs = performance.now() - requestedAt;
         if (message.type === 'result') resolve({ route: message.route, timing: message.timing, transferMs });
-        else reject(message.gaps?.length ? new CoverageGapError(message.message, message.gaps, message.startNodeId) : new Error(message.message));
+        else reject(message.gaps?.length ? new CoverageGapError(message.message, message.gaps, message.startNodeId, message.timing) : new SearchFailure(message.message, message.timing));
       };
       instance.onerror = event => {
         if (this.active?.id !== id) return;
@@ -40,7 +48,7 @@ export class SearchClient {
       };
       try {
         const started = performance.now();
-        instance.postMessage({ id, datasetId: network.datasetId, data: this.dataset === network.datasetId ? undefined : network.data, sourceCoverage: network.sourceCoverage, coverage: network.coverage, settings, options });
+        instance.postMessage({ id, datasetId: network.datasetId, data: this.dataset === network.datasetId ? undefined : network.data, sourceCoverage: network.sourceCoverage, coverage: network.coverage, settings, options: { ...options, limits } });
         transferMs = performance.now() - started; this.dataset = network.datasetId;
       } catch (error) { clear(); instance.terminate(); this.worker = undefined; this.dataset = ''; reject(error); }
     });

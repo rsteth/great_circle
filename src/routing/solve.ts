@@ -1,4 +1,4 @@
-import type { SearchOptions } from './strategies';
+import { NoLoopError, type SearchBudget, type SearchOptions } from './strategies';
 import { CoverageGapError } from './coverage';
 import { angleDelta, distance, offset, roundness, trackLength, xy } from './geo';
 import { MAX_CIRCLE_RADIUS_M, MAX_SHARED_QUERY_RADIUS_M } from './limits';
@@ -35,7 +35,7 @@ class Heap<T> {
     return first;
   }
 }
-type Budget = { remaining: number; deadline: number };
+type Budget = SearchBudget;
 class SearchLimit extends Error {}
 const edgeKeys = new WeakMap<Edge, string>(), physicalKeys = new WeakMap<Edge, string>();
 const edgeKey = (edge: Edge) => { let key = edgeKeys.get(edge); if (key === undefined) { key = `${edge.to}/${edge.from}/${edge.way}`; edgeKeys.set(edge, key); } return key; };
@@ -53,8 +53,8 @@ export function shortestPath(graph: Graph, from: number, to: number, options: { 
     const { cost, value: state } = heap.pop();
     if (cost !== costs.get(stateKey(state))) continue;
     if (options.budget) {
+      if (options.budget.remaining <= 0 || (options.budget.remaining % 512 === 0 && performance.now() >= options.budget.deadline)) throw new SearchLimit();
       options.budget.remaining--;
-      if (options.budget.remaining < 0 || (options.budget.remaining % 512 === 0 && Date.now() > options.budget.deadline)) throw new SearchLimit();
     }
     if (state.node === to && state.previous && options.excludeArrivals?.has(edgeKey(state.previous))) continue;
     if (state.node === to && (!options.first || turnAllowed(graph, state.previous, options.first))) {
@@ -237,7 +237,7 @@ export function validateSettings(settings: Settings) {
   if (Math.abs(settings.center.lon) + settings.radiusM / (111000 * Math.cos(settings.center.lat * Math.PI / 180)) >= 180) throw new Error('Choose an area that does not cross the date line.');
 }
 
-export function solve(data: OsmData, settings: Settings, progress: (message: string) => void = () => {}, options: SearchOptions & { graph?: Graph; timing?: SolveTiming } = {}): Route {
+export function solve(data: OsmData, settings: Settings, progress: (message: string) => void = () => {}, options: SearchOptions & { graph?: Graph; timing?: SolveTiming; budget?: SearchBudget } = {}): Route {
   const started = performance.now();
   validateSettings(settings);
   let graph = options.graph ?? loopCore(buildGraph(data, settings));
@@ -286,7 +286,8 @@ export function solve(data: OsmData, settings: Settings, progress: (message: str
   if (options.strategy !== 'joint' && settings.circleRadiusM !== undefined) circles.push(...circles.map(circle => ({ ...circle, junctions: true })));
   const junctions = new Set([...graph.edges].filter(([, edges]) => new Set(edges.map(edge => edge.to)).size >= 3).map(([id]) => id));
   let primaryCandidates = 0;
-  const budget: Budget = { remaining: 1800000, deadline: Date.now() + 14000 };
+  const budget: Budget = options.budget ?? { remaining: 1800000, deadline: performance.now() + 14000 };
+  const startingExpansions = budget.remaining;
   let best: Route | undefined;
   let bestScore = Infinity;
   let candidates = 0;
@@ -297,7 +298,7 @@ export function solve(data: OsmData, settings: Settings, progress: (message: str
   const radialCosts = new Map<string, Map<number, number>>();
   for (let index = 0; index < circles.length; index++) {
     if (index === originalCircleCount && best) break;
-    if (Date.now() > budget.deadline || budget.remaining <= 0) { limited = true; break; }
+    if (performance.now() > budget.deadline || budget.remaining <= 0) { limited = true; break; }
     const circle = circles[index];
     progress(`Comparing road loops · ${index + 1} of ${circles.length}`);
     const centerKey = `${circle.center.lat}/${circle.center.lon}`;
@@ -350,11 +351,11 @@ export function solve(data: OsmData, settings: Settings, progress: (message: str
       const score = error * 3 + (1 - round) * 1.5 + repeated * 4;
       if (score < bestScore) {
         bestScore = score;
-        best = { points, startNodeId: start, searchStrategy: options.strategy ?? 'nearest', radialDeviation: radialDeviation(points, settings.center, settings.circleRadiusM ?? circle.radius), lengthM, error, roundness: round, repeated, unknownSurface: unknownM / lengthM, snapM, circleCenter: circle.center, circleRadiusM: circle.radius, candidates, notes: [...graph.notes, ...(circle.junctions ? ['Used alternative junction anchors after the nearest anchors failed.'] : [])], dataTimestamp: data.osm3s?.timestamp_osm_base };
+        best = { points, startNodeId: start, searchStrategy: options.strategy === 'joint' ? 'joint' : 'nearest', radialDeviation: radialDeviation(points, settings.center, settings.circleRadiusM ?? circle.radius), lengthM, error, roundness: round, repeated, unknownSurface: unknownM / lengthM, snapM, circleCenter: circle.center, circleRadiusM: circle.radius, candidates, notes: [...graph.notes, ...(circle.junctions ? ['Used alternative junction anchors after the nearest anchors failed.'] : [])], dataTimestamp: data.osm3s?.timestamp_osm_base };
       }
     }
   }
-  if (options.timing) { options.timing.searchMs = performance.now() - searchStarted; options.timing.pathExpansions = 1800000 - budget.remaining; options.timing.totalMs = performance.now() - started; }
+  if (options.timing) { options.timing.searchMs = performance.now() - searchStarted; options.timing.pathExpansions = startingExpansions - budget.remaining; options.timing.totalMs = performance.now() - started; }
   if (!best) {
     if (!primaryCandidates && missingConnections.length && graph.coverage?.kind === 'corridor' && graph.frontier?.length) {
       const ranked = [...graph.frontier].sort((a, b) => Math.min(...missingConnections.map(point => distance(a, point))) - Math.min(...missingConnections.map(point => distance(b, point))));
@@ -362,10 +363,10 @@ export function solve(data: OsmData, settings: Settings, progress: (message: str
       throw new CoverageGapError('A connection reaches the downloaded corridor boundary.', gaps, start);
     }
     const hint = Number.isFinite(closestError) ? ` Closest closed candidate was ${Math.round(closestError * 100)}% from the target.` : '';
-    throw new Error(`No sufficiently circular closed loop found within ±${Math.round(settings.tolerance * 100)}% of your target.${hint} Try a smaller circle, move its center or Start, increase Route variation, or use mixed surfaces.${graph.coverage?.kind === 'corridor' ? ' No loop was found within downloaded coverage; wider detours are unknown.' : ''}${limited ? ' The bounded search reached its limit.' : ''}`);
+    throw new NoLoopError(`No sufficiently circular closed loop found within ±${Math.round(settings.tolerance * 100)}% of your target.${hint} Try a smaller circle, move its center or Start, increase Route variation, or use mixed surfaces.${graph.coverage?.kind === 'corridor' ? ' No loop was found within downloaded coverage; wider detours are unknown.' : ''}${limited ? ' The bounded search reached its limit.' : ''}`, start);
   }
   best.candidates = candidates;
-  limited ||= budget.remaining < 0 || Date.now() > budget.deadline;
+  limited ||= budget.remaining < 0 || performance.now() > budget.deadline;
   if (limited) best.notes.push('Search stopped at its time/work limit; this is the best acceptable loop found so far.');
   if (best.snapM > 25) best.notes.push(`Start snapped ${Math.round(best.snapM)} m to the cycling network. Travel to the snapped start is not included.`);
   if (best.repeated > 0.02) best.notes.push(`${Math.round(best.repeated * 100)}% of the distance repeats a mapped section.`);

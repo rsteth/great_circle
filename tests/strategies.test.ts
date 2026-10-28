@@ -33,10 +33,10 @@ export function assertLegal(route: Route, graph: Graph) {
   expect(route.error).toBeLessThanOrEqual(.3); expect(route.repeated).toBeLessThanOrEqual(.2);
   expect(toGpx(route).match(/<trkpt /g)).toHaveLength(route.points.length);
 }
-it('selects search and coverage independently; unknown URL values preserve baseline', () => {
-  expect(comparisonOptions('')).toEqual({ searchStrategy: 'nearest', coverageStrategy: 'corridor' });
+it('selects search and coverage independently; defaults and unknown URL values use hybrid', () => {
+  expect(comparisonOptions('')).toEqual({ searchStrategy: 'hybrid', coverageStrategy: 'corridor' });
   expect(comparisonOptions('?routeSearch=joint')).toEqual({ searchStrategy: 'joint', coverageStrategy: 'corridor' });
-  expect(comparisonOptions('?roadCoverage=hybrid-small')).toEqual({ searchStrategy: 'nearest', coverageStrategy: 'hybrid-small' });
+  expect(comparisonOptions('?roadCoverage=hybrid-small')).toEqual({ searchStrategy: 'hybrid', coverageStrategy: 'hybrid-small' });
   expect(comparisonOptions('?routeSearch=bad&roadCoverage=bad')).toEqual(comparisonOptions(''));
 });
 it('uses an explicitly queried padded disk only at <=1km; never calls corridor coverage a disk', () => {
@@ -57,7 +57,7 @@ it('joint choices recover a grid loop without moving the snapped Start or relaxi
   const full = denseGrid(), settings = changeCircle(circleFixture().settings, { radiusM: 1000, bearing: 90 });
   for (const coverageStrategy of ['corridor', 'hybrid-small'] as CoverageStrategy[]) {
     const coverage = initialCoverage(settings, coverageStrategy), data = selectCompleteWays(full, coverage), engine = new RoutingEngine(); engine.setData(data, coverage);
-    expect(() => engine.solve(settings, () => {}, coverage)).toThrow('27%');
+    expect(() => engine.solve(settings, () => {}, coverage, { strategy: 'nearest' })).toThrow('27%');
     const result = engine.solve(settings, () => {}, coverage, { strategy: 'joint' });
     expect(result.route.lengthM).toBeCloseTo(6500, 3); expect(result.route.error).toBeLessThan(.04); expect(result.route.repeated).toBe(0);
     expect(distance(result.route.points[0], settings.start)).toBeLessThan(.1);

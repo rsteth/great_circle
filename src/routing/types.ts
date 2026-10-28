@@ -44,6 +44,7 @@ export type Route = {
   searchStrategy?: 'nearest' | 'joint';
 };
 export type NetworkTiming = { fetchMs: number; parseMs: number; bytes: number; cacheHit: boolean; elements: number; queryAreaM2: number; queryVertices: number };
-export type SolveTiming = { graphMs: number; graphCached: boolean; snapComponentMs: number; searchMs: number; totalMs: number; anchorNodeProjections: number; pathExpansions: number };
+export type SearchStageTiming = { strategy: 'nearest' | 'joint'; status: 'success' | 'no-loop' | 'limit' | 'error'; elapsedMs: number; pathExpansions: number; startNodeId?: number };
+export type SolveTiming = { clientElapsedMs?: number; stages?: SearchStageTiming[]; searchBudget?: { expansionLimit: number; timeLimitMs: number; remainingExpansions: number; remainingTimeMs: number }; graphMs: number; graphCached: boolean; snapComponentMs: number; searchMs: number; totalMs: number; anchorNodeProjections: number; pathExpansions: number };
 export type WorkerRequest = { id: number; datasetId: string; data?: OsmData; sourceCoverage?: Coverage; coverage?: Coverage; settings: Settings; options?: SearchOptions };
-export type WorkerResponse = { id: number } & ({ type: 'progress'; message: string } | { type: 'result'; route: Route; timing: SolveTiming } | { type: 'error'; message: string; gaps?: Point[]; startNodeId?: number });
+export type WorkerResponse = { id: number } & ({ type: 'progress'; message: string } | { type: 'result'; route: Route; timing: SolveTiming } | { type: 'error'; message: string; gaps?: Point[]; startNodeId?: number; timing?: SolveTiming });

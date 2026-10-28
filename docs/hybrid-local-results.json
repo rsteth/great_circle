@@ -1,0 +1,618 @@
+{
+  "protocol": "One cold Node engine diagnostic per fixture; no isolated performance claim. CPU user/system brackets graph+solve on the caller thread; does not include loading/JSON/worker startup or other runtime threads. Local elapsed metrics and mock download counts are separate. Background VM22.4%, WebKitGPU5.5% at preflight; no substantial benchmark performed. Actual browser-worker behavior tested separately.",
+  "node": "v25.9.0",
+  "providerRequests": 0,
+  "fetchDisabled": true,
+  "results": [
+    {
+      "name": "fast-ring",
+      "success": true,
+      "localTotalElapsedMs": 5.0794580000000025,
+      "cpu": [
+        {
+          "userMs": 3.615,
+          "systemMs": 0.354
+        }
+      ],
+      "downloads": [
+        {
+          "kind": "corridor",
+          "patches": [],
+          "elements": 65,
+          "normalizedBytes": 5028
+        }
+      ],
+      "metrics": {
+        "network": {
+          "fetchMs": 0,
+          "parseMs": 0,
+          "bytes": 5028,
+          "cacheHit": false,
+          "elements": 65,
+          "queryAreaM2": 0,
+          "queryVertices": 0
+        },
+        "networkAttempts": [
+          {
+            "fetchMs": 0,
+            "parseMs": 0,
+            "bytes": 5028,
+            "cacheHit": false,
+            "elements": 65,
+            "queryAreaM2": 0,
+            "queryVertices": 0
+          }
+        ],
+        "requests": 1,
+        "bytes": 5028,
+        "elements": 65,
+        "elapsedMs": 4.643874999999994,
+        "searchAttempts": [
+          {
+            "graphMs": 1.771166000000008,
+            "graphCached": false,
+            "snapComponentMs": 0.1628340000000037,
+            "searchMs": 1.6032499999999885,
+            "totalMs": 3.8034580000000062,
+            "anchorNodeProjections": 64,
+            "pathExpansions": 477,
+            "stages": [
+              {
+                "strategy": "nearest",
+                "status": "success",
+                "elapsedMs": 1.9811669999999992,
+                "pathExpansions": 477,
+                "startNodeId": 1
+              }
+            ],
+            "searchBudget": {
+              "expansionLimit": 1800000,
+              "timeLimitMs": 14000,
+              "remainingExpansions": 1799523,
+              "remainingTimeMs": 13996.196542
+            }
+          }
+        ],
+        "searchTimedOut": false,
+        "searchWork": {
+          "expansions": 477,
+          "localElapsedMs": 3.803458000000319,
+          "expansionLimit": 1800000,
+          "timeLimitMs": 14000
+        },
+        "transferMs": 0,
+        "worker": {
+          "graphMs": 1.771166000000008,
+          "graphCached": false,
+          "snapComponentMs": 0.1628340000000037,
+          "searchMs": 1.6032499999999885,
+          "totalMs": 3.8034580000000062,
+          "anchorNodeProjections": 64,
+          "pathExpansions": 477,
+          "stages": [
+            {
+              "strategy": "nearest",
+              "status": "success",
+              "elapsedMs": 1.9811669999999992,
+              "pathExpansions": 477,
+              "startNodeId": 1
+            }
+          ],
+          "searchBudget": {
+            "expansionLimit": 1800000,
+            "timeLimitMs": 14000,
+            "remainingExpansions": 1799523,
+            "remainingTimeMs": 13996.196542
+          }
+        },
+        "coverage": "corridor",
+        "searchStrategy": "hybrid",
+        "coverageStrategy": "corridor"
+      },
+      "progress": [
+        "Loading roads near the circle…",
+        "Building a directed cycling network…",
+        "Finding a loop…",
+        "Quick search · Comparing road loops · 1 of 12",
+        "Quick search · Comparing road loops · 2 of 12",
+        "Quick search · Comparing road loops · 3 of 12",
+        "Quick search · Comparing road loops · 4 of 12",
+        "Quick search · Comparing road loops · 5 of 12",
+        "Quick search · Comparing road loops · 6 of 12"
+      ],
+      "route": {
+        "lengthM": 6280.662291415634,
+        "error": 0.0004015504303316816,
+        "roundness": 0.9991966876422534,
+        "repeated": 0,
+        "startNodeId": 1,
+        "points": 65,
+        "gpxSha256": "7032cb591644570ec0ae1ce85e074b297389dddfd95a077d7686440451d3f323"
+      }
+    },
+    {
+      "name": "fallback-grid",
+      "success": true,
+      "localTotalElapsedMs": 16.670874999999995,
+      "cpu": [
+        {
+          "userMs": 12.952,
+          "systemMs": 0.124
+        }
+      ],
+      "downloads": [
+        {
+          "kind": "corridor",
+          "patches": [],
+          "elements": 304,
+          "normalizedBytes": 26090
+        }
+      ],
+      "metrics": {
+        "network": {
+          "fetchMs": 0,
+          "parseMs": 0,
+          "bytes": 26090,
+          "cacheHit": false,
+          "elements": 304,
+          "queryAreaM2": 0,
+          "queryVertices": 0
+        },
+        "networkAttempts": [
+          {
+            "fetchMs": 0,
+            "parseMs": 0,
+            "bytes": 26090,
+            "cacheHit": false,
+            "elements": 304,
+            "queryAreaM2": 0,
+            "queryVertices": 0
+          }
+        ],
+        "requests": 1,
+        "bytes": 26090,
+        "elements": 304,
+        "elapsedMs": 16.634666999999993,
+        "searchAttempts": [
+          {
+            "graphMs": 1.3599159999999983,
+            "graphCached": false,
+            "snapComponentMs": 0.18095900000000142,
+            "searchMs": 11.519833000000006,
+            "totalMs": 13.129041,
+            "anchorNodeProjections": 152,
+            "pathExpansions": 29581,
+            "stages": [
+              {
+                "strategy": "nearest",
+                "status": "no-loop",
+                "elapsedMs": 1.7293330000000111,
+                "pathExpansions": 2238,
+                "startNodeId": 317
+              },
+              {
+                "strategy": "joint",
+                "status": "success",
+                "elapsedMs": 10.031875,
+                "pathExpansions": 27343,
+                "startNodeId": 317
+              }
+            ],
+            "searchBudget": {
+              "expansionLimit": 1800000,
+              "timeLimitMs": 14000,
+              "remainingExpansions": 1770419,
+              "remainingTimeMs": 13986.870959
+            }
+          }
+        ],
+        "searchTimedOut": false,
+        "searchWork": {
+          "expansions": 29581,
+          "localElapsedMs": 13.129041000000143,
+          "expansionLimit": 1800000,
+          "timeLimitMs": 14000
+        },
+        "transferMs": 0,
+        "worker": {
+          "graphMs": 1.3599159999999983,
+          "graphCached": false,
+          "snapComponentMs": 0.18095900000000142,
+          "searchMs": 11.519833000000006,
+          "totalMs": 13.129041,
+          "anchorNodeProjections": 152,
+          "pathExpansions": 29581,
+          "stages": [
+            {
+              "strategy": "nearest",
+              "status": "no-loop",
+              "elapsedMs": 1.7293330000000111,
+              "pathExpansions": 2238,
+              "startNodeId": 317
+            },
+            {
+              "strategy": "joint",
+              "status": "success",
+              "elapsedMs": 10.031875,
+              "pathExpansions": 27343,
+              "startNodeId": 317
+            }
+          ],
+          "searchBudget": {
+            "expansionLimit": 1800000,
+            "timeLimitMs": 14000,
+            "remainingExpansions": 1770419,
+            "remainingTimeMs": 13986.870959
+          }
+        },
+        "coverage": "corridor",
+        "searchStrategy": "hybrid",
+        "coverageStrategy": "corridor"
+      },
+      "progress": [
+        "Loading roads near the circle…",
+        "Building a directed cycling network…",
+        "Finding a loop…",
+        "Quick search · Comparing road loops · 1 of 12",
+        "Quick search · Comparing road loops · 2 of 12",
+        "Quick search · Comparing road loops · 3 of 12",
+        "Quick search · Comparing road loops · 4 of 12",
+        "Quick search · Comparing road loops · 5 of 12",
+        "Quick search · Comparing road loops · 6 of 12",
+        "Quick search · Comparing road loops · 7 of 12",
+        "Quick search · Comparing road loops · 8 of 12",
+        "Quick search · Comparing road loops · 9 of 12",
+        "Quick search · Comparing road loops · 10 of 12",
+        "Quick search · Comparing road loops · 11 of 12",
+        "Quick search · Comparing road loops · 12 of 12",
+        "Trying a more flexible loop on the same roads…",
+        "Flexible search · Comparing road loops · 1 of 6",
+        "Flexible search · Comparing road loops · 2 of 6",
+        "Flexible search · Comparing road loops · 3 of 6",
+        "Flexible search · Comparing road loops · 4 of 6",
+        "Flexible search · Comparing road loops · 5 of 6",
+        "Flexible search · Comparing road loops · 6 of 6"
+      ],
+      "route": {
+        "lengthM": 6499.999978521347,
+        "error": 0.034507126678885953,
+        "roundness": 0.7063936190843866,
+        "repeated": 0,
+        "startNodeId": 317,
+        "points": 27,
+        "gpxSha256": "675c0459848133214cc7d429a29305940fab0c6f95b68919a9cdda68d4baa130"
+      }
+    },
+    {
+      "name": "clean-restricted-failure",
+      "success": false,
+      "localTotalElapsedMs": 2.5079999999999956,
+      "cpu": [
+        {
+          "userMs": 2.144,
+          "systemMs": 0.024
+        }
+      ],
+      "downloads": [
+        {
+          "kind": "corridor",
+          "patches": [],
+          "elements": 66,
+          "normalizedBytes": 5215
+        }
+      ],
+      "metrics": {
+        "network": {
+          "fetchMs": 0,
+          "parseMs": 0,
+          "bytes": 5215,
+          "cacheHit": false,
+          "elements": 66,
+          "queryAreaM2": 0,
+          "queryVertices": 0
+        },
+        "networkAttempts": [
+          {
+            "fetchMs": 0,
+            "parseMs": 0,
+            "bytes": 5215,
+            "cacheHit": false,
+            "elements": 66,
+            "queryAreaM2": 0,
+            "queryVertices": 0
+          }
+        ],
+        "requests": 1,
+        "bytes": 5215,
+        "elements": 66,
+        "elapsedMs": 2.4637089999999944,
+        "searchAttempts": [
+          {
+            "graphMs": 0.41933300000000884,
+            "graphCached": false,
+            "snapComponentMs": 0.11537600000001191,
+            "searchMs": 1.5428329999999875,
+            "totalMs": 2.170166000000009,
+            "anchorNodeProjections": 128,
+            "pathExpansions": 4842,
+            "stages": [
+              {
+                "strategy": "nearest",
+                "status": "no-loop",
+                "elapsedMs": 0.3975420000000014,
+                "pathExpansions": 414,
+                "startNodeId": 1
+              },
+              {
+                "strategy": "joint",
+                "status": "no-loop",
+                "elapsedMs": 1.3279169999999993,
+                "pathExpansions": 4428,
+                "startNodeId": 1
+              }
+            ],
+            "searchBudget": {
+              "expansionLimit": 1800000,
+              "timeLimitMs": 14000,
+              "remainingExpansions": 1795158,
+              "remainingTimeMs": 13997.829834
+            }
+          }
+        ],
+        "searchTimedOut": false,
+        "searchWork": {
+          "expansions": 4842,
+          "localElapsedMs": 2.170165999999881,
+          "expansionLimit": 1800000,
+          "timeLimitMs": 14000
+        }
+      },
+      "progress": [
+        "Loading roads near the circle…",
+        "Building a directed cycling network…",
+        "Finding a loop…",
+        "Quick search · Comparing road loops · 1 of 12",
+        "Quick search · Comparing road loops · 2 of 12",
+        "Quick search · Comparing road loops · 3 of 12",
+        "Quick search · Comparing road loops · 4 of 12",
+        "Quick search · Comparing road loops · 5 of 12",
+        "Quick search · Comparing road loops · 6 of 12",
+        "Quick search · Comparing road loops · 7 of 12",
+        "Quick search · Comparing road loops · 8 of 12",
+        "Quick search · Comparing road loops · 9 of 12",
+        "Quick search · Comparing road loops · 10 of 12",
+        "Quick search · Comparing road loops · 11 of 12",
+        "Quick search · Comparing road loops · 12 of 12",
+        "Trying a more flexible loop on the same roads…",
+        "Flexible search · Comparing road loops · 1 of 6",
+        "Flexible search · Comparing road loops · 2 of 6",
+        "Flexible search · Comparing road loops · 3 of 6",
+        "Flexible search · Comparing road loops · 4 of 6",
+        "Flexible search · Comparing road loops · 5 of 6",
+        "Flexible search · Comparing road loops · 6 of 6"
+      ],
+      "error": "No sufficiently circular closed loop found within ±20% of your target. Try a smaller circle, move its center or Start, increase Route variation, or use mixed surfaces. No loop was found within downloaded coverage; wider detours are unknown."
+    },
+    {
+      "name": "saved-default-with-one-expansion",
+      "success": true,
+      "localTotalElapsedMs": 262.839541,
+      "cpu": [
+        {
+          "userMs": 206.411,
+          "systemMs": 1.972
+        },
+        {
+          "userMs": 47.003,
+          "systemMs": 1.567
+        }
+      ],
+      "downloads": [
+        {
+          "kind": "corridor",
+          "patches": [],
+          "elements": 8478,
+          "normalizedBytes": 1125785
+        },
+        {
+          "kind": "corridor",
+          "patches": [
+            {
+              "kind": "disk",
+              "center": {
+                "lat": 49.289824,
+                "lon": -123.126263
+              },
+              "radiusM": 1025
+            },
+            {
+              "kind": "disk",
+              "center": {
+                "lat": 49.288765,
+                "lon": -123.117445
+              },
+              "radiusM": 1025
+            }
+          ],
+          "elements": 13875,
+          "normalizedBytes": 1892856
+        }
+      ],
+      "metrics": {
+        "network": {
+          "fetchMs": 0,
+          "parseMs": 0,
+          "bytes": 1892856,
+          "cacheHit": false,
+          "elements": 13875,
+          "queryAreaM2": 0,
+          "queryVertices": 0
+        },
+        "networkAttempts": [
+          {
+            "fetchMs": 0,
+            "parseMs": 0,
+            "bytes": 1125785,
+            "cacheHit": false,
+            "elements": 8478,
+            "queryAreaM2": 0,
+            "queryVertices": 0
+          },
+          {
+            "fetchMs": 0,
+            "parseMs": 0,
+            "bytes": 1892856,
+            "cacheHit": false,
+            "elements": 13875,
+            "queryAreaM2": 0,
+            "queryVertices": 0
+          }
+        ],
+        "requests": 2,
+        "bytes": 3018641,
+        "elements": 22353,
+        "elapsedMs": 262.80054199999995,
+        "searchAttempts": [
+          {
+            "graphMs": 17.402458000000024,
+            "graphCached": false,
+            "snapComponentMs": 3.0185829999999783,
+            "searchMs": 187.661209,
+            "totalMs": 209.14516700000001,
+            "anchorNodeProjections": 2932,
+            "pathExpansions": 856990,
+            "stages": [
+              {
+                "strategy": "nearest",
+                "status": "no-loop",
+                "elapsedMs": 26.01733299999998,
+                "pathExpansions": 56922,
+                "startNodeId": 5697946446
+              },
+              {
+                "strategy": "joint",
+                "status": "no-loop",
+                "elapsedMs": 165.712125,
+                "pathExpansions": 800068,
+                "startNodeId": 5697946446
+              }
+            ],
+            "searchBudget": {
+              "expansionLimit": 1800000,
+              "timeLimitMs": 14000,
+              "remainingExpansions": 943010,
+              "remainingTimeMs": 13790.854833
+            }
+          },
+          {
+            "graphMs": 18.55145799999997,
+            "graphCached": false,
+            "snapComponentMs": 2.3179999999999836,
+            "searchMs": 28.227333000000044,
+            "totalMs": 49.11908299999999,
+            "anchorNodeProjections": 2683,
+            "pathExpansions": 64878,
+            "stages": [
+              {
+                "strategy": "nearest",
+                "status": "success",
+                "elapsedMs": 30.56087500000001,
+                "pathExpansions": 64878,
+                "startNodeId": 5697946446
+              }
+            ],
+            "searchBudget": {
+              "expansionLimit": 943010,
+              "timeLimitMs": 13790.854833,
+              "remainingExpansions": 878132,
+              "remainingTimeMs": 13741.73575
+            }
+          }
+        ],
+        "searchTimedOut": false,
+        "searchWork": {
+          "expansions": 921868,
+          "localElapsedMs": 258.2642500000002,
+          "expansionLimit": 1800000,
+          "timeLimitMs": 14000
+        },
+        "transferMs": 0,
+        "worker": {
+          "graphMs": 18.55145799999997,
+          "graphCached": false,
+          "snapComponentMs": 2.3179999999999836,
+          "searchMs": 28.227333000000044,
+          "totalMs": 49.11908299999999,
+          "anchorNodeProjections": 2683,
+          "pathExpansions": 64878,
+          "stages": [
+            {
+              "strategy": "nearest",
+              "status": "success",
+              "elapsedMs": 30.56087500000001,
+              "pathExpansions": 64878,
+              "startNodeId": 5697946446
+            }
+          ],
+          "searchBudget": {
+            "expansionLimit": 943010,
+            "timeLimitMs": 13790.854833,
+            "remainingExpansions": 878132,
+            "remainingTimeMs": 13741.73575
+          }
+        },
+        "coverage": "corridor",
+        "searchStrategy": "hybrid",
+        "coverageStrategy": "corridor"
+      },
+      "progress": [
+        "Loading roads near the circle…",
+        "Building a directed cycling network…",
+        "Finding a loop…",
+        "Quick search · Comparing road loops · 1 of 12",
+        "Quick search · Comparing road loops · 2 of 12",
+        "Quick search · Comparing road loops · 3 of 12",
+        "Quick search · Comparing road loops · 4 of 12",
+        "Quick search · Comparing road loops · 5 of 12",
+        "Quick search · Comparing road loops · 6 of 12",
+        "Quick search · Comparing road loops · 7 of 12",
+        "Quick search · Comparing road loops · 8 of 12",
+        "Quick search · Comparing road loops · 9 of 12",
+        "Quick search · Comparing road loops · 10 of 12",
+        "Quick search · Comparing road loops · 11 of 12",
+        "Quick search · Comparing road loops · 12 of 12",
+        "Trying a more flexible loop on the same roads…",
+        "Flexible search · Comparing road loops · 1 of 6",
+        "Flexible search · Comparing road loops · 2 of 6",
+        "Flexible search · Comparing road loops · 3 of 6",
+        "Flexible search · Comparing road loops · 4 of 6",
+        "Flexible search · Comparing road loops · 5 of 6",
+        "Flexible search · Comparing road loops · 6 of 6",
+        "Checking a missing connection…",
+        "Building a directed cycling network…",
+        "Finding a loop…",
+        "Quick search · Comparing road loops · 1 of 12",
+        "Quick search · Comparing road loops · 2 of 12",
+        "Quick search · Comparing road loops · 3 of 12",
+        "Quick search · Comparing road loops · 4 of 12",
+        "Quick search · Comparing road loops · 5 of 12",
+        "Quick search · Comparing road loops · 6 of 12",
+        "Quick search · Comparing road loops · 7 of 12",
+        "Quick search · Comparing road loops · 8 of 12",
+        "Quick search · Comparing road loops · 9 of 12",
+        "Quick search · Comparing road loops · 10 of 12",
+        "Quick search · Comparing road loops · 11 of 12",
+        "Quick search · Comparing road loops · 12 of 12"
+      ],
+      "route": {
+        "lengthM": 3729.6444202340294,
+        "error": 0.18718269091070397,
+        "roundness": 0.39607301703338554,
+        "repeated": 0.009774537101037054,
+        "startNodeId": 5697946446,
+        "points": 197,
+        "gpxSha256": "c694ec13f8376818a767951b35abb426968c48ee66ad30f51290bf4c76444cae"
+      }
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 import type { CoverageStrategy } from './strategies';
 import { distance, xy } from './geo';
 import { pointOnCircle } from '../circle';
-import type { Point, Settings } from './types';
+import type { Point, Settings, SolveTiming } from './types';
 export type Disk = { kind: 'disk'; center: Point; radiusM: number };
 export type Corridor = { kind: 'corridor'; center: Point; line: Point[]; halfWidthM: number; clipMarginM: number; patches: Disk[] };
 export type Coverage = Disk | Corridor;
@@ -10,7 +10,7 @@ export const MAX_CORRIDOR_VERTICES = 128;
 export const MAX_PATCHES = 2;
 const roundPoint = (point: Point): Point => ({ lat: Number(point.lat.toFixed(6)), lon: Number(point.lon.toFixed(6)) });
 export class CoverageGapError extends Error {
-  constructor(message: string, readonly gaps: Point[], readonly startNodeId?: number) { super(message); this.name = 'CoverageGapError'; }
+  constructor(message: string, readonly gaps: Point[], readonly startNodeId?: number, public timing?: SolveTiming) { super(message); this.name = 'CoverageGapError'; }
 }
 export const coverageKey = (coverage: Coverage | undefined) => coverage ? JSON.stringify(coverage) : 'legacy-disk';
 export function initialCoverage(settings: Settings, strategy: CoverageStrategy = 'corridor'): Coverage {
