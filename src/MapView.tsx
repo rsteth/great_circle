@@ -46,7 +46,11 @@ export default function MapView({ settings, route, busy, onChange }: Props) {
   }
   useEffect(() => {
     if (!host.current) return;
-    const instance = L.map(host.current, { zoomControl: false, minZoom: 3, maxZoom: 18, zoomSnap: 0.25, zoomAnimation: false, markerZoomAnimation: false, trackResize: false }).setView([49.299, -123.133], 13);
+    // React's development remount creates a new map; stale view refs must not
+    // suppress fitting the restored selection or fresh example on that map.
+    previousCenter.current = undefined; lastRoute.current = undefined; sizeBearing.current = 135;
+    const selectedCenter = latest.current.settings.center;
+    const instance = L.map(host.current, { zoomControl: false, minZoom: 3, maxZoom: 18, zoomSnap: 0.25, zoomAnimation: false, markerZoomAnimation: false, trackResize: false }).setView([selectedCenter.lat, selectedCenter.lon], 13);
     map.current = instance;
     const pane = instance.createPane('circle-controls'); pane.style.zIndex = '450'; pane.style.pointerEvents = 'none'; setCirclePane(pane);
     L.control.zoom({ position: 'bottomright' }).addTo(instance);
@@ -74,7 +78,10 @@ export default function MapView({ settings, route, busy, onChange }: Props) {
     };
     fit.current = current => {
       const bounds = L.latLng(current.center.lat, current.center.lon).toBounds(circleRadius(current) * 2);
-      instance.fitBounds(bounds, { padding: [40, 40], animate: false });
+      // Reserve room for handle faces/labels, search, attribution and map controls.
+      // Short landscape maps need smaller vertical margins to retain usable handles.
+      const compact = instance.getSize().y < 240;
+      instance.fitBounds(bounds, { paddingTopLeft: [72, compact ? 45 : 70], paddingBottomRight: [72, compact ? 45 : 96], animate: false });
     };
     instance.on('move zoom viewreset resize', () => project.current());
     instance.on('click', event => {
@@ -118,6 +125,9 @@ export default function MapView({ settings, route, busy, onChange }: Props) {
       if (lastRoute.current !== route) fit.current(settings);
     }
     if (!gesture.current && !cameraStableCenters.current.has(settings.center) && (!previousCenter.current || distance(previousCenter.current, settings.center) > 0.01)) fit.current(settings);
+    // Fit emits intermediate projection events; restore the initial Size bearing
+    // only after the first fit, so a small example still starts lower-right.
+    if (!previousCenter.current) sizeBearing.current = 135;
     previousCenter.current = settings.center;
     lastRoute.current = route;
     project.current();

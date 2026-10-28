@@ -11,7 +11,8 @@ import { planRoute, PlanningFailure } from './routing/plan';
 import { SearchClient } from './routing/searchClient';
 import { validateSettings } from './routing/solve';
 import type { Point, Route, Settings } from './routing/types';
-const initial: Settings = changeCircle({ center: { lat: 49.299, lon: -123.133 }, start: { lat: 49.2928, lon: -123.1331 }, radiusM: 3000, targetKm: 10, tolerance: 0.2, surface: 'mixed', style: 'quiet' }, { bearing: 180 });
+import { exampleSettings, readSelection, writeSelection } from './selection';
+
 function Coordinates({ point, onApply }: { point: Point; onApply: (point: Point) => void }) {
   const [lat, setLat] = useState(String(point.lat));
   const [lon, setLon] = useState(String(point.lon));
@@ -24,7 +25,9 @@ function Coordinates({ point, onApply }: { point: Point; onApply: (point: Point)
   }}>Set pin <ArrowUpRight size={13} /></button>{error && <p className="input-error" role="alert">{error}</p>}</details>;
 }
 export default function App() {
-  const [settings, setSettings] = useState<Settings>(initial);
+  const [settings, setSettings] = useState<Settings>(() => readSelection() ?? exampleSettings());
+  const userSelected = useRef(false);
+  useEffect(() => { if (userSelected.current) writeSelection(settings); }, [settings]);
   const [route, setRoute] = useState<Route>();
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState('Size the circle, then drag S to choose a start.');
@@ -47,6 +50,7 @@ export default function App() {
   const abort = useRef<AbortController | null>(null);
   useEffect(() => () => { abort.current?.abort(); searchClient.current?.cancel(); }, []);
   function update(patch: Partial<Settings>) {
+    userSelected.current = true;
     setSettings(previous => ({ ...previous, ...patch })); setRoute(undefined); setError(''); setDownloaded(false); setStatus('Ready to generate.');
   }
   function circle(change: { center?: Point; radiusM?: number; bearing?: number }) {
@@ -128,7 +132,7 @@ export default function App() {
         </section>}
         {error && <div ref={errorBox} className="error-box" role="alert"><Flag size={18} /><div><strong>Couldn’t make a loop.</strong><p>{error}</p></div></div>}
         <div className="metrics" aria-label="Route metrics"><div><span>DISTANCE</span><strong>{route ? (route.lengthM / 1000).toFixed(2) : '—'} <small>km</small></strong></div><div><span>FROM TARGET</span><strong>{route ? `${route.error < 0.005 ? '' : route.lengthM > settings.targetKm * 1000 ? '+' : '−'}${(route.error * 100).toFixed(1)}` : '—'} <small>%</small></strong></div><div><span>REPEATED</span><strong>{route ? Math.round(route.repeated * 100) : '—'} <small>%</small></strong></div></div>
-        <div className="route-bottom">{route ? <>{!mobile && <div className="export-heading"><span className="export-icon"><RouteIcon size={22} /></span><div><h2>Save your route</h2><p>For your cycling app or GPS.</p></div><button className="export-button" onClick={download}>{downloaded ? <Check size={17} /> : <ArrowDownToLine size={17} />}{downloaded ? 'Download again' : 'Download GPX'}</button></div>}<div className="route-notes">{route.snapM > 25 && <p>Start moved {Math.round(route.snapM)} m to a mapped route. Getting there isn’t included.</p>}<details><summary>Route details</summary><p>Roundness: {Math.round(route.roundness * 100)}/100 · {route.candidates} loops compared · {route.points.length.toLocaleString()} track points.</p><p>No elevation or turn-by-turn directions.</p>{route.notes.filter(note => !note.startsWith('Start snapped')).map(note => <p key={note}>{note}</p>)}{route.dataTimestamp && <p className="data-time">Map updated: {new Date(route.dataTimestamp).toLocaleString()}</p>}</details></div></> : <div className="empty-state"><span className="empty-orbit"><CircleDashed size={34} /><i /></span><div><h2>Your loop will appear here.</h2><button className="text-button" disabled={busy} onClick={() => update(initial)}><RotateCcw size={13} /> Vancouver example</button></div></div>}</div>
+        <div className="route-bottom">{route ? <>{!mobile && <div className="export-heading"><span className="export-icon"><RouteIcon size={22} /></span><div><h2>Save your route</h2><p>For your cycling app or GPS.</p></div><button className="export-button" onClick={download}>{downloaded ? <Check size={17} /> : <ArrowDownToLine size={17} />}{downloaded ? 'Download again' : 'Download GPX'}</button></div>}<div className="route-notes">{route.snapM > 25 && <p>Start moved {Math.round(route.snapM)} m to a mapped route. Getting there isn’t included.</p>}<details><summary>Route details</summary><p>Roundness: {Math.round(route.roundness * 100)}/100 · {route.candidates} loops compared · {route.points.length.toLocaleString()} track points.</p><p>No elevation or turn-by-turn directions.</p>{route.notes.filter(note => !note.startsWith('Start snapped')).map(note => <p key={note}>{note}</p>)}{route.dataTimestamp && <p className="data-time">Map updated: {new Date(route.dataTimestamp).toLocaleString()}</p>}</details></div></> : <div className="empty-state"><span className="empty-orbit"><CircleDashed size={34} /><i /></span><div><h2>Your loop will appear here.</h2><button className="text-button" disabled={busy} onClick={() => update(exampleSettings())}><RotateCcw size={13} /> Vancouver example</button></div></div>}</div>
       </section>
     </main>
     {mobile && <SettingsDrawer open={drawerOpen} onClose={closeDrawer} trigger={drawerReturn} focusId={drawerFocus}>{secondaryFields}</SettingsDrawer>}

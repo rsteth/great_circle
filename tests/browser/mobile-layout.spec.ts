@@ -29,6 +29,9 @@ test('full-width map with reachable controls at narrow, portrait and landscape w
     const before = await center(page);
     await page.getByRole('slider', { name: 'Circle radius', exact: true }).press('Home'); for (let i=0;i<7;i++) await page.getByRole('slider', { name: 'Circle radius', exact: true }).press('ArrowUp');
     expect(await center(page)).toEqual(before);
+    // Viewport rotation and radius editing intentionally retain camera zoom.
+    // Use the explicit fit action before asserting handle/overlay clearance.
+    await page.getByRole('button', { name: 'Fit circle', exact: true }).click();
     for (const name of ['Start angle', 'Circle radius']) {
       const handle = page.getByRole('slider', { name, exact: true });
       await expect(handle).toBeVisible();
@@ -37,7 +40,7 @@ test('full-width map with reachable controls at narrow, portrait and landscape w
       expect(b.y).toBeGreaterThanOrEqual(map.y - 1); expect(b.y + b.height).toBeLessThanOrEqual(map.y + map.height + 1);
       for (const overlay of await page.locator('.place-search,.map-button,.map-hint,.ideal-toggle').all()) {
         const other = await overlay.boundingBox();
-        if (other) expect(b.x < other.x + other.width && b.x + b.width > other.x && b.y < other.y + other.height && b.y + b.height > other.y).toBe(false);
+        if (other) expect(b.x < other.x + other.width && b.x + b.width > other.x && b.y < other.y + other.height && b.y + b.height > other.y, JSON.stringify({width,height,name,overlay:await overlay.getAttribute('class'),handle:b,other})).toBe(false);
       }
     }
   }
