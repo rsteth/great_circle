@@ -1,3 +1,5 @@
+> Current deployment,2026-10-29: the approved direct-ZIP backend is immutable version1, prod alias, Node24/ARM64,512MiB/30sec. No reserved concurrency/account-quota increase or S3 was used. Public buffered Function URL rollout is approved with two alias-only URL invocation permissions, CORS `https://stethem.com`, Locate me disabled, and existing SSM/runtime trust unchanged. Main Pages workflow now verifies backend digest/private health before frontend publication. Below are historical proposals and bootstrap evidence; do not execute their obsolete reservation/S3/private-only workflow assumptions. See the current root README for rollback and public quota exposure.
+
 # Great Circle Lambda proposal — local preparation only
 
 No AWS mutation, IAM creation, SSM read/write, upload, push or deployment has been performed by these files. They are not wired into GitHub Actions. The public frontend still runs main `b706529`; do not merge the ORS frontend until its actual backend URL and public scope are approved and verified.

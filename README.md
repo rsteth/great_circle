@@ -4,7 +4,7 @@
 
 A small browser app for finding near-circular cycling loops on real OpenStreetMap roads and paths, then taking the result with you as a GPX track. React, TypeScript, Vite, and Leaflet; inspired by the simple controls and dark zinc/blue styling of [Focus Speed Reader](https://github.com/rsteth/focus-speed-reader).
 
-The original Python experiment remains intact in `main.py`. The TypeScript app does not execute it. This **local feature branch** adds a server-side openrouteservice adapter and requires an ORS account/key for live routing; the published app still uses the historical browser/Overpass pipeline. See [local prototype, diagnosis and setup](docs/ors-local-prototype.md).
+The original Python experiment remains intact in `main.py`. The TypeScript app does not execute it. The frontend uses a server-side openrouteservice adapter. Its key remains in encrypted AWS SSM and is read only by the dedicated Lambda runtime. See [local prototype, diagnosis and setup](docs/ors-local-prototype.md).
 
 ## Run locally
 
@@ -27,11 +27,15 @@ Open the localhost URL Vite prints (normally `http://127.0.0.1:5173`). `--ignore
 
 Changing any route setting clears the previous route and export. Generation opens a full-page accessible progress dialog with Cancel and Escape. The planning page and its navigation links stay inert until completion, error or cancellation; focus returns to Generate. Cancellation discards the result and aborts the browser request (or terminates the historical search worker); a buffered Lambda request may still finish within its bounded server deadline. Download/service errors and impossible targets are shown without substituting a straight-line route.
 
-The local API binds only `127.0.0.1:8787`; Vite proxies `/api`. Without a configured server-only key it fails explicitly and makes no provider request. Never put a secret in a `VITE_` variable or chat. `VITE_ROUTING_MODE=legacy npm run dev` retains the older pipeline for comparison. Production hosting for this new backend is not configured or approved.
+The local API binds only `127.0.0.1:8787`; Vite proxies `/api`. Without a configured server-only key it fails explicitly and makes no provider request. Never put a secret in a `VITE_` variable or chat. `VITE_ROUTING_MODE=legacy npm run dev` retains the older pipeline for comparison. Production uses the buffered AWS Lambda Function URL described below; no secret is embedded in the frontend.
 
-## AWS Lambda preparation (not deployed)
+## Production backend
 
-The local-only buffered Lambda adapter, deterministic package build and proposed IAM/CloudFormation files are documented in [infra/lambda/README.md](infra/lambda/README.md). `npm run build:lambda` packages code locally; it never deploys or reads a key. AWS account access is verified. The approved OIDC/runtime-role/SSM/log bootstrap is complete; root is reserved for that administrative bootstrap. Private Lambda deployment is pending the exact backend-only main workflow approval and a decision on the account concurrency guard. No public URL is approved.
+`great-circle-api:prod` in AWS account ending6476/us-east-1 uses Node24/ARM64,512MiB and30-second invocation timeout. The planner allows20seconds and at most2ORS calls. Pages verifies its ZIP digest, URL-only permissions and private health through main-only GitHub OIDC before publishing; it fails closed if backend code differs. No stored AWS access key, database, API Gateway or reserved concurrency is used. Frontend build configuration in `.github/workflows/pages.yml` points at the real API URL.
+
+Locate me is disabled pending provider privacy clarification. Manually chosen coordinates still go to ORS; public rollout accepts this interim scope. Warm-instance cooldowns are best effort, not a durable global quota or AWS billing cap. Anonymous users can exhaust shared provider quota and incur AWS usage. Browser cancellation ignores late results but buffered server work may continue within its deadline.
+
+An AWS administrator can immediately disable anonymous access without changing the URL using `aws lambda update-function-url-config --function-name great-circle-api --qualifier prod --auth-type AWS_IAM --region us-east-1` with an authorized profile. This is an operator instruction, not an automatic action. Further backend code changes must be deployed and verified before the Pages digest gate will pass. Historical bootstrap/proposal files are retained in [infra/lambda](infra/lambda/README.md); their private-only/reservation/S3 assumptions are superseded by the direct-ZIP deployment and explicit public rollout approval.
 
 ## Checks
 
