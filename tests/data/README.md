@@ -22,3 +22,7 @@ Normalized JSON sizes are reproducible fixture sizes, not measured original wire
 ### Completed bounded default expansion
 
 `vancouver-default-expanded-2026-10-28.osm.json.gz` is the subsequent complete **ring plus two patches** response, replacing the initial snapshot rather than merging into it. OSM timestamp 2026-10-28T05:14:05Z; 14,073 elements, 1,674,975 normalized JSON bytes, SHA-256 `bebaaf9120aa73424a392f226c45fb1aafe6de50d7193ea29516f2a4831da3b5`. This does not cover a complete disk. Together the two default snapshots reproduce the normal bounded planner's no-loop result; expansion connects western roads but leaves three angular sectors empty in the start component. Data © OpenStreetMap contributors, ODbL under the links above. See the completed-default follow-up in `docs/generation-center-diagnosis.md`.
+
+## ORS LA public intersection, 2026-10-29
+
+`ors-la-intersection-2026-10-29.json` preserves two sanitized real ORS cycling geometries at Washington/La Cienega, Culver City, radius1.5km. South Start/mixed/30% variation were test choices, not the user's exact settings. Numeric geometry, summary distance, waypoint indices and surface extras are whitelisted; credentials, auth headers, identity, device location and provider user metadata are absent. Results © openrouteservice.org by HeiGIT / OpenStreetMap contributors, CC BY-SA4.0. See `docs/ors-la-live-check.md` for provenance, original rejection, licensing, request counts and limitations. Tests use offline mock responses and do not call ORS or read Keychain.

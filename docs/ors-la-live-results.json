@@ -1,0 +1,130 @@
+{
+  "provenance": {
+    "collectedDate": "2026-10-29",
+    "endpoint": "https://api.heigit.org/openrouteservice/v2/directions/cycling-regular/geojson",
+    "locationSource": "https://geocode.gis.lacounty.gov/geocode/rest/services/CAMS_Locator/GeocodeServer",
+    "match": "W Washington Blvd & S La Cienega Blvd, Culver City, 90232",
+    "matchType": "StreetInt",
+    "geocoderScore": 95.77,
+    "testChoices": "South Start (180 degrees), mixed surfaces and 30% variation were diagnostic choices, not a claim about the user’s exact settings.",
+    "sanitization": "Whitelisted numerical geometry/distance/waypoints/surface only. No credential, request headers, IDs, identity, device location or provider user metadata.",
+    "license": {
+      "attribution": "Routing © openrouteservice.org by HeiGIT; OpenStreetMap contributors",
+      "name": "CC BY-SA 4.0",
+      "url": "https://creativecommons.org/licenses/by-sa/4.0/"
+    }
+  },
+  "liveRuns": {
+    "recommended": {
+      "elapsedMs": 2767.7778340000004,
+      "attempts": 2,
+      "providerRequests": 2,
+      "lastCandidateScore": {
+        "lengthM": 15700.240572995308,
+        "distanceError": 0.6658472632827563,
+        "roundness": 0.34130198325888983,
+        "radialError": 0.10629134767162118,
+        "angularCoverage": 1,
+        "winding": 0.9999999999999993,
+        "retraced": 0.06969108995034365,
+        "snapM": 109.38577804820306
+      },
+      "status": "shape-tolerance",
+      "rawGeometryRetained": false
+    },
+    "shorter": {
+      "elapsedMs": 2902.360041,
+      "attempts": 2,
+      "providerRequests": 2,
+      "status": "shape-tolerance"
+    },
+    "totalProviderRequests": 4
+  },
+  "settings": {
+    "center": {
+      "lat": 34.032482851313,
+      "lon": -118.374328230684
+    },
+    "start": {
+      "lat": 34.01899304585713,
+      "lon": -118.374328230684
+    },
+    "radiusM": 2026,
+    "targetKm": 9.42477796076938,
+    "tolerance": 0.3,
+    "surface": "mixed",
+    "style": "balanced",
+    "circleRadiusM": 1500
+  },
+  "candidates": [
+    {
+      "points": 432,
+      "score": {
+        "lengthM": 13479.381278442492,
+        "distanceError": 0.43020677352298287,
+        "roundness": 0.4661657415675988,
+        "radialError": 0.10874723784792083,
+        "angularCoverage": 1,
+        "winding": -0.9999999999999999,
+        "retraced": 0.06214441418579735,
+        "snapM": 109.38577804820306
+      },
+      "radial": {
+        "minM": 1085.054033575394,
+        "maxM": 2085.261661665049,
+        "meanAbsoluteM": 163.12085677188125
+      },
+      "sampleIntervalMaxM": 5,
+      "p50AbsoluteDepartureM": 126.15389832703954,
+      "p90AbsoluteDepartureM": 346.33262162231904,
+      "p95AbsoluteDepartureM": 434.72911432965157,
+      "maxAbsoluteDepartureM": 585.2616616650489,
+      "lengthWithin10PercentRadius": 0.5713073554299218,
+      "lengthWithin20PercentRadius": 0.8327178469943617,
+      "lengthWithin30PercentRadius": 0.9623885315249294,
+      "absoluteAngularTravelTurns": 1.0657470757410885,
+      "oppositeAngularTravelTurns": 0.032873537870544346,
+      "thresholds": {
+        "distanceErrorMax": 0.3,
+        "meanRadialErrorMax": 0.35,
+        "angularCoverageMin": 0.875,
+        "maxRadialDepartureConstraint": false
+      }
+    },
+    {
+      "points": 443,
+      "score": {
+        "lengthM": 13939.154506149307,
+        "distanceError": 0.47899022811688635,
+        "roundness": 0.45260715448233857,
+        "radialError": 0.1004483405230159,
+        "angularCoverage": 1,
+        "winding": 1.0000000000000013,
+        "retraced": 0.05534709571170846,
+        "snapM": 109.38577804820306
+      },
+      "radial": {
+        "minM": 1085.054033575394,
+        "maxM": 2085.261661665049,
+        "meanAbsoluteM": 150.67251078452387
+      },
+      "sampleIntervalMaxM": 5,
+      "p50AbsoluteDepartureM": 105.50005628788017,
+      "p90AbsoluteDepartureM": 345.6380270159111,
+      "p95AbsoluteDepartureM": 426.1760861413993,
+      "maxAbsoluteDepartureM": 585.2616616650489,
+      "lengthWithin10PercentRadius": 0.6368861801221543,
+      "lengthWithin20PercentRadius": 0.8577354661329615,
+      "lengthWithin30PercentRadius": 0.9636291194136686,
+      "absoluteAngularTravelTurns": 1.0615811109335875,
+      "oppositeAngularTravelTurns": 0.030790555466793622,
+      "thresholds": {
+        "distanceErrorMax": 0.3,
+        "meanRadialErrorMax": 0.35,
+        "angularCoverageMin": 0.875,
+        "maxRadialDepartureConstraint": false
+      }
+    }
+  ],
+  "actualProviderCallsDuringAnalysis": 0
+}
