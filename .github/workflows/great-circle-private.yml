@@ -1,0 +1,117 @@
+# Approved private-only canary. Main frontend and Pages settings are unchanged.
+# Explicit exception: no Lambda reserved concurrency or account quota changes.
+name: Great Circle private AWS canary
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: great-circle-private-aws
+  cancel-in-progress: false
+jobs:
+  private-canary:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      AWS_REGION: us-east-1
+      AWS_MAX_ATTEMPTS: '1'
+      AWS_EC2_METADATA_DISABLED: 'true'
+      AWS_PAGER: ''
+      SOURCE_SHA: c9291f47d2b473606de6a027376f660d45a1fc8e
+    steps:
+      - name: Check out only the approved backend source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: c9291f47d2b473606de6a027376f660d45a1fc8e
+          persist-credentials: false
+      - name: Set up Node 24
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Check and package without AWS credentials
+        run: |
+          npm ci --ignore-scripts --no-fund --no-audit
+          npm run typecheck
+          npm test -- tests/lambda.test.ts tests/lambda-ssm.test.ts
+          npm run build:lambda
+          echo '69734212b16162d554cc77f4b2904a9fe06de0c71e6111e81066a7837afc4820  .lambda-build/index.mjs' | sha256sum --check
+      - name: Assume only the dedicated main-branch deployment role
+        uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
+        with:
+          role-to-assume: arn:aws:iam::089089716476:role/great-circle-prod-deploy
+          aws-region: us-east-1
+          allowed-account-ids: '089089716476'
+          role-duration-seconds: 900
+          role-session-name: GreatCirclePrivateCanary
+          retry-max-attempts: 1
+      - name: Deploy exactly the private function and run one public-intersection canary
+        run: |
+          python3 - <<'PY'
+          import base64, hashlib, json, os, pathlib, re, subprocess, time
+          NAME='great-circle-api'; ALIAS='prod'; ACCOUNT='089089716476'
+          ROLE='arn:aws:iam::089089716476:role/great-circle-prod-runtime'
+          temporary=pathlib.Path(os.environ['RUNNER_TEMP'])
+          def aws(arguments, query=None, missing=False):
+              args=['aws',*arguments,'--region','us-east-1','--output','json']
+              if query: args += ['--query',query]
+              p=subprocess.run(args,capture_output=True,text=True)
+              if p.returncode:
+                  code=re.search(r'An error occurred \(([^)]+)\)',p.stderr)
+                  code=code.group(1)if code else 'AwsCommandFailed'
+                  if missing and code in ['ResourceNotFoundException','ResourceNotFound']:return None
+                  raise RuntimeError(arguments[0]+'/'+arguments[1]+': '+code)
+              return json.loads(p.stdout)if p.stdout.strip()else None
+          identity=aws(['sts','get-caller-identity'], '{Account:Account,Arn:Arn}')
+          assert identity['Account']==ACCOUNT and ':assumed-role/great-circle-prod-deploy/'in identity['Arn']
+          zip_path=pathlib.Path('.lambda-build/great-circle-api.zip')
+          digest=base64.b64encode(hashlib.sha256(zip_path.read_bytes()).digest()).decode()
+          fields='{Role:Role,Runtime:Runtime,Timeout:Timeout,Memory:MemorySize,Architectures:Architectures,CodeSha256:CodeSha256,State:State}'
+          function=aws(['lambda','get-function-configuration','--function-name',NAME],fields,missing=True)
+          if function is None:
+              aws(['lambda','create-function','--function-name',NAME,'--runtime','nodejs24.x','--handler','index.handler','--role',ROLE,'--architectures','arm64','--memory-size','512','--timeout','30','--zip-file','fileb://'+str(zip_path),'--description','Great Circle private canary '+os.environ['SOURCE_SHA'],'--tags','Application=great-circle','--logging-config','LogFormat=JSON,ApplicationLogLevel=WARN,SystemLogLevel=INFO'],fields)
+              p=subprocess.run(['aws','lambda','wait','function-active-v2','--function-name',NAME,'--region','us-east-1'],capture_output=True,text=True)
+              assert p.returncode==0,'Function did not become active'
+          function=aws(['lambda','get-function-configuration','--function-name',NAME],fields)
+          assert function['Role']==ROLE and function['Runtime']=='nodejs24.x'and function['Timeout']==30 and function['Memory']==512 and function['Architectures']==['arm64']and function['CodeSha256']==digest
+          # Explicitly approved one-private-canary exception: account quota is10.
+          # GitHub serializes this manual job; do not reserve Lambda capacity or
+          # request an account quota increase. No anonymous endpoint is created.
+          assert aws(['lambda','get-function-url-config','--function-name',NAME,'--qualifier',ALIAS],missing=True)is None,'Unexpected URL; do not modify it'
+          assert aws(['lambda','get-policy','--function-name',NAME],missing=True)is None,'Unexpected resource policy; do not modify it'
+          version=aws(['lambda','publish-version','--function-name',NAME,'--code-sha256',digest,'--description','Private approved source '+os.environ['SOURCE_SHA']],'{Version:Version,CodeSha256:CodeSha256}')
+          assert version['CodeSha256']==digest
+          old_alias=aws(['lambda','get-alias','--function-name',NAME,'--name',ALIAS],missing=True)
+          alias_args=['lambda','update-alias'if old_alias else 'create-alias','--function-name',NAME,'--name',ALIAS,'--function-version',version['Version']]
+          if old_alias:alias_args+=['--revision-id',old_alias['RevisionId']]
+          aws(alias_args,'{Name:Name,FunctionVersion:FunctionVersion}')
+          assert aws(['lambda','get-policy','--function-name',NAME,'--qualifier',ALIAS],missing=True)is None,'Unexpected alias resource policy'
+          assert aws(['lambda','get-function-url-config','--function-name',NAME,'--qualifier',ALIAS],missing=True)is None
+          saved=json.loads(pathlib.Path('tests/data/ors-la-intersection-2026-10-29.json').read_text())
+          event={'version':'2.0','rawPath':'/api/loop','rawQueryString':'','headers':{'origin':'https://stethem.com','content-type':'application/json'},'requestContext':{'http':{'method':'POST'}},'body':json.dumps({'requestId':'private-la-canary-c9291f4','settings':saved['settings']}),'isBase64Encoded':False}
+          payload=temporary/'great-circle-private-payload.json';result_file=temporary/'great-circle-private-result.json';payload.write_text(json.dumps(event))
+          started=time.monotonic()
+          invoked=aws(['lambda','invoke','--function-name',NAME,'--qualifier',ALIAS,'--invocation-type','RequestResponse','--cli-binary-format','raw-in-base64-out','--payload','file://'+str(payload),'--log-type','None',str(result_file)],'{StatusCode:StatusCode,ExecutedVersion:ExecutedVersion,FunctionError:FunctionError}')
+          elapsed=(time.monotonic()-started)*1000
+          result=json.loads(result_file.read_text());body=json.loads(result.get('body','{}'))
+          summary={'source':os.environ['SOURCE_SHA'],'version':invoked.get('ExecutedVersion'),'lambdaStatus':invoked.get('StatusCode'),'httpStatus':result.get('statusCode'),'status':body.get('status'),'requests':body.get('requests'),'providerRequests':body.get('providerRequests'),'roundTripMs':round(elapsed,1)}
+          if body.get('status')=='ok':
+              route=body['route'];points=route['points'];summary.update({'distanceM':route['lengthM'],'pointCount':len(points),'closed':points[0]==points[-1],'distanceNotice':route.get('distanceNotice'),'repeatedFraction':route['repeated']})
+          print(json.dumps(summary))
+          assert invoked.get('FunctionError')is None and invoked.get('ExecutedVersion')==version['Version']
+          assert result.get('statusCode')==200 and body.get('status')=='ok','Private canary did not yield an accepted route'
+          assert body['providerRequests']<=2 and body['requests']<=2 and summary['closed']
+          PY
+      - name: Check native GPX fidelity without printing geometry or credentials
+        run: |
+          node --import tsx --input-type=module <<'JS'
+          import{readFileSync}from'node:fs';import{toGpx}from'./src/routing/gpx.ts';
+          const outer=JSON.parse(readFileSync(process.env.RUNNER_TEMP+'/great-circle-private-result.json','utf8')),result=JSON.parse(outer.body),route=result.route;
+          const xml=toGpx(route),points=[...xml.matchAll(/<trkpt lat="([^"]+)" lon="([^"]+)"\/>/g)];
+          if(points.length!==route.points.length||points.some((p,i)=>p[1]!==route.points[i].lat.toFixed(7)||p[2]!==route.points[i].lon.toFixed(7)))throw Error('GPX point fidelity failed');
+          if(!xml.includes('CC BY-SA 4.0'))throw Error('Missing license');console.log(JSON.stringify({gpxMatchesNativeGeometry:true,points:points.length}));
+          JS
