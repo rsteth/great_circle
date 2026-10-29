@@ -40,6 +40,7 @@ jobs:
           npm run typecheck
           npm test -- tests/lambda.test.ts tests/lambda-ssm.test.ts
           npm run build:lambda
+          python3 scripts/test-production-gate.py
       - name: Assume dedicated main-only role
         uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
         with:
@@ -49,8 +50,8 @@ jobs:
           role-duration-seconds: 900
           role-session-name: GreatCircleProductionGate
           retry-max-attempts: 1
-      - name: Verify matching immutable backend, URL-only permissions and private health
-        run: python3 scripts/verify-production-backend.py
+      - name: Deploy matching immutable backend then verify permissions and private health
+        run: python3 scripts/verify-production-backend.py --deploy-matching
   build:
     needs: verify-backend
     runs-on: ubuntu-latest
