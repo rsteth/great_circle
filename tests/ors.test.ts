@@ -33,7 +33,7 @@ it('keeps unroutable and shape mismatch distinct, with at most two finite direct
 });
 it('does not accept open geometry, moved pinned Start or unknown paved surfaces', async () => {
  vi.useFakeTimers(); const open = geometry(); open.points[64] = open.points[63]; const route = vi.fn().mockResolvedValue(open), pending = createLoopPlanner({ route })({ requestId: 'open', settings }, new AbortController().signal); await vi.advanceTimersByTimeAsync(1600); expect((await pending).status).not.toBe('ok');
- const g = geometry(); g.surface = undefined; const paved = await createLoopPlanner({ route: async () => g })({ requestId: 'paved', settings: { ...settings, surface: 'paved' } }, new AbortController().signal); expect(paved.status).toBe('unroutable');
+ const g = geometry(); g.surface = undefined; const pavedPending = createLoopPlanner({ route: async () => g })({ requestId: 'paved', settings: { ...settings, surface: 'paved' } }, new AbortController().signal); await vi.advanceTimersByTimeAsync(1600); expect((await pavedPending).status).toBe('unroutable');
 });
 it('cancels or times out even a non-cooperative provider and discards late results', async () => {
  vi.useFakeTimers(); const controller = new AbortController(); let finish!: (g: ProviderGeometry) => void; const route = vi.fn(() => new Promise<ProviderGeometry>(resolve => { finish = resolve; }));

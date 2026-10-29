@@ -27,6 +27,7 @@ export type Graph = {
   frontier?: Point[];
 };
 export type Route = {
+  distanceNotice?: { targetM: number; excessM: number; tolerance: number }; // Explicit larger-loop fallback, outside selected distance variation.
   license?: { attribution: string; name: string; url: string };
   points: Point[];
   lengthM: number;

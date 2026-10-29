@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+const fixture = JSON.parse(readFileSync(new URL('../data/ors-la-intersection-2026-10-29.json', import.meta.url), 'utf8'));
 import { test, expect, type Page } from '@playwright/test';
 import { createLoopPlanner } from '../../server/loop';
 import { pointOnCircle, bearingTo } from '../../src/circle';
@@ -51,4 +53,13 @@ test('touch editing and cancelled center drag keep a populated committed radius'
 test('actual loopback backend through Vite proxy fails gracefully without any configured key or provider send',async({page})=>{
  await page.goto('/');expect(await page.evaluate(async()=>await(await fetch('/api/health')).json())).toEqual({ok:true,configured:false,provider:'openrouteservice'});
  await page.getByRole('button',{name:'Generate loop',exact:true}).click();await expect(page.getByRole('alert')).toContainText('Routing service is not configured.');expect(await page.evaluate(()=>performance.getEntriesByName('great-circle-generation').map(e=>(e as PerformanceMeasure).detail).at(-1).providerRequests)).toBe(0);await expect(page.getByRole('button',{name:'Download GPX',exact:true})).toHaveCount(0);
+});
+
+test('actual saved LA geometry displays as an explicitly larger loop with unchanged guide and exact GPX',async({page},info)=>{
+ await page.addInitScript(settings=>localStorage.setItem('great-circle.selection.v1',JSON.stringify({version:1,settings})),fixture.settings);
+ const clientResponses=fixture.responses.map((r: { body: { features: { geometry: { coordinates: number[][] }; properties: { summary: { distance: number }; way_points: number[]; extras: { surface: { values: [number,number,number][] } } } }[] } })=>{const f=r.body.features[0];return{points:f.geometry.coordinates.map(([lon,lat])=>({lat,lon})),distanceM:f.properties.summary.distance,waypoints:f.properties.way_points,surface:f.properties.extras.surface.values as [number,number,number][]};});let sends=0,returned:any;
+ await page.route('**/api/loop',async route=>{const request=route.request().postDataJSON();returned=await createLoopPlanner({route:async()=>clientResponses[sends++]})({requestId:request.requestId,settings:request.settings},new AbortController().signal);return route.fulfill({json:returned});});await page.goto('/');
+ const guide=await radius(page).getAttribute('aria-valuenow');await page.getByRole('button',{name:'Generate loop',exact:true}).click();await expect(page.getByRole('status',{name:'Route status',exact:true})).toContainText('Larger loop found.');const warning=page.getByRole('status',{name:'Route distance warning',exact:true});await expect(warning).toContainText('13.48 km');await expect(warning).toContainText('4.05 km (+43.0%)');await expect(warning).toContainText('Outside your selected distance variation.');await expect(radius(page)).toHaveAttribute('aria-valuenow',guide!);await expect(page.locator('.target-ring')).toBeVisible();await expect(page.getByRole('alert')).toHaveCount(0);expect(sends).toBe(2);expect(returned.route.points).toHaveLength(432);
+ const pending=page.waitForEvent('download');await page.getByRole('button',{name:'Download GPX',exact:true}).click();const download=await pending,stream=await download.createReadStream();let xml='';for await(const chunk of stream!)xml+=chunk.toString();const tracks=[...xml.matchAll(/<trkpt lat="([^"]+)" lon="([^"]+)"\/>/g)];expect(tracks).toHaveLength(432);tracks.forEach((p,i)=>{expect(p[1]).toBe(returned.route.points[i].lat.toFixed(7));expect(p[2]).toBe(returned.route.points[i].lon.toFixed(7));});expect(xml).toContain('outside selected distance variation');expect(xml).toContain('CC BY-SA 4.0');
+ await page.screenshot({path:`/tmp/great-circle-ors-la-larger-${info.project.name}.png`,fullPage:true});await radius(page).press('ArrowUp');await expect(warning).toHaveCount(0);await expect(page.getByRole('button',{name:'Download again',exact:true})).toHaveCount(0);
 });
