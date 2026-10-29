@@ -105,7 +105,11 @@ export function buildGraph(data: OsmData, settings: Settings, coverage?: Coverag
   for (const id of graph.nodes.keys()) if (!used.has(id)) graph.nodes.delete(id);
   graph.frontier = [...frontier.values()];
   if (graph.nodes.size < 3 && coverage?.kind === 'corridor' && graph.frontier.length) throw new CoverageGapError('No connected cycling network in downloaded coverage.', graph.frontier.slice(0, 2));
-  if (graph.nodes.size < 3) throw new Error(coverage?.kind === 'corridor' ? 'No usable cycling network within downloaded coverage. Roads outside it are unknown. Try another area or start.' : 'No usable cycling network in this area with these preferences. Try mixed surfaces or a different area.');
+  if (graph.nodes.size < 3) {
+    const returnedWays = data.elements.filter(element => element.type === 'way').length;
+    const reason = returnedWays ? ' Roads were returned, but too little geometry remains after coverage, access and surface checks.' : ' No road ways were returned by this bounded query.';
+    throw new Error(coverage?.kind === 'corridor' ? `No usable cycling network within downloaded coverage.${reason} Roads outside it are unknown. Try another area or start.` : 'No usable cycling network in this area with these preferences. Try mixed surfaces or a different area.');
+  }
   if (coverage?.kind === 'corridor') graph.notes.push('Route uses downloaded corridor coverage; detours outside it are unknown.');
   return graph;
 }

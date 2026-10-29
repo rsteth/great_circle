@@ -12,7 +12,8 @@
     "test:browser": "playwright test",
     "check:live": "tsx scripts/check-live.ts",
     "check:browser:live": "tsx scripts/check-browser-live.ts",
-    "benchmark:routes": "tsx scripts/benchmark-routing.mts"
+    "benchmark:routes": "tsx scripts/benchmark-routing.mts",
+    "dev:server": "tsx server/index.ts"
   },
   "dependencies": {
     "leaflet": "1.9.4",

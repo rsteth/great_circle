@@ -1,5 +1,6 @@
 import { covers, coverageCost, initialCoverage, validateCoverage, type Coverage } from './coverage';
 import type { NetworkTiming, OsmData, Settings } from './types';
+import { assertCompleteOsm } from './validateData';
 import { validateSettings } from './solve';
 export const OVERPASS_URL = 'https://overpass-api.de/api/interpreter';
 export const CLIENT_USER_AGENT = 'GreatCircle/0.1 (+https://github.com/rsteth/great_circle; local personal route planner)';
@@ -104,13 +105,11 @@ export async function loadNetwork(settings: Settings, signal: AbortSignal, clien
     const fetched = performance.now(), bytes = new Uint8Array(size); let at = 0;
     for (const chunk of chunks) { bytes.set(chunk, at); at += chunk.length; }
     let data: OsmData;
-    try { data = JSON.parse(new TextDecoder().decode(bytes)); } catch { throw new Error('The map service returned invalid data. Try later.'); }
+    try { data = JSON.parse(new TextDecoder().decode(bytes)); } catch { throw new Error('The map service returned invalid data (possibly truncated). No roads were used. Try later.'); }
     if (!data || typeof data !== 'object' || !Array.isArray(data.elements)) throw new Error('The map service returned incomplete data. Try later.');
     if (budget) budget.remainingElements -= data.elements.length;
-    if (data.remark) throw new Error('The map service returned incomplete data. Try later.');
     if (data.elements.length > 200000 || (budget && budget.remainingElements < 0)) throw new Error('Map data exceeds the remaining element budget. Try a smaller circle.');
-    const nodeIds = new Set(data.elements.filter(element => element.type === 'node').map(element => element.id));
-    if (data.elements.some(element => element.type === 'way' && (!Array.isArray(element.nodes) || element.nodes.some(id => !nodeIds.has(id))))) throw new Error('The map service returned incomplete way geometry. Try later.');
+    assertCompleteOsm(data);
     requestSignal.throwIfAborted();
     const datasetId = `osm-${++datasetSequence}`;
     if (size <= MAX_CACHED_BYTES) {

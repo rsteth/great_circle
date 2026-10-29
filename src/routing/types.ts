@@ -27,6 +27,7 @@ export type Graph = {
   frontier?: Point[];
 };
 export type Route = {
+  license?: { attribution: string; name: string; url: string };
   points: Point[];
   lengthM: number;
   error: number;

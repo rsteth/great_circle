@@ -59,3 +59,11 @@ footer>p{white-space:normal;color:#a1a1aa;font-size:11px}.route-notes summary{cu
 .circle-layer .center-handle{display:flex;align-items:center;justify-content:center;width:44px;height:44px;border:1.5px solid #93c5fd;color:#dbeafe;background:#18181bf5;cursor:grab;z-index:1}
 .circle-layer .center-handle:active{cursor:grabbing}
 .circle-layer .start-handle,.circle-layer .size-handle{z-index:2}
+
+/* Primary mobile actions precede size controls; editor has its own return key. */
+.dock-actions{margin-top:0;margin-bottom:12px}.radius-readout.editing{min-width:110px;max-width:130px}.radius-edit-actions{display:flex;gap:5px;margin-top:6px}.radius-readout .radius-edit-actions button{align-items:center;flex:1;min-height:44px;padding:5px 7px;font:12px ui-sans-serif,sans-serif;border:1px solid #52525b;border-radius:5px;background:#27272a}.radius-readout .radius-edit-actions button:first-child{background:#1b3154;border-color:#365989;color:#dbeafe}.radius-readout .input-error{bottom:calc(100% + 7px)}
+@media(orientation:landscape){.mobile-layout .dock-actions{grid-column:1/-1;grid-row:1;margin:0 0 3px;min-width:0}.mobile-layout .dock-scale{grid-column:1/-1;grid-row:2}.mobile-layout .map-dock{grid-template-columns:1fr}.mobile-layout .dock-result{grid-row:3}}
+
+.dock-scale .radius-readout.number-control>.radius-label{position:static;width:auto;height:auto;overflow:visible;clip-path:none;white-space:nowrap}.radius-readout.editing>small{margin-top:4px}
+
+footer>.routing-attribution{white-space:normal;flex-wrap:wrap;font-size:10px}footer .routing-attribution a{color:#a1a1aa;text-decoration:underline}

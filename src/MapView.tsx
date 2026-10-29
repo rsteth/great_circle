@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { PointerEvent as ReactPointerEvent, KeyboardEvent } from 'react';
 import L from 'leaflet';
 import { createPortal } from 'react-dom';
@@ -32,7 +32,7 @@ export default function MapView({ settings, route, busy, onChange }: Props) {
   const cameraStableCenters = useRef(new WeakSet<Point>());
   const previousCenter = useRef<Point | undefined>(undefined);
   const lastRoute = useRef<Route | undefined>(undefined);
-  useEffect(() => { latest.current = { settings, busy, onChange }; }, [settings, busy, onChange]);
+  useLayoutEffect(() => { latest.current = { settings, busy, onChange }; }, [settings, busy, onChange]);
   function finish(cancel: boolean) {
     const active = gesture.current;
     if (!active) return;

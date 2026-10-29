@@ -4,7 +4,7 @@
 
 A small browser app for finding near-circular cycling loops on real OpenStreetMap roads and paths, then taking the result with you as a GPX track. React, TypeScript, Vite, and Leaflet; inspired by the simple controls and dark zinc/blue styling of [Focus Speed Reader](https://github.com/rsteth/focus-speed-reader).
 
-The original Python experiment remains intact in `main.py`. The TypeScript app does not execute it and needs no Python environment, API key, account, or backend.
+The original Python experiment remains intact in `main.py`. The TypeScript app does not execute it. This **local feature branch** adds a server-side openrouteservice adapter and requires an ORS account/key for live routing; the published app still uses the historical browser/Overpass pipeline. See [local prototype, diagnosis and setup](docs/ors-local-prototype.md).
 
 ## Run locally
 
@@ -12,19 +12,22 @@ Use Node 22.12+ (Node 24 LTS recommended) and npm. The initial implementation wa
 
 ```sh
 npm ci --ignore-scripts
+npm run dev:server  # separate terminal; ORS key setup documented below
 npm run dev
 ```
 
 Open the localhost URL Vite prints (normally `http://127.0.0.1:5173`). `--ignore-scripts` skips third-party lifecycle scripts; the published platform-specific esbuild package works without its postinstall script on this Mac.
 
-1. Drag the blue **Size** handle on the circle edge inward/outward to resize (0.5–10 km radius). Tap elsewhere on the edge to move that handle; a protected area around Start prevents accidental resizing. Only Size has a radial guide, with two arrowheads. Ring and handles share the same map-coordinate layer. Tap the readout to enter kilometers; Enter/valid blur commits and Escape cancels. Circumference supplies target distance. Resizing keeps the map camera fixed; Fit circle is explicit.
+1. Drag the blue **Size** handle on the circle edge inward/outward to resize (0.5–10 km radius). Tap elsewhere on the edge to move that handle; a protected area around Start prevents accidental resizing. Only Size has a radial guide, with two arrowheads. Ring and handles share the same map-coordinate layer. Tap the readout to enter kilometers; Done, Enter or valid blur commits; Cancel or Escape restores the last committed radius. A visible Done button works independently of the phone keyboard. Circumference supplies target distance. Resizing keeps the map camera fixed; Fit circle is explicit.
 2. Drag the floating lime **S / Start** around the edge. This changes only bearing, never size. North is 0°, east 90°, south 180°, west 270°.
 3. Drag the center **Move circle** handle to reposition the whole circle while keeping radius/start angle fixed; arrows move it and Shift moves farther. Escape cancels. Submit **Search here** to find a place globally, click the map away from the edge to move center, or open **Coordinates**. **Locate me** requests location only when clicked. These actions preserve size and start angle. **Fit circle** brings controls back into view.
 4. Focus a map handle and use arrows (Shift for larger steps), Page Up/Down, Home or End as a keyboard alternative. Start also has a numeric angle field and cardinal buttons. Escape, pointer cancellation, lost capture or blur restores pre-drag settings. Only the captured pointer can change its own handle; map pan/pinch resume afterward.
 5. Adjust **Route variation** from tight to flexible (10–30% internally; no numeric labels on the slider), roads and surface, then **Generate loop**. Roads can produce a different shape/distance. Start still snaps at most 300 m to usable mapped roads; getting there is not included.
 6. **Download GPX** retains full mapped geometry and identical start/finish, without elevation or turn-by-turn directions.
 
-Changing any route setting clears the previous route and export. Cancellation aborts the download or terminates the search worker. Download/service errors and impossible targets are shown without substituting a straight-line route.
+Changing any route setting clears the previous route and export. Cancellation aborts the routing request (or terminates the historical search worker). Download/service errors and impossible targets are shown without substituting a straight-line route.
+
+The local API binds only `127.0.0.1:8787`; Vite proxies `/api`. Without a configured server-only key it fails explicitly and makes no provider request. Never put a secret in a `VITE_` variable or chat. `VITE_ROUTING_MODE=legacy npm run dev` retains the older pipeline for comparison. Production hosting for this new backend is not configured or approved.
 
 ## Checks
 
@@ -57,7 +60,7 @@ The opt-in live check makes **one bounded request and no retries** for a 1 km Va
 npm run check:live
 ```
 
-**Final validation:** typecheck, production build, all 19 deterministic routing/network tests, and all six desktop/mobile browser checks passed. Screenshots were visually inspected; browser checks confirmed no horizontal overflow and a valid closed GPX with all 65 fixture points. The first live request returned **HTTP 406**. Diagnosis found that the CLI used a generic `node` User-Agent, contrary to the provider’s client-identification policy. A subsequent authorized tiny-area diagnostic reproduced 406, then the identical query with the truthful Great Circle User-Agent returned **HTTP 200**. Actual-data validation produced a 3.264 km closed loop with 199 geometry points, 8.8% distance error, 61.7/100 roundness, and no repeated sections. Every directed segment, the closing turn, and the 1 km area boundary were checked. A subsequent single production-browser request from localhost also returned HTTP 200 with `Access-Control-Allow-Origin: *`, using normal browser-controlled User-Agent, Origin, and Referer. The actual built app generated the same 3.26 km / 199-point result, downloaded valid closed GPX, and passed desktop/phone visual inspection without horizontal overflow. This is one tiny live case, not a guarantee of global route quality or on-the-ground access; the deterministic browser suite above uses fixtures. No alternate endpoint, identity disguise, or automatic retry was used. The follow-up identification, cooldown, cancellation, dead-end, and returnability regressions all passed.
+**Historical initial validation (not the current test count):** typecheck, production build, all 19 deterministic routing/network tests, and all six desktop/mobile browser checks passed. Screenshots were visually inspected; browser checks confirmed no horizontal overflow and a valid closed GPX with all 65 fixture points. The first live request returned **HTTP 406**. Diagnosis found that the CLI used a generic `node` User-Agent, contrary to the provider’s client-identification policy. A subsequent authorized tiny-area diagnostic reproduced 406, then the identical query with the truthful Great Circle User-Agent returned **HTTP 200**. Actual-data validation produced a 3.264 km closed loop with 199 geometry points, 8.8% distance error, 61.7/100 roundness, and no repeated sections. Every directed segment, the closing turn, and the 1 km area boundary were checked. A subsequent single production-browser request from localhost also returned HTTP 200 with `Access-Control-Allow-Origin: *`, using normal browser-controlled User-Agent, Origin, and Referer. The actual built app generated the same 3.26 km / 199-point result, downloaded valid closed GPX, and passed desktop/phone visual inspection without horizontal overflow. This is one tiny live case, not a guarantee of global route quality or on-the-ground access; the deterministic browser suite above uses fixtures. No alternate endpoint, identity disguise, or automatic retry was used. The follow-up identification, cooldown, cancellation, dead-end, and returnability regressions all passed.
 
 An optional production-browser live check runs against an already built local preview. Its default permits one actual small corridor request with normal browser identity; it fails honestly if that coverage cannot produce an acceptable GPX. An explicitly supplied fresh initial snapshot permits one real consolidated expansion instead. See [corridor evidence and limits](docs/adaptive-corridor-prototype.md). Run only when you intend to use the public service, at least 30 seconds after any previous request:
 
