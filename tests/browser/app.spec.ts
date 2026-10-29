@@ -76,7 +76,7 @@ test('route errors and cancellation remain actionable',async({page})=>{
   await page.route(endpoint,r=>r.fulfill({status:429,body:'Busy'})); await page.goto('/');
   await page.getByRole('button',{name:'Generate loop'}).click(); await expect(page.getByRole('alert')).toContainText('rate-limited');
   await page.reload(); await page.unroute(endpoint); await page.route(endpoint,async r=>{await new Promise(resolve=>setTimeout(resolve,400));await r.fulfill({json:circleFixture().data}).catch(()=>{});});
-  await page.getByRole('button',{name:'Generate loop'}).click();await page.getByRole('button',{name:'Cancel',exact:true}).click();
+  await page.getByRole('button',{name:'Generate loop'}).click();await page.getByRole('button',{name:'Cancel generation',exact:true}).click();
   await page.waitForTimeout(500);await expect(page.getByRole('status',{name:'Route status'})).toContainText('Cancelled.');
 });
 

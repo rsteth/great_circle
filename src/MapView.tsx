@@ -20,9 +20,6 @@ export default function MapView({ settings, route, busy, onChange }: Props) {
   const project = useRef<(settings?: Settings) => void>(() => {});
   const fit = useRef<(settings: Settings) => void>(() => {});
   const sizeBearing = useRef(135);
-  const locationSequence = useRef(0);
-  const [locating, setLocating] = useState(false);
-  const [locationError, setLocationError] = useState('');
   const [sizeFocused, setSizeFocused] = useState(false);
   const [circlePane, setCirclePane] = useState<HTMLElement>();
   const [frame, setFrame] = useState<Frame>();
@@ -96,7 +93,7 @@ export default function MapView({ settings, route, busy, onChange }: Props) {
         sizeBearing.current = bearingTo(current.center, { lat: event.latlng.lat, lon: event.latlng.lng });
         project.current(); return;
       }
-      locationSequence.current++; setLocating(false); setLocationError('');
+
       latest.current.onChange(changeCircle(current, { center: { lat: event.latlng.lat, lon: event.latlng.lng } }));
     });
     const observer = new ResizeObserver(() => { instance.invalidateSize({ animate: false, pan: true }); project.current(); });
@@ -107,7 +104,7 @@ export default function MapView({ settings, route, busy, onChange }: Props) {
     window.addEventListener('blur', onBlur);
     setReady(true);
     return () => {
-      locationSequence.current++; finish(true); observer.disconnect();
+      finish(true); observer.disconnect();
       window.removeEventListener('keydown', onEscape); window.removeEventListener('blur', onBlur);
       instance.remove(); map.current = null; layers.current = null;
     };
@@ -145,7 +142,7 @@ export default function MapView({ settings, route, busy, onChange }: Props) {
     const point = geo(event), instance = map.current;
     if (!point || !instance) return;
     const current = latest.current.settings;
-    locationSequence.current++; setLocating(false); setLocationError('');
+
     const handlers = [instance.dragging, instance.touchZoom, instance.doubleClickZoom, instance.scrollWheelZoom, instance.boxZoom, instance.keyboard].map(handler => ({ handler, enabled: handler.enabled() }));
     handlers.forEach(({ handler }) => handler.disable());
     gesture.current = { pointer: event.pointerId, kind, centerOffset: { lat: current.center.lat - point.lat, lon: current.center.lon - point.lon }, before: current, last: current, offset: kind === 'start' ? bearingTo(current.center, point) - bearingTo(current.center, current.start) : distance(current.center, point) - circleRadius(current), sizeBearingBefore: sizeBearing.current, button: event.currentTarget, handlers };
@@ -179,7 +176,7 @@ export default function MapView({ settings, route, busy, onChange }: Props) {
       const point = instance.latLngToContainerPoint([current.center.lat, current.center.lon]);
       const nextCenter = instance.containerPointToLatLng([point.x + delta[0] * step, point.y + delta[1] * step]);
       const next = changeCircle(current, { center: { lat: Math.max(-75, Math.min(75, nextCenter.lat)), lon: ((nextCenter.lng + 540) % 360) - 180 } });
-      cameraStableCenters.current.add(next.center); locationSequence.current++; setLocating(false); setLocationError('');
+      cameraStableCenters.current.add(next.center);
       latest.current.onChange(next); project.current(next); return;
     }
     const value = kind === 'start' ? angleKey(event.key, bearingTo(current.center, current.start), event.shiftKey) : radiusKey(event.key, circleRadius(current), event.shiftKey);
@@ -191,27 +188,9 @@ export default function MapView({ settings, route, busy, onChange }: Props) {
   }
   function recenter(center: Point) {
     if (latest.current.busy || gesture.current) return;
-    locationSequence.current++; setLocating(false); setLocationError('');
+
     latest.current.onChange(changeCircle(latest.current.settings, { center }));
   }
-  function locate() {
-    if (locating) { locationSequence.current++; setLocating(false); return; }
-    if (!navigator.geolocation) { setLocationError('Location unavailable. Search for a place instead.'); return; }
-    const id = ++locationSequence.current;
-    const centerAtRequest = latest.current.settings.center;
-    setLocating(true); setLocationError('');
-    navigator.geolocation.getCurrentPosition(position => {
-      if (id !== locationSequence.current) return;
-      setLocating(false);
-      if (latest.current.settings.center !== centerAtRequest) return;
-      if (Math.abs(position.coords.latitude) > 75) { setLocationError('Choose a location between 75° south and north.'); return; }
-      recenter({ lat: position.coords.latitude, lon: position.coords.longitude });
-    }, error => {
-      if (id !== locationSequence.current) return;
-      setLocating(false); setLocationError(error.code === 1 ? 'Location permission denied. Search for a place instead.' : 'Couldn’t locate you. Search for a place instead.');
-    }, { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 });
-  }
-  useEffect(() => { if (busy) { locationSequence.current++; setLocating(false); } }, [busy]);
   const bearing = bearingTo(settings.center, settings.start);
   return <div className={`map-shell ${busy ? 'working' : ''}`}>
     <div ref={host} className="map" aria-label="Circle map. Drag the center handle to move the circle, click to move the center, drag S around the edge to choose a start, or focus Size and use arrow keys to resize." />
@@ -223,9 +202,8 @@ export default function MapView({ settings, route, busy, onChange }: Props) {
         return <button key={kind} type="button" hidden={kind === 'size' && frame.resize.distanceTo(frame.center) < 34 && gesture.current?.kind !== 'size' && !sizeFocused} className={`circle-handle ${kind}-handle ${kind === 'size' && frame.resize.distanceTo(frame.center) < 34 && gesture.current?.kind !== 'size' ? 'size-too-small' : ''}`} style={{ left: point.x, top: point.y }} role="slider" aria-label={kind === 'start' ? 'Start angle' : 'Circle radius'} aria-valuemin={kind === 'start' ? 0 : MIN_CIRCLE_RADIUS} aria-valuemax={kind === 'start' ? 359 : MAX_CIRCLE_RADIUS} aria-valuenow={Math.round(kind === 'start' ? bearing : circleRadius(settings))} aria-valuetext={kind === 'start' ? `${Math.round(bearing)} degrees clockwise from north` : `${(circleRadius(settings) / 1000).toFixed(2)} kilometers`} disabled={busy} title={kind === 'start' ? 'Drag around the circle to choose a start. Arrow keys rotate.' : 'Drag outward or inward to resize. Arrow keys resize.'} onFocus={() => { if (kind === 'size') setSizeFocused(true); }} onBlur={() => { if (kind === 'size') setSizeFocused(false); }} onPointerDown={event => begin(event, kind)} onPointerMove={move} onPointerUp={event => { event.stopPropagation(); if (gesture.current?.pointer === event.pointerId) { if (event.currentTarget.hasPointerCapture(event.pointerId)) { move(event); finish(false); } else finish(true); } }} onPointerCancel={event => { if (gesture.current?.pointer === event.pointerId) finish(true); }} onLostPointerCapture={event => { if (gesture.current?.pointer === event.pointerId) finish(true); }} onKeyDown={event => key(event, kind)} onClick={event => event.stopPropagation()}><span aria-hidden="true">{kind === 'start' ? 'S' : '↔'}</span><small aria-hidden="true">{kind === 'start' ? 'Start' : 'Size'}</small></button>;
       })}
     </div>, circlePane)}
-    <div className="map-topline"><PlaceSearch busy={busy} onSelect={recenter} /><button className="map-button" onClick={() => fit.current(settings)} title="Fit circle" aria-label="Fit circle"><Crosshair size={17} /></button></div>
-    <button type="button" className="locate-button map-button" aria-label={locating ? 'Cancel locating' : 'Locate me'} aria-pressed={locating} disabled={busy} onClick={locate}><LocateFixed size={18} /></button>
-    {locationError && <div className="location-error" role="status">{locationError}<button type="button" aria-label="Dismiss location message" onClick={() => setLocationError('')}>×</button></div>}
+    <div className="map-topline"><PlaceSearch busy={busy} onSelect={recenter} /><button className="map-button" onClick={() => fit.current(settings)} title="Fit circle" aria-label="Fit circle" disabled={busy}><Crosshair size={17} /></button></div>
+    <button type="button" className="locate-button map-button" aria-label="Locate me (temporarily unavailable)" title="Locate me is temporarily unavailable. Search or move the circle instead." disabled><LocateFixed size={18} /></button>
     <div className="map-hint">{busy ? 'Finding a loop…' : 'Drag center to move · S to set start · Size to resize'}</div>
     {route && <button className={`ideal-toggle ${showIdeal ? 'selected' : ''}`} onClick={() => setShowIdeal(!showIdeal)} aria-pressed={showIdeal}><Layers2 size={14} /> Ideal circle</button>}
     {tileFailed && <div className="tile-warning" role="status">Map tiles unavailable. Use the circle controls.</div>}

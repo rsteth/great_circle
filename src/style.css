@@ -69,3 +69,10 @@ footer>p{white-space:normal;color:#a1a1aa;font-size:11px}.route-notes summary{cu
 footer>.routing-attribution{white-space:normal;flex-wrap:wrap;font-size:10px}footer .routing-attribution a{color:#a1a1aa;text-decoration:underline}
 
 .distance-notice{display:flex;gap:12px;align-items:flex-start;padding:15px 18px;background:#292315;border-block:1px solid #66512a;color:#f4d58b;font-size:12px}.distance-notice>svg{flex:none;margin-top:2px}.distance-notice strong{font-size:13px}.distance-notice p{margin:5px 0 0;line-height:1.6;color:#d8c398}.mobile-layout .distance-notice{padding:12px max(12px,env(safe-area-inset-right)) 12px max(12px,env(safe-area-inset-left))}
+
+/* Full viewport modal; no fabricated percent while waiting on routing. */
+.generation-overlay{position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;border:0;padding:max(24px,env(safe-area-inset-top)) max(20px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left));background:#101014ed;color:#f4f4f5;overscroll-behavior:contain;overflow:auto}
+.generation-overlay[open]{display:flex;align-items:center;justify-content:center}.generation-overlay::backdrop{background:#101014}
+.generation-card{width:min(100%,380px);text-align:center}.generation-card>svg{color:#93c5fd}.generation-card h2{font-size:25px;margin:20px 0 12px}.generation-card p{line-height:1.6;color:#a1a1aa;font-size:13px}.generation-card #generation-detail{color:#e4e4e7;font-size:15px}.generation-card .primary{margin-top:24px;min-height:48px;width:100%;justify-content:center}
+.locate-button:disabled{opacity:.4;cursor:not-allowed}
+@media(prefers-reduced-motion:reduce){.generation-overlay .spin{animation:none}}

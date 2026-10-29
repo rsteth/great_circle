@@ -54,7 +54,7 @@ test('cancel terminates retained worker, rejects delayed replies and resends dat
   await page.goto('/'); await setRadius(page, 850);
   await page.getByRole('button', { name: 'Generate loop', exact: true }).click();
   await expect.poll(async () => (await stats(page)).sends.length).toBe(1);
-  await page.getByRole('button', { name: 'Cancel', exact: true }).click(); await expect(page.getByRole('status', { name: 'Route status' })).toContainText('Cancelled.');
+  await page.getByRole('button', { name: 'Cancel generation', exact: true }).click(); await expect(page.getByRole('status', { name: 'Route status' })).toContainText('Cancelled.');
   await generate(page); await page.waitForTimeout(300); await expect(page.getByRole('status', { name: 'Route status' })).toContainText('Loop found.');
   const observed = await stats(page); expect(observed.created).toBe(2); expect(observed.terminated).toBe(1); expect(observed.sends.map(send => send.dataset)).toEqual([true, true]); expect(requests).toBe(1);
   expect((await timing(page)).worker.graphCached).toBe(false);

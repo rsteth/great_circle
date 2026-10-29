@@ -38,7 +38,7 @@ test('unavailable, quota, unroutable and shape errors stay distinct; no partial 
 });
 test('cancelled delayed result cannot overwrite the next generation; stale IDs and network failure are actionable',async({page})=>{
  let release!:()=>void,n=0;const gate=new Promise<void>(r=>release=r);await page.route('**/api/loop',async r=>{const body=r.request().postDataJSON();if(++n===1){await gate;try{await r.fulfill({json:await accepted(body)});}catch{}return;}if(n===2)return r.fulfill({json:await accepted(body)});if(n===3)return r.fulfill({json:{requestId:'stale',status:'unavailable',message:'stale',requests:0}});return r.abort();});await page.goto('/');
- await page.getByRole('button',{name:'Generate loop',exact:true}).click();await expect.poll(()=>n).toBe(1);await page.getByRole('button',{name:'Cancel',exact:true}).click();await expect(page.getByRole('status',{name:'Route status',exact:true})).toContainText('Cancelled.');await page.getByRole('button',{name:'Generate loop',exact:true}).click();await expect(page.getByRole('status',{name:'Route status',exact:true})).toContainText('Loop found.');release();await page.waitForTimeout(30);await expect(page.getByRole('status',{name:'Route status',exact:true})).toContainText('Loop found.');
+ await page.getByRole('button',{name:'Generate loop',exact:true}).click();await expect.poll(()=>n).toBe(1);await page.getByRole('button',{name:'Cancel generation',exact:true}).click();await expect(page.getByRole('status',{name:'Route status',exact:true})).toContainText('Cancelled.');await page.getByRole('button',{name:'Generate loop',exact:true}).click();await expect(page.getByRole('status',{name:'Route status',exact:true})).toContainText('Loop found.');release();await page.waitForTimeout(30);await expect(page.getByRole('status',{name:'Route status',exact:true})).toContainText('Loop found.');
  await page.getByRole('button',{name:'Generate loop',exact:true}).click();await expect(page.getByRole('alert')).toContainText('invalid or stale response');await page.getByRole('button',{name:'Generate loop',exact:true}).click();await expect(page.getByRole('alert')).toContainText('Routing unavailable.');expect(n).toBe(4);
 });
 test('narrow and landscape editor remains usable without horizontal overflow',async({page},info)=>{await page.goto('/');for(const [width,height]of[[320,740],[390,844],[844,390],[1440,1100]]){await page.setViewportSize({width,height});await edit(page).click();await input(page).fill('10');await expect(page.getByRole('button',{name:'Done editing radius'})).toBeVisible();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);await page.getByRole('button',{name:'Done editing radius'}).click();await expect(edit(page)).toContainText('10.00');}await page.screenshot({path:`/tmp/great-circle-radius-done-${info.project.name}.png`,fullPage:true});});
@@ -62,4 +62,45 @@ test('actual saved LA geometry displays as an explicitly larger loop with unchan
  const guide=await radius(page).getAttribute('aria-valuenow');await page.getByRole('button',{name:'Generate loop',exact:true}).click();await expect(page.getByRole('status',{name:'Route status',exact:true})).toContainText('Larger loop found.');const warning=page.getByRole('status',{name:'Route distance warning',exact:true});await expect(warning).toContainText('13.48 km');await expect(warning).toContainText('4.05 km (+43.0%)');await expect(warning).toContainText('Outside your selected distance variation.');await expect(radius(page)).toHaveAttribute('aria-valuenow',guide!);await expect(page.locator('.target-ring')).toBeVisible();await expect(page.getByRole('alert')).toHaveCount(0);expect(sends).toBe(2);expect(returned.route.points).toHaveLength(432);
  const pending=page.waitForEvent('download');await page.getByRole('button',{name:'Download GPX',exact:true}).click();const download=await pending,stream=await download.createReadStream();let xml='';for await(const chunk of stream!)xml+=chunk.toString();const tracks=[...xml.matchAll(/<trkpt lat="([^"]+)" lon="([^"]+)"\/>/g)];expect(tracks).toHaveLength(432);tracks.forEach((p,i)=>{expect(p[1]).toBe(returned.route.points[i].lat.toFixed(7));expect(p[2]).toBe(returned.route.points[i].lon.toFixed(7));});expect(xml).toContain('outside selected distance variation');expect(xml).toContain('CC BY-SA 4.0');
  await page.screenshot({path:`/tmp/great-circle-ors-la-larger-${info.project.name}.png`,fullPage:true});await radius(page).press('ArrowUp');await expect(warning).toHaveCount(0);await expect(page.getByRole('button',{name:'Download again',exact:true})).toHaveCount(0);
+});
+
+test('location is disabled without reading geolocation, including keyboard attempts',async({page})=>{
+ await page.addInitScript(()=>{Object.defineProperty(navigator,'geolocation',{configurable:true,get(){throw new Error('Device location must not be accessed');}});});
+ const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));await page.goto('/');
+ await expect(page.getByRole('button',{name:'Locate me (temporarily unavailable)',exact:true})).toBeDisabled();
+ await page.getByRole('button',{name:'Locate me (temporarily unavailable)',exact:true}).dispatchEvent('click');
+ await page.getByText('About routes', {exact:true}).click();await expect(page.locator('footer')).toContainText('does not access your device location');expect(errors).toEqual([]);
+});
+
+test('full-page generation modal blocks page/map, traps focus and restores after real completion',async({page},info)=>{
+ let release!:()=>void;const waiting=new Promise<void>(resolve=>release=resolve);let calls=0;
+ await page.route('**/api/loop',async r=>{calls++;const body=r.request().postDataJSON();await waiting;await r.fulfill({json:await accepted(body)});});await page.goto('/');
+ const generate=page.getByRole('button',{name:'Generate loop',exact:true});await generate.click();
+ const modal=page.getByRole('dialog',{name:'Generating loop',exact:true}),cancel=page.getByRole('button',{name:'Cancel generation',exact:true});await expect(modal).toBeVisible();await expect(cancel).toBeFocused();
+ await expect(page.locator('.app')).toHaveAttribute('aria-busy','true');await expect(page.locator('.app')).toHaveAttribute('inert','');
+ const bounds=(await modal.boundingBox())!,viewport=page.viewportSize()!;expect(bounds.width).toBe(viewport.width);expect(bounds.height).toBe(viewport.height);
+ await page.keyboard.press('Tab');await expect(cancel).toBeFocused();await page.keyboard.press('Shift+Tab');await expect(cancel).toBeFocused();
+ const before=await page.locator('.target-ring').getAttribute('d');await page.mouse.click(5,5);await expect(modal).toBeVisible();expect(await page.locator('.target-ring').getAttribute('d')).toBe(before);
+ await page.screenshot({path:`/tmp/great-circle-generating-${info.project.name}.png`,fullPage:false});
+ for(const [width,height]of[[320,568],[844,390]]){await page.setViewportSize({width,height});const b=(await modal.boundingBox())!;expect(b.width).toBe(width);expect(b.height).toBe(height);await expect(cancel).toBeInViewport();expect(await modal.evaluate(el=>el.scrollWidth<=el.clientWidth)).toBe(true);}
+ release();
+ await expect(modal).toHaveCount(0);await expect(generate).toBeFocused();await expect(page.getByRole('status',{name:'Route status',exact:true})).toContainText('Loop found.');await expect(page.locator('.app')).toHaveAttribute('aria-busy','false');expect(calls).toBe(1);
+});
+
+test('cancel, late completion and repeat generation preserve selection and ignore stale route',async({page},info)=>{
+ let release!:()=>void;const pending=new Promise<void>(resolve=>release=resolve);let calls=0;
+ await page.route('**/api/loop',async r=>{const body=r.request().postDataJSON();if(++calls===1)await pending;try{await r.fulfill({json:await accepted(body)});}catch{/* Browser may close the cancelled request. */}});
+ await page.goto('/');const before=await radius(page).getAttribute('aria-valuenow');await page.getByRole('button',{name:'Generate loop',exact:true}).click();await expect(page.getByRole('dialog',{name:'Generating loop'})).toBeVisible();
+ await page.keyboard.press('Escape');await expect(page.getByRole('dialog',{name:'Generating loop'})).toHaveCount(0);await expect(page.getByRole('status',{name:'Route status',exact:true})).toContainText('server request may still finish');await expect(page.getByRole('button',{name:'Generate loop',exact:true})).toBeFocused();
+ release();await expect(page.getByRole('button',{name:'Download GPX',exact:true})).toHaveCount(0);await expect(radius(page)).toHaveAttribute('aria-valuenow',before!);
+ await page.getByRole('button',{name:'Generate loop',exact:true}).click();await expect(page.getByRole('status',{name:'Route status',exact:true})).toContainText('Loop found.');expect(calls).toBe(2);
+ // Explicit touch/mouse Cancel has identical cleanup to Escape.
+ await page.unroute('**/api/loop');await page.route('**/api/loop',()=>{});await page.getByRole('button',{name:'Generate loop',exact:true}).click();const cancel=page.getByRole('button',{name:'Cancel generation',exact:true});if(info.project.name==='phone')await cancel.tap();else await cancel.click();await expect(page.getByRole('dialog',{name:'Generating loop'})).toHaveCount(0);
+});
+
+test('service error and client timeout dismiss overlay and restore usable controls',async({page})=>{
+ await page.route('**/api/loop',r=>r.fulfill({status:503,json:{requestId:r.request().postDataJSON().requestId,status:'unavailable',message:'Service temporarily unavailable.',requests:0,providerRequests:0}}));await page.goto('/');
+ await page.getByRole('button',{name:'Generate loop',exact:true}).click();await expect(page.getByRole('alert')).toContainText('Service temporarily unavailable.');await expect(page.getByRole('dialog',{name:'Generating loop'})).toHaveCount(0);await expect(page.getByRole('button',{name:'Generate loop',exact:true})).toBeFocused();
+ await page.unroute('**/api/loop');await page.route('**/api/loop',()=>{});await page.clock.install();await page.getByRole('button',{name:'Generate loop',exact:true}).click();await expect(page.getByRole('dialog',{name:'Generating loop'})).toBeVisible();await page.clock.runFor(26000);
+ await expect(page.getByRole('dialog',{name:'Generating loop'})).toHaveCount(0);await expect(page.getByRole('alert')).toContainText('Routing service took too long.');await expect(page.getByRole('button',{name:'Generate loop',exact:true})).toBeFocused();expect(await page.evaluate(()=>document.body.style.overflow)).toBe('');
 });

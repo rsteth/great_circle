@@ -107,9 +107,9 @@ test('loading, errors, successful result and GPX remain outside the drawer', asy
   await page.route(endpoint, async route => { await gate; await route.fulfill({ json: circleFixture(64, 850).data }); });
   await page.goto('/'); await page.getByRole('slider', { name: 'Circle radius', exact: true }).press('Home'); for (let i=0;i<7;i++) await page.getByRole('slider', { name: 'Circle radius', exact: true }).press('ArrowUp');
   await page.getByRole('button', { name: 'Generate loop' }).click();
-  await expect(page.getByRole('button', { name: 'Cancel', exact: true })).toBeInViewport();
-  await expect(trigger(page)).toBeDisabled(); await expect(page.getByRole('slider', { name: 'Circle radius', exact: true })).toBeDisabled();
-  await expect(page.getByRole('status', { name: 'Route status' })).toContainText('Loading');
+  await expect(page.getByRole('button', { name: 'Cancel generation', exact: true })).toBeInViewport();
+  await expect(page.locator('.settings-button')).toBeDisabled(); await expect(page.locator('.size-handle')).toBeDisabled();
+  await expect(page.getByRole('status', { name: 'Generation progress' })).toContainText('Loading');
   release(); await expect(page.getByText('Loop found.', { exact: true })).toBeVisible();
   const download = page.getByRole('button', { name: 'Download GPX', exact: true });
   await expect(download).toBeInViewport(); expect(await download.count()).toBe(1);

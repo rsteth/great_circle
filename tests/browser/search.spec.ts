@@ -21,11 +21,8 @@ test('search errors, empty response, cancel and no accidental map changes',async
   mode='error';await page.waitForTimeout(1100);await input.fill('Failure');await input.press('Enter');await expect(page.getByText('Place search unavailable (503). Try later.')).toBeVisible();
   expect(await page.locator('.coordinate-inputs input').evaluateAll(inputs=>inputs.map(x=>(x as HTMLInputElement).value))).toEqual(before);
 });
-test('location requires explicit click, handles denial and mocked successful recenter without network disclosure',async({page})=>{
-  await page.addInitScript(()=>{let calls=0;Object.defineProperty(window,'locationCalls',{get:()=>calls});Object.defineProperty(navigator,'geolocation',{value:{getCurrentPosition(success:PositionCallback,error:PositionErrorCallback){calls++;if(calls===1)error({code:1} as GeolocationPositionError);else success({coords:{latitude:48.8566,longitude:2.3522}} as GeolocationPosition);}}});});
-  let requests=0;await page.route(photon,r=>{requests++;return r.abort();});await page.route('**/overpass-api.de/**',r=>{requests++;return r.abort();});
-  await page.goto('/');expect(await page.evaluate(()=>(window as unknown as {locationCalls:number}).locationCalls)).toBe(0);
-  const locate=page.getByRole('button',{name:'Locate me',exact:true}), zoom=(await page.getByRole('button',{name:'Zoom in',exact:true}).boundingBox())!,b=(await locate.boundingBox())!;expect(b.y+b.height).toBeLessThanOrEqual(zoom.y);
-  await locate.click();await expect(page.getByText('Location permission denied. Search for a place instead.')).toBeVisible();await page.getByRole('button',{name:'Dismiss location message'}).click();await locate.click();
-  await expect(page.locator('.coordinate-inputs input').first()).toHaveValue('48.85660');await expect(page.locator('.coordinate-inputs input').last()).toHaveValue('2.35220');expect(requests).toBe(0);
+test('location control remains disabled and cannot disclose device coordinates',async({page})=>{
+  await page.addInitScript(()=>{Object.defineProperty(navigator,'geolocation',{configurable:true,get(){throw new Error('Unexpected location access');}});});
+  await page.goto('/');const locate=page.getByRole('button',{name:'Locate me (temporarily unavailable)',exact:true});await expect(locate).toBeDisabled();
+  const zoom=(await page.getByRole('button',{name:'Zoom in',exact:true}).boundingBox())!,b=(await locate.boundingBox())!;expect(b.y+b.height).toBeLessThanOrEqual(zoom.y);
 });

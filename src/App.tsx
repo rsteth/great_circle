@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowDownToLine, ArrowUpRight, Check, ChevronDown, CircleDashed, Flag, LoaderCircle, MoveUpRight, RotateCcw, Route as RouteIcon, SlidersHorizontal, X } from 'lucide-react';
 import MapView from './MapView';
+import GenerationOverlay from './GenerationOverlay';
 import NumberControl from './NumberControl';
 import RadiusControl from './RadiusControl';
 import SettingsDrawer from './SettingsDrawer';
@@ -61,7 +62,7 @@ export default function App() {
   function cancel() {
     abort.current?.abort(); abort.current = null;
     searchClient.current?.cancel(); requestSequence.current++;
-    setBusy(false); setStatus('Cancelled.');
+    setBusy(false); setStatus('Cancelled. Any server request may still finish within its time limit.');
   }
   async function generate() {
     if (abort.current) return;
@@ -124,7 +125,7 @@ export default function App() {
           <section className="control-section"><div className="section-label"><span className="step">02</span><h2>Start position</h2></div><p className="helper">Drag S around the edge. Click the map to move the center.</p><NumberControl id="start-bearing" label="Start angle (° clockwise from north)" value={Number(bearingTo(settings.center, settings.start).toFixed(1))} min={0} max={360} step={1} onCommit={bearing => circle({ bearing })} /><div className="quick-distances">{[['N', 0], ['E', 90], ['S', 180], ['W', 270]].map(([label, angle]) => <button key={label} type="button" aria-label={`Start ${label}`} onClick={() => circle({ bearing: Number(angle) })}>{label}</button>)}</div><div className="pin-readout"><span className="pin-dot" />{settings.start.lat.toFixed(5)}, {settings.start.lon.toFixed(5)}</div></section>
           <section className="control-section preferences"><div className="section-label"><span className="step">03</span><h2>Ride preferences</h2></div><label className="select-row" htmlFor="style">Roads<select id="style" value={settings.style} onChange={e => update({ style: e.target.value as Settings['style'] })}><option value="quiet">{ROUTING_MODE === 'ors' ? 'Recommended cycling' : 'Quieter roads'}</option><option value="balanced">{ROUTING_MODE === 'ors' ? 'Shorter route' : 'Balanced'}</option></select></label><label className="select-row" htmlFor="surface">Surface<select id="surface" value={settings.surface} onChange={e => update({ surface: e.target.value as Settings['surface'] })}><option value="mixed">Mixed surfaces</option><option value="paved">Paved only</option></select></label><p className="helper">{settings.surface === 'paved' ? 'Requires known paved surfaces along the whole route.' : 'Includes unpaved and unknown surfaces.'}</p></section>
         </fieldset></>;
-  return <div className={`app ${mobile ? 'mobile-layout' : ''}`}>
+  return <><div className={`app ${mobile ? 'mobile-layout' : ''}`} inert={busy} aria-busy={busy}>
     <header className="site-header"><a className="brand" href="./" aria-label="Great Circle home"><span className="brand-mark"><CircleDashed size={27} /><i /></span>great circle</a><a className="header-link" href="https://github.com/rsteth/great_circle" target="_blank" rel="noreferrer">Source <ArrowUpRight size={14} /></a></header>
     <section className="intro"><div><h1>Make a loop.</h1><p>Size the circle, then drag the start hand.</p></div></section>
     <main className="workspace">
@@ -148,6 +149,6 @@ export default function App() {
       </section>
     </main>
     {mobile && <SettingsDrawer open={drawerOpen} onClose={closeDrawer} trigger={drawerReturn} focusId={drawerFocus}>{secondaryFields}</SettingsDrawer>}
-    <footer><p><span className="footer-dot" /> Approximate routes. Check access and conditions before riding.</p>{ROUTING_MODE === 'ors' && <p className="routing-attribution"><a href="https://openrouteservice.org/" target="_blank" rel="noreferrer">Routing © openrouteservice.org by HeiGIT</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noreferrer">CC BY-SA 4.0</a></p>}<details><summary>About routes <ChevronDown size={13} /></summary><div><p>Loops won’t be perfect circles. Map errors, missing tags and closures can affect access. Some restrictions exclude roads.</p><p>Location is accessed only when you tap Locate me. Place searches go to Photon; your chosen area and Start go to the routing service when you generate. Requests are rate-limited; the service may be busy.</p><p>{ROUTING_MODE === 'ors' && <>Routing © HeiGIT / openrouteservice · results CC BY-SA 4.0. </>}Data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap contributors · ODbL</a>.</p></div></details></footer>
-  </div>;
+    <footer><p><span className="footer-dot" /> Approximate routes. Check access and conditions before riding.</p>{ROUTING_MODE === 'ors' && <p className="routing-attribution"><a href="https://openrouteservice.org/" target="_blank" rel="noreferrer">Routing © openrouteservice.org by HeiGIT</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noreferrer">CC BY-SA 4.0</a></p>}<details><summary>About routes <ChevronDown size={13} /></summary><div><p>Loops won’t be perfect circles. Map errors, missing tags and closures can affect access. Some restrictions exclude roads.</p><p>Locate me is temporarily unavailable; this app does not access your device location. Place searches go to Photon; your chosen area and Start go to the routing service when you generate. Requests are rate-limited; the service may be busy.</p><p>{ROUTING_MODE === 'ors' && <>Routing © HeiGIT / openrouteservice · results CC BY-SA 4.0. </>}Data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap contributors · ODbL</a>.</p></div></details></footer>
+  </div>{busy && <GenerationOverlay status={status} onCancel={cancel} />}</>;
 }
