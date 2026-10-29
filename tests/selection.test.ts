@@ -7,7 +7,7 @@ describe('verified initial example and one local user selection',()=>{
   expect(readSelection({getItem:()=>null})).toBeUndefined();const value=exampleSettings();expect(value.center).toEqual({lat:49.289,lon:-123.128});expect(value.circleRadiusM).toBe(500);expect(value.targetKm).toBeCloseTo(Math.PI);expect(bearingTo(value.center,value.start)).toBeCloseTo(180);expect(value.tolerance).toBe(.3);expect(value.style).toBe('quiet');expect(value.surface).toBe('mixed');
  });
  it('round-trips a chosen center, radius, Start and tolerance without migrating to the example',()=>{
-  const selected=changeCircle(circleFixture().settings,{radiusM:2300,bearing:73,center:{lat:48.86,lon:2.35}});selected.tolerance=.1;const values=new Map<string,string>();const storage={getItem:(key:string)=>values.get(key)??null,setItem:(key:string,value:string)=>{values.set(key,value)}};
+  const selected=changeCircle(circleFixture().settings,{radiusM:2300,bearing:73,center:{lat:48.86,lon:2.35}});selected.tolerance=.173;const values=new Map<string,string>();const storage={getItem:(key:string)=>values.get(key)??null,setItem:(key:string,value:string)=>{values.set(key,value)}};
   expect(writeSelection(selected,storage)).toBe(true);expect([...values.keys()]).toEqual([SELECTION_KEY]);expect(readSelection(storage)).toEqual(selected);expect(readSelection(storage)?.center).not.toEqual(exampleSettings().center);
  });
  it('ignores invalid, corrupt, unknown-version or inaccessible storage without throwing',()=>{

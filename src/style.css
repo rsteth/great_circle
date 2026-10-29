@@ -76,3 +76,18 @@ footer>.routing-attribution{white-space:normal;flex-wrap:wrap;font-size:10px}foo
 .generation-card{width:min(100%,380px);text-align:center}.generation-card>svg{color:#93c5fd}.generation-card h2{font-size:25px;margin:20px 0 12px}.generation-card p{line-height:1.6;color:#a1a1aa;font-size:13px}.generation-card #generation-detail{color:#e4e4e7;font-size:15px}.generation-card .primary{margin-top:24px;min-height:48px;width:100%;justify-content:center}
 .locate-button:disabled{opacity:.4;cursor:not-allowed}
 @media(prefers-reduced-motion:reduce){.generation-overlay .spin{animation:none}}
+
+.circle-layer .center-lock{border-color:#71717a;color:#d4d4d8;background:#27272af5;cursor:grab}.circle-layer .center-lock:active{cursor:grabbing}.circle-layer .center-lock[aria-pressed=true]{border-color:#e4e4e7}
+.center-lock-preview{position:absolute;z-index:650;pointer-events:none;transform:translate(-50%,-50%);display:grid;justify-items:center;width:44px;height:44px;color:#f4f4f5}
+.lock-progress{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;box-shadow:0 2px 9px #0009;position:relative}.lock-progress::before{content:'';position:absolute;inset:3px;border-radius:50%;background:#27272a}.lock-progress svg{position:relative}.center-lock-preview small{position:absolute;top:48px;white-space:nowrap;font-size:10px;background:#18181bf5;padding:4px 6px;border-radius:4px;max-width:210px;text-align:center;white-space:normal}
+.center-lock-announcement{position:absolute;overflow:hidden;width:1px;height:1px;clip-path:inset(50%);white-space:nowrap}
+
+/* Clockwise countdown erases a full circumference. Geometry grows only outward:
+   r - stroke-width/2 stays 20px in every keyframe; layout/hit targets stay 44px. */
+.center-countdown{pointer-events:none;overflow:visible;color:#e4e4e7;opacity:0;transition:opacity .16s ease-out;transform:rotate(-90deg);transform-origin:center}
+.center-lock>.center-countdown{position:absolute;left:-1.5px;top:-1.5px;width:44px;height:44px}
+.lock-progress{background:#52525b}.lock-progress>.center-countdown{position:absolute;inset:0;width:44px;height:44px}
+.center-countdown[data-active=true]{opacity:1}.center-countdown circle{r:21px;stroke-width:2px;transition:r .16s ease-out,stroke-width .16s ease-out}
+.center-countdown[data-active=true][data-unlocked=false] circle{animation:unlock-ring-grow .6s cubic-bezier(.2,.8,.2,1) both}
+@keyframes unlock-ring-grow{0%{r:21px;stroke-width:2px}35%{r:23px;stroke-width:6px}60%{r:22.2px;stroke-width:4.4px}80%{r:22.6px;stroke-width:5.2px}100%{r:22.5px;stroke-width:5px}}
+@media(prefers-reduced-motion:reduce){.center-countdown[data-active=true][data-unlocked=false] circle{animation:none;r:22.5px;stroke-width:5px;transition:r .16s linear,stroke-width .16s linear}}
