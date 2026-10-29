@@ -13,9 +13,11 @@
     "check:live": "tsx scripts/check-live.ts",
     "check:browser:live": "tsx scripts/check-browser-live.ts",
     "benchmark:routes": "tsx scripts/benchmark-routing.mts",
-    "dev:server": "tsx server/index.ts"
+    "dev:server": "tsx server/index.ts",
+    "build:lambda": "node scripts/build-lambda.mjs"
   },
   "dependencies": {
+    "@aws-sdk/client-ssm": "3.1159.0",
     "leaflet": "1.9.4",
     "lucide-react": "^0.562.0",
     "react": "^19.2.0",
@@ -28,6 +30,7 @@
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",
+    "esbuild": "0.28.2",
     "tsx": "^4.20.6",
     "typescript": "~5.9.3",
     "vite": "^7.3.0",

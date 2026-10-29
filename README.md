@@ -29,6 +29,10 @@ Changing any route setting clears the previous route and export. Cancellation ab
 
 The local API binds only `127.0.0.1:8787`; Vite proxies `/api`. Without a configured server-only key it fails explicitly and makes no provider request. Never put a secret in a `VITE_` variable or chat. `VITE_ROUTING_MODE=legacy npm run dev` retains the older pipeline for comparison. Production hosting for this new backend is not configured or approved.
 
+## AWS Lambda preparation (not deployed)
+
+The local-only buffered Lambda adapter, deterministic package build and proposed IAM/CloudFormation files are documented in [infra/lambda/README.md](infra/lambda/README.md). `npm run build:lambda` packages code locally; it never deploys or reads a key. AWS account access is verified, but the current principal is root and no scoped Great Circle deployment/runtime role exists at the proposed names. Cloud/IAM/SSM/public-URL operations remain pending approval.
+
 ## Checks
 
 All checks are explicit; installation does not run tests, contact Overpass, or start a server.

@@ -1,0 +1,106 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "LOCAL PROPOSAL ONLY: Great Circle one-time runtime IAM/logs bootstrap; no secret value or public endpoint.",
+  "Parameters": {
+    "ExpectedAccountId": {
+      "Type": "String",
+      "AllowedPattern": "[0-9]{12}",
+      "Description": "Required verified account; no inferred/default account."
+    }
+  },
+  "Conditions": {
+    "TargetConfirmed": {
+      "Fn::And": [
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "AWS::AccountId"
+            },
+            {
+              "Ref": "ExpectedAccountId"
+            }
+          ]
+        },
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "AWS::Region"
+            },
+            "us-east-1"
+          ]
+        }
+      ]
+    }
+  },
+  "Resources": {
+    "RuntimeRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "RoleName": "great-circle-prod-runtime",
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "great-circle-read-one-secret-and-own-logs",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "ssm:GetParameter"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter/great-circle/production/ors-api-key"
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/great-circle-api:*"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "Condition": "TargetConfirmed"
+    },
+    "ApiLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "DeletionPolicy": "Retain",
+      "UpdateReplacePolicy": "Retain",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/great-circle-api",
+        "RetentionInDays": 7
+      },
+      "Condition": "TargetConfirmed"
+    }
+  },
+  "Outputs": {
+    "RuntimeRoleArn": {
+      "Condition": "TargetConfirmed",
+      "Value": {
+        "Fn::GetAtt": [
+          "RuntimeRole",
+          "Arn"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,227 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "LOCAL PROPOSAL ONLY: Great Circle application stack. Runtime IAM, secret and private artifact bucket require separately approved bootstrap.",
+  "Parameters": {
+    "ExpectedAccountId": {
+      "Type": "String",
+      "AllowedPattern": "[0-9]{12}",
+      "Description": "Required verified account; no inferred/default account."
+    },
+    "ArtifactBucket": {
+      "Type": "String",
+      "Description": "Approved private artifact bucket in us-east-1, not created by this template."
+    },
+    "ArtifactKey": {
+      "Type": "String",
+      "AllowedPattern": "great-circle/[A-Za-z0-9/_\\.-]+\\.zip",
+      "Description": "Immutable great-circle/ object key; never reuse a key for changed bytes."
+    },
+    "ArtifactCodeSha256": {
+      "Type": "String",
+      "Description": "Base64 SHA256 of the zip bytes, verified by Lambda version publication."
+    },
+    "PublicEndpointApproved": {
+      "Type": "String",
+      "AllowedValues": [
+        "false",
+        "true"
+      ],
+      "Default": "false",
+      "Description": "Explicit public exposure approval required; default creates no public URL/permissions."
+    },
+    "RuntimeRoleArn": {
+      "Type": "String",
+      "AllowedPattern": "arn:aws:iam::[0-9]{12}:role/great-circle-prod-runtime",
+      "Description": "Exact bootstrap role ARN; app deployer gets iam:PassRole only for this role."
+    }
+  },
+  "Conditions": {
+    "TargetConfirmed": {
+      "Fn::And": [
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "AWS::AccountId"
+            },
+            {
+              "Ref": "ExpectedAccountId"
+            }
+          ]
+        },
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "AWS::Region"
+            },
+            "us-east-1"
+          ]
+        }
+      ]
+    },
+    "PublicDeploymentApproved": {
+      "Fn::And": [
+        {
+          "Condition": "TargetConfirmed"
+        },
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "PublicEndpointApproved"
+            },
+            "true"
+          ]
+        }
+      ]
+    }
+  },
+  "Resources": {
+    "ApiFunction": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "FunctionName": "great-circle-api",
+        "Description": "Great Circle buffered ORS adapter; no database or VPC",
+        "Runtime": "nodejs24.x",
+        "Architectures": [
+          "arm64"
+        ],
+        "Handler": "index.handler",
+        "MemorySize": 512,
+        "Timeout": 30,
+        "ReservedConcurrentExecutions": 1,
+        "Role": {
+          "Ref": "RuntimeRoleArn"
+        },
+        "Code": {
+          "S3Bucket": {
+            "Ref": "ArtifactBucket"
+          },
+          "S3Key": {
+            "Ref": "ArtifactKey"
+          }
+        },
+        "Environment": {
+          "Variables": {}
+        },
+        "LoggingConfig": {
+          "LogFormat": "JSON",
+          "ApplicationLogLevel": "WARN",
+          "SystemLogLevel": "INFO"
+        }
+      },
+      "Condition": "TargetConfirmed"
+    },
+    "ApiVersion": {
+      "Type": "AWS::Lambda::Version",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "ApiFunction"
+        },
+        "CodeSha256": {
+          "Ref": "ArtifactCodeSha256"
+        },
+        "Description": {
+          "Ref": "ArtifactKey"
+        }
+      },
+      "Condition": "TargetConfirmed"
+    },
+    "ApiAlias": {
+      "Type": "AWS::Lambda::Alias",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "ApiFunction"
+        },
+        "FunctionVersion": {
+          "Fn::GetAtt": [
+            "ApiVersion",
+            "Version"
+          ]
+        },
+        "Name": "prod"
+      },
+      "Condition": "TargetConfirmed"
+    },
+    "ApiUrl": {
+      "Type": "AWS::Lambda::Url",
+      "Condition": "PublicDeploymentApproved",
+      "Properties": {
+        "TargetFunctionArn": {
+          "Fn::GetAtt": [
+            "ApiFunction",
+            "Arn"
+          ]
+        },
+        "Qualifier": "prod",
+        "AuthType": "NONE",
+        "InvokeMode": "BUFFERED",
+        "Cors": {
+          "AllowOrigins": [
+            "https://stethem.com"
+          ],
+          "AllowMethods": [
+            "POST",
+            "GET",
+            "OPTIONS"
+          ],
+          "AllowHeaders": [
+            "content-type"
+          ],
+          "ExposeHeaders": [
+            "retry-after"
+          ],
+          "MaxAge": 300
+        }
+      }
+    },
+    "PublicUrlInvoke": {
+      "Type": "AWS::Lambda::Permission",
+      "Condition": "PublicDeploymentApproved",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "ApiAlias"
+        },
+        "Action": "lambda:InvokeFunctionUrl",
+        "Principal": "*",
+        "FunctionUrlAuthType": "NONE"
+      }
+    },
+    "PublicInvokeOnlyViaUrl": {
+      "Type": "AWS::Lambda::Permission",
+      "Condition": "PublicDeploymentApproved",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "ApiAlias"
+        },
+        "Action": "lambda:InvokeFunction",
+        "Principal": "*",
+        "InvokedViaFunctionUrl": true
+      }
+    }
+  },
+  "Outputs": {
+    "FunctionArn": {
+      "Condition": "TargetConfirmed",
+      "Value": {
+        "Fn::GetAtt": [
+          "ApiFunction",
+          "Arn"
+        ]
+      }
+    },
+    "ProductionAliasArn": {
+      "Condition": "TargetConfirmed",
+      "Value": {
+        "Ref": "ApiAlias"
+      }
+    },
+    "ApiUrl": {
+      "Condition": "PublicDeploymentApproved",
+      "Value": {
+        "Fn::GetAtt": [
+          "ApiUrl",
+          "FunctionUrl"
+        ]
+      }
+    }
+  }
+}
