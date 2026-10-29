@@ -61,5 +61,5 @@ it('recurring deploy trust/policy cannot mutate IAM or read/write the ORS parame
  const actions = policy.Statement.flatMap((s: { Action: string | string[] }) => typeof s.Action === 'string' ? [s.Action] : s.Action);
  expect(actions.filter((a: string) => a.startsWith('iam:'))).toEqual(['iam:PassRole', 'iam:GetRole']); expect(actions.some((a: string) => a.startsWith('ssm:'))).toBe(false);
  const pass = policy.Statement.find((s: { Action: unknown }) => s.Action === 'iam:PassRole'); expect(pass.Resource).toBe('arn:aws:iam::089089716476:role/great-circle-prod-runtime'); expect(pass.Condition.StringEquals['iam:PassedToService']).toBe('lambda.amazonaws.com');
- expect(JSON.stringify(policy)).toContain('APPROVED_ARTIFACT_BUCKET'); expect(actions).not.toContain('*');
+ expect(actions.some((a: string) => a.startsWith('s3:') || a.startsWith('cloudformation:'))).toBe(false); expect(actions).not.toContain('lambda:CreateFunctionUrlConfig'); expect(actions).not.toContain('lambda:AddPermission'); expect(policy.Statement.find((s: { Sid: string }) => s.Sid === 'PrivateCanaryOnly').Resource).toBe('arn:aws:lambda:us-east-1:089089716476:function:great-circle-api:prod'); expect(actions).not.toContain('*');
 });

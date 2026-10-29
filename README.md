@@ -31,7 +31,7 @@ The local API binds only `127.0.0.1:8787`; Vite proxies `/api`. Without a config
 
 ## AWS Lambda preparation (not deployed)
 
-The local-only buffered Lambda adapter, deterministic package build and proposed IAM/CloudFormation files are documented in [infra/lambda/README.md](infra/lambda/README.md). `npm run build:lambda` packages code locally; it never deploys or reads a key. AWS account access is verified, but the current principal is root and no scoped Great Circle deployment/runtime role exists at the proposed names. Cloud/IAM/SSM/public-URL operations remain pending approval.
+The local-only buffered Lambda adapter, deterministic package build and proposed IAM/CloudFormation files are documented in [infra/lambda/README.md](infra/lambda/README.md). `npm run build:lambda` packages code locally; it never deploys or reads a key. AWS account access is verified. The approved OIDC/runtime-role/SSM/log bootstrap is complete; root is reserved for that administrative bootstrap. Private Lambda deployment is pending the exact backend-only main workflow approval and a decision on the account concurrency guard. No public URL is approved.
 
 ## Checks
 

@@ -2,26 +2,7 @@
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "OnlyGreatCircleApplicationStack",
-      "Effect": "Allow",
-      "Action": [
-        "cloudformation:CreateChangeSet",
-        "cloudformation:DescribeChangeSet",
-        "cloudformation:DeleteChangeSet",
-        "cloudformation:ExecuteChangeSet",
-        "cloudformation:DescribeStacks",
-        "cloudformation:DescribeStackEvents",
-        "cloudformation:ListStackResources",
-        "cloudformation:GetTemplate",
-        "cloudformation:GetTemplateSummary"
-      ],
-      "Resource": [
-        "arn:aws:cloudformation:us-east-1:089089716476:stack/great-circle-prod/*",
-        "arn:aws:cloudformation:us-east-1:089089716476:changeSet/great-circle-*/*"
-      ]
-    },
-    {
-      "Sid": "OnlyGreatCircleFunctionAndAliases",
+      "Sid": "OnlyPrivateGreatCircleFunctionAndAliases",
       "Effect": "Allow",
       "Action": [
         "lambda:CreateFunction",
@@ -36,16 +17,13 @@
         "lambda:GetAlias",
         "lambda:UpdateAlias",
         "lambda:DeleteAlias",
-        "lambda:CreateFunctionUrlConfig",
         "lambda:GetFunctionUrlConfig",
-        "lambda:UpdateFunctionUrlConfig",
-        "lambda:DeleteFunctionUrlConfig",
-        "lambda:AddPermission",
-        "lambda:RemovePermission",
         "lambda:GetPolicy",
         "lambda:TagResource",
         "lambda:UntagResource",
-        "lambda:ListTags"
+        "lambda:ListTags",
+        "lambda:PutFunctionConcurrency",
+        "lambda:GetFunctionConcurrency"
       ],
       "Resource": [
         "arn:aws:lambda:us-east-1:089089716476:function:great-circle-api",
@@ -70,19 +48,10 @@
       "Resource": "arn:aws:iam::089089716476:role/great-circle-prod-runtime"
     },
     {
-      "Sid": "OnlyApprovedArtifactPrefix",
+      "Sid": "PrivateCanaryOnly",
       "Effect": "Allow",
-      "Action": [
-        "s3:PutObject",
-        "s3:GetObject"
-      ],
-      "Resource": "arn:aws:s3:::APPROVED_ARTIFACT_BUCKET/great-circle/*"
-    },
-    {
-      "Sid": "ApprovedArtifactBucketLocationOnly",
-      "Effect": "Allow",
-      "Action": "s3:GetBucketLocation",
-      "Resource": "arn:aws:s3:::APPROVED_ARTIFACT_BUCKET"
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:lambda:us-east-1:089089716476:function:great-circle-api:prod"
     }
   ]
 }
