@@ -8,15 +8,15 @@ import type { Point, Settings } from './routing/types';
 export const CENTER_HOLD_MS = 600;
 const MOTION_PX = 8;
 type Visual = { x: number; y: number; progress: number; unlocked: boolean; keyboard: boolean };
-type Hold = { pointer: number; source: 'handle' | 'map'; originX: number; originY: number; x: number; y: number; since: number; unlocked: boolean; offset: Point; before: Settings; capture: HTMLElement; handlers: { handler: L.Handler; enabled: boolean }[]; raf: number };
-type Props = { map: L.Map; settings: Settings; busy: boolean; position: L.Point; onCommit: (point: Point) => void; onSuppressClick: () => void };
-/** Preview is transactional: no settings/route changes until an unlocked release. */
-export default function CenterLock({ map, settings, busy, position, onCommit, onSuppressClick }: Props) {
+type Hold = { pointer: number; source: 'handle' | 'map'; originX: number; originY: number; x: number; y: number; since: number | null; bounds: DOMRect; unlocked: boolean; offset: Point; before: Settings; capture: HTMLElement; handlers: { handler: L.Handler; enabled: boolean }[]; raf: number };
+type Props = { map: L.Map; settings: Settings; busy: boolean; position: L.Point; onPreview: (point?: Point) => void; onCommit: (point: Point) => void; onSuppressClick: () => void };
+/** Circle projection follows an unlocked drag; settings/route commit only on release. */
+export default function CenterLock({ map, settings, busy, position, onPreview, onCommit, onSuppressClick }: Props) {
   const button = useRef<HTMLButtonElement>(null), hold = useRef<Hold | null>(null);
   const pointers = useRef(new Set<number>()), keyboard = useRef<{ x: number; y: number } | null>(null);
-  const latest = useRef({ settings, busy, onCommit, onSuppressClick });
+  const latest = useRef({ settings, busy, onPreview, onCommit, onSuppressClick });
   const [visual, setVisual] = useState<Visual>();
-  useLayoutEffect(() => { latest.current = { settings, busy, onCommit, onSuppressClick }; });
+  useLayoutEffect(() => { latest.current = { settings, busy, onPreview, onCommit, onSuppressClick }; });
   const container = map.getContainer(), shell = container.parentElement!;
   function disableMap(active: Hold) {
     if (active.handlers.length) return;
@@ -28,6 +28,8 @@ export default function CenterLock({ map, settings, busy, position, onCommit, on
     return { lat: Math.max(-75, Math.min(75, p.lat + offset.lat)), lon: ((p.lng + offset.lon + 540) % 360) - 180 };
   }
   function preview(active: Hold) {
+    if (active.since === null) return;
+    if (active.source === 'handle' && active.unlocked) latest.current.onPreview(point(active.x, active.y, active.offset));
     const bounds = shell.getBoundingClientRect();
     setVisual({ x: active.x - bounds.left, y: active.y - bounds.top, progress: Math.max(0, Math.min(1, (performance.now() - active.since) / CENTER_HOLD_MS)), unlocked: active.unlocked, keyboard: false });
   }
@@ -35,6 +37,7 @@ export default function CenterLock({ map, settings, busy, position, onCommit, on
     const active = hold.current; hold.current = null;
     if (active) {
       cancelAnimationFrame(active.raf);
+      if (active.source === 'handle' && active.unlocked) latest.current.onPreview();
       if (active.capture.hasPointerCapture(active.pointer)) active.capture.releasePointerCapture(active.pointer);
       active.handlers.forEach(({ handler, enabled }) => { if (enabled) handler.enable(); });
       if (active.source === 'handle' || active.unlocked) latest.current.onSuppressClick();
@@ -50,7 +53,7 @@ export default function CenterLock({ map, settings, busy, position, onCommit, on
   function tick() {
     const active = hold.current; if (!active) return;
     if (latest.current.busy || pointers.current.size > 1) { finish(); return; }
-    if (!active.unlocked && performance.now() - active.since >= CENTER_HOLD_MS) {
+    if (!active.unlocked && active.since !== null && performance.now() - active.since >= CENTER_HOLD_MS) {
       active.unlocked = true; disableMap(active);
       active.capture.setPointerCapture(active.pointer);
     }
@@ -60,7 +63,7 @@ export default function CenterLock({ map, settings, busy, position, onCommit, on
     if (latest.current.busy || event.button !== 0 || pointers.current.size > 1) return;
     finish();
     const current = latest.current.settings, p = point(event.clientX, event.clientY);
-    const active: Hold = { pointer: event.pointerId, source, originX: event.clientX, originY: event.clientY, x: event.clientX, y: event.clientY, since: performance.now(), unlocked: false, offset: source === 'handle' ? { lat: current.center.lat - p.lat, lon: current.center.lon - p.lon } : { lat: 0, lon: 0 }, before: current, capture: source === 'handle' ? button.current! : container, handlers: [], raf: 0 };
+    const active: Hold = { pointer: event.pointerId, source, originX: event.clientX, originY: event.clientY, x: event.clientX, y: event.clientY, since: source === 'map' ? performance.now() : null, bounds: button.current!.getBoundingClientRect(), unlocked: false, offset: source === 'handle' ? { lat: current.center.lat - p.lat, lon: current.center.lon - p.lon } : { lat: 0, lon: 0 }, before: current, capture: source === 'handle' ? button.current! : container, handlers: [], raf: 0 };
     hold.current = active;
     if (source === 'handle') { disableMap(active); active.capture.setPointerCapture(active.pointer); }
     preview(active); active.raf = requestAnimationFrame(tick);
@@ -79,7 +82,10 @@ export default function CenterLock({ map, settings, busy, position, onCommit, on
       const moved = Math.hypot(event.clientX - active.originX, event.clientY - active.originY);
       if (!active.unlocked && moved > MOTION_PX) {
         if (active.source === 'map') { finish(); return; }
-        active.originX = event.clientX; active.originY = event.clientY; active.since = performance.now();
+        // Arm once when the pointer leaves the original handle. Later moves
+        // update the target without restarting the countdown.
+        const b = active.bounds;
+        if (active.since === null && (event.clientX < b.left || event.clientX > b.right || event.clientY < b.top || event.clientY > b.bottom)) active.since = performance.now();
       }
       active.x = event.clientX; active.y = event.clientY;
       if (active.source === 'handle' || active.unlocked) { event.preventDefault(); event.stopPropagation(); }
@@ -87,7 +93,7 @@ export default function CenterLock({ map, settings, busy, position, onCommit, on
     }
     function up(event: PointerEvent) {
       pointers.current.delete(event.pointerId);
-      if (hold.current?.pointer === event.pointerId) { if (hold.current.source === 'handle' || hold.current.unlocked) event.stopPropagation(); finish(hold.current.capture.hasPointerCapture(event.pointerId)); }
+      if (hold.current?.pointer === event.pointerId) { hold.current.x = event.clientX; hold.current.y = event.clientY; if (hold.current.source === 'handle' || hold.current.unlocked) event.stopPropagation(); finish(hold.current.capture.hasPointerCapture(event.pointerId)); }
     }
     function cancelled(event: PointerEvent) { pointers.current.delete(event.pointerId); if (hold.current?.pointer === event.pointerId) finish(); }
     function lost(event: PointerEvent) { if (hold.current?.pointer === event.pointerId) finish(); }
@@ -125,8 +131,8 @@ export default function CenterLock({ map, settings, busy, position, onCommit, on
     const bounds = shell.getBoundingClientRect(); setVisual({ x: active.x - bounds.left, y: active.y - bounds.top, progress: 1, unlocked: true, keyboard: true });
   }
   const countdown = (active: boolean) => <svg className="center-countdown" viewBox="0 0 44 44" aria-hidden="true" data-active={active} data-unlocked={!!visual?.unlocked}><circle cx="22" cy="22" r="21" pathLength="1" fill="none" stroke="currentColor" strokeWidth="2" strokeDasharray="1 1" strokeDashoffset={active ? -(visual?.progress ?? 0) : 0} /></svg>;
-  return <><span id="center-lock-help" className="center-lock-announcement">Center locked. Drag and hold still for 600 milliseconds, then release to move. Or press Enter to unlock, arrows to position, Enter to confirm, Escape to cancel.</span><button ref={button} type="button" className="circle-handle center-handle center-lock" style={{ left: position.x, top: position.y }} aria-label="Move circle" aria-pressed={!!visual?.unlocked} aria-describedby="center-lock-help" disabled={busy} title="Hold to move. Keyboard: Enter, arrows, Enter." onPointerDown={event => { event.preventDefault(); event.stopPropagation(); button.current?.focus({ preventScroll: true }); begin(event, 'handle'); }} onLostPointerCapture={event => { if (hold.current?.pointer === event.pointerId) finish(); }} onKeyDown={key} onBlur={() => { if (keyboard.current) finish(); }} onClick={event => event.stopPropagation()}>{countdown(!!visual && !visual.keyboard)}{visual?.unlocked ? <LockKeyholeOpen size={18} aria-hidden="true" /> : <LockKeyhole size={18} aria-hidden="true" />}</button>
-    {visual && createPortal(<div className="center-lock-preview" style={{ left: visual.x, top: visual.y, opacity: .25 + visual.progress * .75 }} aria-hidden="true" data-unlocked={visual.unlocked}><span className="lock-progress">{countdown(!visual.keyboard)}{visual.unlocked ? <LockKeyholeOpen size={20} /> : <LockKeyhole size={20} />}</span><small style={{ left: Math.max(8, Math.min(shell.clientWidth - 218, visual.x - 105)) - visual.x + 22, width: 210 }}>{visual.unlocked ? visual.keyboard ? 'Enter to move · Esc to cancel' : 'Release to move' : 'Hold to unlock'}</small></div>, shell)}
-    {visual && createPortal(<span className="center-lock-announcement" role="status" aria-label="Center movement">{visual.unlocked ? visual.keyboard ? 'Center unlocked. Arrow keys position the preview. Enter moves the circle; Escape cancels.' : 'Center unlocked. Release to move; Escape cancels.' : 'Hold still to unlock the center.'}</span>, shell)}
+  return <><span id="center-lock-help" className="center-lock-announcement">Center locked. Drag outside the handle to unlock in 600 milliseconds, then drag to position and release to confirm. Or press Enter to unlock, arrows to position, Enter to confirm, Escape to cancel.</span><button ref={button} type="button" className="circle-handle center-handle center-lock" style={{ left: position.x, top: position.y }} aria-label="Move circle" aria-pressed={!!visual?.unlocked} aria-describedby="center-lock-help" disabled={busy} title="Drag to unlock and move. Keyboard: Enter, arrows, Enter." onPointerDown={event => { event.preventDefault(); event.stopPropagation(); button.current?.focus({ preventScroll: true }); begin(event, 'handle'); }} onLostPointerCapture={event => { if (hold.current?.pointer === event.pointerId) finish(); }} onKeyDown={key} onBlur={() => { if (keyboard.current) finish(); }} onClick={event => event.stopPropagation()}>{countdown(!!visual && !visual.keyboard)}{visual?.unlocked ? <LockKeyholeOpen size={18} aria-hidden="true" /> : <LockKeyhole size={18} aria-hidden="true" />}</button>
+    {visual && createPortal(<div className="center-lock-preview" style={{ left: visual.x, top: visual.y, opacity: .25 + visual.progress * .75 }} aria-hidden="true" data-unlocked={visual.unlocked}><span className="lock-progress">{countdown(!visual.keyboard)}{visual.unlocked ? <LockKeyholeOpen size={20} /> : <LockKeyhole size={20} />}</span><small style={{ left: Math.max(8, Math.min(shell.clientWidth - 218, visual.x - 105)) - visual.x + 22, width: 210 }}>{visual.unlocked ? visual.keyboard ? 'Enter to move · Esc to cancel' : 'Release to confirm' : 'Unlocking…'}</small></div>, shell)}
+    {visual && createPortal(<span className="center-lock-announcement" role="status" aria-label="Center movement">{visual.unlocked ? visual.keyboard ? 'Center unlocked. Arrow keys position the preview. Enter moves the circle; Escape cancels.' : 'Center unlocked. Drag to position; release to confirm; Escape cancels.' : 'Unlocking the center. Keep dragging to position.'}</span>, shell)}
   </>;
 }
