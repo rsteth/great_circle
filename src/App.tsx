@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowDownToLine, ArrowUpRight, Check, ChevronDown, CircleDashed, Flag, LoaderCircle, MoveUpRight, RotateCcw, Route as RouteIcon, SlidersHorizontal, X } from 'lucide-react';
+import Appearance from './Appearance';
 import MapView from './MapView';
 import GenerationOverlay from './GenerationOverlay';
 import NumberControl from './NumberControl';
@@ -126,7 +127,7 @@ export default function App() {
           <section className="control-section preferences"><div className="section-label"><span className="step">03</span><h2>Ride preferences</h2></div><label className="select-row" htmlFor="style">Roads<select id="style" value={settings.style} onChange={e => update({ style: e.target.value as Settings['style'] })}><option value="quiet">{ROUTING_MODE === 'ors' ? 'Recommended cycling' : 'Quieter roads'}</option><option value="balanced">{ROUTING_MODE === 'ors' ? 'Shorter route' : 'Balanced'}</option></select></label><label className="select-row" htmlFor="surface">Surface<select id="surface" value={settings.surface} onChange={e => update({ surface: e.target.value as Settings['surface'] })}><option value="mixed">Mixed surfaces</option><option value="paved">Paved only</option></select></label><p className="helper">{settings.surface === 'paved' ? 'Requires known paved surfaces along the whole route.' : 'Includes unpaved and unknown surfaces.'}</p></section>
         </fieldset></>;
   return <><div className={`app ${mobile ? 'mobile-layout' : ''}`} inert={busy} aria-busy={busy}>
-    <header className="site-header"><a className="brand" href="./" aria-label="Great Circle home"><span className="brand-mark"><CircleDashed size={27} /><i /></span>great circle</a><a className="header-link" href="https://github.com/rsteth/great_circle" target="_blank" rel="noreferrer">Source <ArrowUpRight size={14} /></a></header>
+    <header className="site-header"><a className="brand" href="./" aria-label="Great Circle home"><span className="brand-mark"><CircleDashed size={27} /><i /></span>great circle</a><div className="header-actions"><Appearance /><a className="header-link" href="https://github.com/rsteth/great_circle" target="_blank" rel="noreferrer">Source <ArrowUpRight size={14} /></a></div></header>
     <section className="intro"><div><h1>Make a loop.</h1><p>Size the circle, then drag the start hand.</p></div></section>
     <main className="workspace">
       {!mobile && <aside className="planner" aria-label="Route settings">

@@ -1,0 +1,2834 @@
+[
+  {
+    "theme": "light",
+    "palette": "standard",
+    "text": [
+      {
+        "text": "great circle",
+        "selector": "a.brand",
+        "ratio": 12.241137536512081,
+        "required": 4.5
+      },
+      {
+        "text": "Accessibility",
+        "selector": "h2.",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "Choose a palette for easier distinction. These options change interface colors, not map tiles. Label",
+        "selector": "p.",
+        "ratio": 6.373484094854106,
+        "required": 4.5
+      },
+      {
+        "text": "Color presentation",
+        "selector": "legend.",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "Standard",
+        "selector": "span.",
+        "ratio": 10.959023572714791,
+        "required": 4.5
+      },
+      {
+        "text": "Red–green friendly (protan/deutan)",
+        "selector": "span.",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "Blue–yellow friendly (tritan)",
+        "selector": "span.",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "High contrast",
+        "selector": "span.",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "Use device theme",
+        "selector": "button.device-theme-button",
+        "ratio": 10.713027498048655,
+        "required": 4.5
+      },
+      {
+        "text": "Light and dark mode are independent of your palette choice.",
+        "selector": "p.appearance-note",
+        "ratio": 6.373484094854106,
+        "required": 4.5
+      },
+      {
+        "text": "Source",
+        "selector": "a.header-link",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "S",
+        "selector": "span.",
+        "ratio": 7.06686133179604,
+        "required": 4.5
+      },
+      {
+        "text": "Start",
+        "selector": "small.",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "↔",
+        "selector": "span.",
+        "ratio": 6.934567652320458,
+        "required": 4.5
+      },
+      {
+        "text": "Size",
+        "selector": "small.",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "1 km",
+        "selector": "div.leaflet-control-scale-line",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "+",
+        "selector": "span.",
+        "ratio": 13.344325424732025,
+        "required": 3
+      },
+      {
+        "text": "−",
+        "selector": "span.",
+        "ratio": 13.344325424732025,
+        "required": 3
+      },
+      {
+        "text": "Leaflet | © OpenStreetMap contributors",
+        "selector": "div.leaflet-control-attribution leaflet-control",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "Leaflet",
+        "selector": "a.",
+        "ratio": 6.934567652320458,
+        "required": 4.5
+      },
+      {
+        "text": "|",
+        "selector": "span.",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "OpenStreetMap",
+        "selector": "a.",
+        "ratio": 6.934567652320458,
+        "required": 4.5
+      },
+      {
+        "text": "Size the circle, then drag S to choose a start.",
+        "selector": "span.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "Generate loop",
+        "selector": "button.primary",
+        "ratio": 6.934567652320458,
+        "required": 4.5
+      },
+      {
+        "text": "Settings",
+        "selector": "button.settings-button",
+        "ratio": 10.713027498048655,
+        "required": 4.5
+      },
+      {
+        "text": "Route variation",
+        "selector": "label.",
+        "ratio": 6.373484094854106,
+        "required": 4.5
+      },
+      {
+        "text": "Circle size",
+        "selector": "span.radius-label",
+        "ratio": 6.373484094854106,
+        "required": 4.5
+      },
+      {
+        "text": "1.59",
+        "selector": "span.",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "km radius",
+        "selector": "small.",
+        "ratio": 6.373484094854106,
+        "required": 4.5
+      },
+      {
+        "text": "DISTANCE",
+        "selector": "span.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "— km",
+        "selector": "strong.",
+        "ratio": 12.241137536512081,
+        "required": 3
+      },
+      {
+        "text": "km",
+        "selector": "small.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "FROM TARGET",
+        "selector": "span.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "— %",
+        "selector": "strong.",
+        "ratio": 12.241137536512081,
+        "required": 3
+      },
+      {
+        "text": "%",
+        "selector": "small.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "REPEATED",
+        "selector": "span.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "— %",
+        "selector": "strong.",
+        "ratio": 12.241137536512081,
+        "required": 3
+      },
+      {
+        "text": "%",
+        "selector": "small.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "Your loop will appear here.",
+        "selector": "h2.",
+        "ratio": 12.241137536512081,
+        "required": 4.5
+      },
+      {
+        "text": "Vancouver example",
+        "selector": "button.text-button",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "Approximate routes. Check access and conditions before riding.",
+        "selector": "p.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "About routes",
+        "selector": "summary.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "Loops won’t be perfect circles. Map errors, missing tags and closures can affect access. Some restri",
+        "selector": "p.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "Locate me is temporarily unavailable; this app does not access your device location. Place searches ",
+        "selector": "p.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "Data © OpenStreetMap contributors · ODbL.",
+        "selector": "p.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "OpenStreetMap contributors · ODbL",
+        "selector": "a.",
+        "ratio": 6.361280445917114,
+        "required": 4.5
+      },
+      {
+        "text": "text",
+        "selector": "input.",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "placeholder",
+        "selector": "input.",
+        "ratio": 6.373484094854106,
+        "required": 4.5
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.appearance-button",
+        "ratio": 4.092587107091843,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.appearance-button",
+        "ratio": 3.285591202322973,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.appearance-button",
+        "ratio": 4.092587107091843,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "label.palette-option",
+        "ratio": 3.3610360323559645,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "label.palette-option",
+        "ratio": 4.092587107091843,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "label.palette-option",
+        "ratio": 4.092587107091843,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "label.palette-option",
+        "ratio": 4.092587107091843,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.circle-handle center-handle center-lock",
+        "ratio": 5.1167300101959965,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.circle-handle start-handle ",
+        "ratio": 7.06686133179604,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.circle-handle size-handle ",
+        "ratio": 6.934567652320458,
+        "required": 3
+      }
+    ]
+  },
+  {
+    "theme": "light",
+    "palette": "red-green",
+    "text": [
+      {
+        "text": "great circle",
+        "selector": "a.brand",
+        "ratio": 12.241137536512081,
+        "required": 4.5
+      },
+      {
+        "text": "Accessibility",
+        "selector": "h2.",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "Choose a palette for easier distinction. These options change interface colors, not map tiles. Label",
+        "selector": "p.",
+        "ratio": 6.373484094854106,
+        "required": 4.5
+      },
+      {
+        "text": "Color presentation",
+        "selector": "legend.",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "Standard",
+        "selector": "span.",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "Red–green friendly (protan/deutan)",
+        "selector": "span.",
+        "ratio": 11.455480391848681,
+        "required": 4.5
+      },
+      {
+        "text": "Blue–yellow friendly (tritan)",
+        "selector": "span.",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "High contrast",
+        "selector": "span.",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "Use device theme",
+        "selector": "button.device-theme-button",
+        "ratio": 10.713027498048655,
+        "required": 4.5
+      },
+      {
+        "text": "Light and dark mode are independent of your palette choice.",
+        "selector": "p.appearance-note",
+        "ratio": 6.373484094854106,
+        "required": 4.5
+      },
+      {
+        "text": "Source",
+        "selector": "a.header-link",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "S",
+        "selector": "span.",
+        "ratio": 6.991216529227634,
+        "required": 4.5
+      },
+      {
+        "text": "Start",
+        "selector": "small.",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "↔",
+        "selector": "span.",
+        "ratio": 7.448600420306361,
+        "required": 4.5
+      },
+      {
+        "text": "Size",
+        "selector": "small.",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "1 km",
+        "selector": "div.leaflet-control-scale-line",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "+",
+        "selector": "span.",
+        "ratio": 13.344325424732025,
+        "required": 3
+      },
+      {
+        "text": "−",
+        "selector": "span.",
+        "ratio": 13.344325424732025,
+        "required": 3
+      },
+      {
+        "text": "Leaflet | © OpenStreetMap contributors",
+        "selector": "div.leaflet-control-attribution leaflet-control",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "Leaflet",
+        "selector": "a.",
+        "ratio": 7.448600420306361,
+        "required": 4.5
+      },
+      {
+        "text": "|",
+        "selector": "span.",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "OpenStreetMap",
+        "selector": "a.",
+        "ratio": 7.448600420306361,
+        "required": 4.5
+      },
+      {
+        "text": "Size the circle, then drag S to choose a start.",
+        "selector": "span.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "Generate loop",
+        "selector": "button.primary",
+        "ratio": 6.934567652320458,
+        "required": 4.5
+      },
+      {
+        "text": "Settings",
+        "selector": "button.settings-button",
+        "ratio": 10.713027498048655,
+        "required": 4.5
+      },
+      {
+        "text": "Route variation",
+        "selector": "label.",
+        "ratio": 6.373484094854106,
+        "required": 4.5
+      },
+      {
+        "text": "Circle size",
+        "selector": "span.radius-label",
+        "ratio": 6.373484094854106,
+        "required": 4.5
+      },
+      {
+        "text": "1.59",
+        "selector": "span.",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "km radius",
+        "selector": "small.",
+        "ratio": 6.373484094854106,
+        "required": 4.5
+      },
+      {
+        "text": "DISTANCE",
+        "selector": "span.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "— km",
+        "selector": "strong.",
+        "ratio": 12.241137536512081,
+        "required": 3
+      },
+      {
+        "text": "km",
+        "selector": "small.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "FROM TARGET",
+        "selector": "span.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "— %",
+        "selector": "strong.",
+        "ratio": 12.241137536512081,
+        "required": 3
+      },
+      {
+        "text": "%",
+        "selector": "small.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "REPEATED",
+        "selector": "span.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "— %",
+        "selector": "strong.",
+        "ratio": 12.241137536512081,
+        "required": 3
+      },
+      {
+        "text": "%",
+        "selector": "small.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "Your loop will appear here.",
+        "selector": "h2.",
+        "ratio": 12.241137536512081,
+        "required": 4.5
+      },
+      {
+        "text": "Vancouver example",
+        "selector": "button.text-button",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "Approximate routes. Check access and conditions before riding.",
+        "selector": "p.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "About routes",
+        "selector": "summary.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "Loops won’t be perfect circles. Map errors, missing tags and closures can affect access. Some restri",
+        "selector": "p.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "Locate me is temporarily unavailable; this app does not access your device location. Place searches ",
+        "selector": "p.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "Data © OpenStreetMap contributors · ODbL.",
+        "selector": "p.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "OpenStreetMap contributors · ODbL",
+        "selector": "a.",
+        "ratio": 6.832817643258493,
+        "required": 4.5
+      },
+      {
+        "text": "text",
+        "selector": "input.",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "placeholder",
+        "selector": "input.",
+        "ratio": 6.373484094854106,
+        "required": 4.5
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.appearance-button",
+        "ratio": 4.092587107091843,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.appearance-button",
+        "ratio": 4.092587107091843,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.appearance-button",
+        "ratio": 4.092587107091843,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "label.palette-option",
+        "ratio": 4.092587107091843,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "label.palette-option",
+        "ratio": 3.5132949673373846,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "label.palette-option",
+        "ratio": 4.092587107091843,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "label.palette-option",
+        "ratio": 4.092587107091843,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.circle-handle center-handle center-lock",
+        "ratio": 5.1167300101959965,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.circle-handle start-handle ",
+        "ratio": 6.991216529227634,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.circle-handle size-handle ",
+        "ratio": 7.448600420306361,
+        "required": 3
+      }
+    ]
+  },
+  {
+    "theme": "light",
+    "palette": "blue-yellow",
+    "text": [
+      {
+        "text": "great circle",
+        "selector": "a.brand",
+        "ratio": 12.241137536512081,
+        "required": 4.5
+      },
+      {
+        "text": "Accessibility",
+        "selector": "h2.",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "Choose a palette for easier distinction. These options change interface colors, not map tiles. Label",
+        "selector": "p.",
+        "ratio": 6.373484094854106,
+        "required": 4.5
+      },
+      {
+        "text": "Color presentation",
+        "selector": "legend.",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "Standard",
+        "selector": "span.",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "Red–green friendly (protan/deutan)",
+        "selector": "span.",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "Blue–yellow friendly (tritan)",
+        "selector": "span.",
+        "ratio": 11.150139552026314,
+        "required": 4.5
+      },
+      {
+        "text": "High contrast",
+        "selector": "span.",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "Use device theme",
+        "selector": "button.device-theme-button",
+        "ratio": 10.713027498048655,
+        "required": 4.5
+      },
+      {
+        "text": "Light and dark mode are independent of your palette choice.",
+        "selector": "p.appearance-note",
+        "ratio": 6.373484094854106,
+        "required": 4.5
+      },
+      {
+        "text": "Source",
+        "selector": "a.header-link",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "S",
+        "selector": "span.",
+        "ratio": 6.765333816143071,
+        "required": 4.5
+      },
+      {
+        "text": "Start",
+        "selector": "small.",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "↔",
+        "selector": "span.",
+        "ratio": 7.384507464613011,
+        "required": 4.5
+      },
+      {
+        "text": "Size",
+        "selector": "small.",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "1 km",
+        "selector": "div.leaflet-control-scale-line",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "+",
+        "selector": "span.",
+        "ratio": 13.344325424732025,
+        "required": 3
+      },
+      {
+        "text": "−",
+        "selector": "span.",
+        "ratio": 13.344325424732025,
+        "required": 3
+      },
+      {
+        "text": "Leaflet | © OpenStreetMap contributors",
+        "selector": "div.leaflet-control-attribution leaflet-control",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "Leaflet",
+        "selector": "a.",
+        "ratio": 7.384507464613011,
+        "required": 4.5
+      },
+      {
+        "text": "|",
+        "selector": "span.",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "OpenStreetMap",
+        "selector": "a.",
+        "ratio": 7.384507464613011,
+        "required": 4.5
+      },
+      {
+        "text": "Size the circle, then drag S to choose a start.",
+        "selector": "span.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "Generate loop",
+        "selector": "button.primary",
+        "ratio": 7.41174633881046,
+        "required": 4.5
+      },
+      {
+        "text": "Settings",
+        "selector": "button.settings-button",
+        "ratio": 10.713027498048655,
+        "required": 4.5
+      },
+      {
+        "text": "Route variation",
+        "selector": "label.",
+        "ratio": 6.373484094854106,
+        "required": 4.5
+      },
+      {
+        "text": "Circle size",
+        "selector": "span.radius-label",
+        "ratio": 6.373484094854106,
+        "required": 4.5
+      },
+      {
+        "text": "1.59",
+        "selector": "span.",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "km radius",
+        "selector": "small.",
+        "ratio": 6.373484094854106,
+        "required": 4.5
+      },
+      {
+        "text": "DISTANCE",
+        "selector": "span.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "— km",
+        "selector": "strong.",
+        "ratio": 12.241137536512081,
+        "required": 3
+      },
+      {
+        "text": "km",
+        "selector": "small.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "FROM TARGET",
+        "selector": "span.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "— %",
+        "selector": "strong.",
+        "ratio": 12.241137536512081,
+        "required": 3
+      },
+      {
+        "text": "%",
+        "selector": "small.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "REPEATED",
+        "selector": "span.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "— %",
+        "selector": "strong.",
+        "ratio": 12.241137536512081,
+        "required": 3
+      },
+      {
+        "text": "%",
+        "selector": "small.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "Your loop will appear here.",
+        "selector": "h2.",
+        "ratio": 12.241137536512081,
+        "required": 4.5
+      },
+      {
+        "text": "Vancouver example",
+        "selector": "button.text-button",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "Approximate routes. Check access and conditions before riding.",
+        "selector": "p.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "About routes",
+        "selector": "summary.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "Loops won’t be perfect circles. Map errors, missing tags and closures can affect access. Some restri",
+        "selector": "p.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "Locate me is temporarily unavailable; this app does not access your device location. Place searches ",
+        "selector": "p.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "Data © OpenStreetMap contributors · ODbL.",
+        "selector": "p.",
+        "ratio": 5.8465821919543055,
+        "required": 4.5
+      },
+      {
+        "text": "OpenStreetMap contributors · ODbL",
+        "selector": "a.",
+        "ratio": 6.774023312275695,
+        "required": 4.5
+      },
+      {
+        "text": "text",
+        "selector": "input.",
+        "ratio": 13.344325424732025,
+        "required": 4.5
+      },
+      {
+        "text": "placeholder",
+        "selector": "input.",
+        "ratio": 6.373484094854106,
+        "required": 4.5
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.appearance-button",
+        "ratio": 4.092587107091843,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.appearance-button",
+        "ratio": 4.092587107091843,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.appearance-button",
+        "ratio": 4.092587107091843,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "label.palette-option",
+        "ratio": 4.092587107091843,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "label.palette-option",
+        "ratio": 4.092587107091843,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "label.palette-option",
+        "ratio": 3.4196496203789257,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "label.palette-option",
+        "ratio": 4.092587107091843,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.circle-handle center-handle center-lock",
+        "ratio": 5.1167300101959965,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.circle-handle start-handle ",
+        "ratio": 6.765333816143071,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.circle-handle size-handle ",
+        "ratio": 7.384507464613011,
+        "required": 3
+      }
+    ]
+  },
+  {
+    "theme": "light",
+    "palette": "high-contrast",
+    "text": [
+      {
+        "text": "great circle",
+        "selector": "a.brand",
+        "ratio": 17.45626158980669,
+        "required": 4.5
+      },
+      {
+        "text": "Accessibility",
+        "selector": "h2.",
+        "ratio": 17.45626158980669,
+        "required": 4.5
+      },
+      {
+        "text": "Choose a palette for easier distinction. These options change interface colors, not map tiles. Label",
+        "selector": "p.",
+        "ratio": 12.975121557656863,
+        "required": 4.5
+      },
+      {
+        "text": "Color presentation",
+        "selector": "legend.",
+        "ratio": 17.45626158980669,
+        "required": 4.5
+      },
+      {
+        "text": "Standard",
+        "selector": "span.",
+        "ratio": 17.45626158980669,
+        "required": 4.5
+      },
+      {
+        "text": "Red–green friendly (protan/deutan)",
+        "selector": "span.",
+        "ratio": 17.45626158980669,
+        "required": 4.5
+      },
+      {
+        "text": "Blue–yellow friendly (tritan)",
+        "selector": "span.",
+        "ratio": 17.45626158980669,
+        "required": 4.5
+      },
+      {
+        "text": "High contrast",
+        "selector": "span.",
+        "ratio": 14.78075415661305,
+        "required": 4.5
+      },
+      {
+        "text": "Use device theme",
+        "selector": "button.device-theme-button",
+        "ratio": 17.45626158980669,
+        "required": 4.5
+      },
+      {
+        "text": "Light and dark mode are independent of your palette choice.",
+        "selector": "p.appearance-note",
+        "ratio": 12.975121557656863,
+        "required": 4.5
+      },
+      {
+        "text": "Source",
+        "selector": "a.header-link",
+        "ratio": 12.975121557656863,
+        "required": 4.5
+      },
+      {
+        "text": "S",
+        "selector": "span.",
+        "ratio": 17.45626158980669,
+        "required": 4.5
+      },
+      {
+        "text": "Start",
+        "selector": "small.",
+        "ratio": 17.45626158980669,
+        "required": 4.5
+      },
+      {
+        "text": "↔",
+        "selector": "span.",
+        "ratio": 17.45626158980669,
+        "required": 4.5
+      },
+      {
+        "text": "Size",
+        "selector": "small.",
+        "ratio": 17.45626158980669,
+        "required": 4.5
+      },
+      {
+        "text": "1 km",
+        "selector": "div.leaflet-control-scale-line",
+        "ratio": 17.45626158980669,
+        "required": 4.5
+      },
+      {
+        "text": "+",
+        "selector": "span.",
+        "ratio": 17.45626158980669,
+        "required": 3
+      },
+      {
+        "text": "−",
+        "selector": "span.",
+        "ratio": 17.45626158980669,
+        "required": 3
+      },
+      {
+        "text": "Leaflet | © OpenStreetMap contributors",
+        "selector": "div.leaflet-control-attribution leaflet-control",
+        "ratio": 17.45626158980669,
+        "required": 4.5
+      },
+      {
+        "text": "Leaflet",
+        "selector": "a.",
+        "ratio": 17.45626158980669,
+        "required": 4.5
+      },
+      {
+        "text": "|",
+        "selector": "span.",
+        "ratio": 17.45626158980669,
+        "required": 4.5
+      },
+      {
+        "text": "OpenStreetMap",
+        "selector": "a.",
+        "ratio": 17.45626158980669,
+        "required": 4.5
+      },
+      {
+        "text": "Size the circle, then drag S to choose a start.",
+        "selector": "span.",
+        "ratio": 12.975121557656863,
+        "required": 4.5
+      },
+      {
+        "text": "Generate loop",
+        "selector": "button.primary",
+        "ratio": 7.590325567554674,
+        "required": 4.5
+      },
+      {
+        "text": "Settings",
+        "selector": "button.settings-button",
+        "ratio": 17.45626158980669,
+        "required": 4.5
+      },
+      {
+        "text": "Route variation",
+        "selector": "label.",
+        "ratio": 12.975121557656863,
+        "required": 4.5
+      },
+      {
+        "text": "Circle size",
+        "selector": "span.radius-label",
+        "ratio": 12.975121557656863,
+        "required": 4.5
+      },
+      {
+        "text": "1.59",
+        "selector": "span.",
+        "ratio": 17.45626158980669,
+        "required": 4.5
+      },
+      {
+        "text": "km radius",
+        "selector": "small.",
+        "ratio": 12.975121557656863,
+        "required": 4.5
+      },
+      {
+        "text": "DISTANCE",
+        "selector": "span.",
+        "ratio": 12.975121557656863,
+        "required": 4.5
+      },
+      {
+        "text": "— km",
+        "selector": "strong.",
+        "ratio": 17.45626158980669,
+        "required": 3
+      },
+      {
+        "text": "km",
+        "selector": "small.",
+        "ratio": 12.975121557656863,
+        "required": 4.5
+      },
+      {
+        "text": "FROM TARGET",
+        "selector": "span.",
+        "ratio": 12.975121557656863,
+        "required": 4.5
+      },
+      {
+        "text": "— %",
+        "selector": "strong.",
+        "ratio": 17.45626158980669,
+        "required": 3
+      },
+      {
+        "text": "%",
+        "selector": "small.",
+        "ratio": 12.975121557656863,
+        "required": 4.5
+      },
+      {
+        "text": "REPEATED",
+        "selector": "span.",
+        "ratio": 12.975121557656863,
+        "required": 4.5
+      },
+      {
+        "text": "— %",
+        "selector": "strong.",
+        "ratio": 17.45626158980669,
+        "required": 3
+      },
+      {
+        "text": "%",
+        "selector": "small.",
+        "ratio": 12.975121557656863,
+        "required": 4.5
+      },
+      {
+        "text": "Your loop will appear here.",
+        "selector": "h2.",
+        "ratio": 17.45626158980669,
+        "required": 4.5
+      },
+      {
+        "text": "Vancouver example",
+        "selector": "button.text-button",
+        "ratio": 12.975121557656863,
+        "required": 4.5
+      },
+      {
+        "text": "Approximate routes. Check access and conditions before riding.",
+        "selector": "p.",
+        "ratio": 12.975121557656863,
+        "required": 4.5
+      },
+      {
+        "text": "About routes",
+        "selector": "summary.",
+        "ratio": 12.975121557656863,
+        "required": 4.5
+      },
+      {
+        "text": "Loops won’t be perfect circles. Map errors, missing tags and closures can affect access. Some restri",
+        "selector": "p.",
+        "ratio": 12.975121557656863,
+        "required": 4.5
+      },
+      {
+        "text": "Locate me is temporarily unavailable; this app does not access your device location. Place searches ",
+        "selector": "p.",
+        "ratio": 12.975121557656863,
+        "required": 4.5
+      },
+      {
+        "text": "Data © OpenStreetMap contributors · ODbL.",
+        "selector": "p.",
+        "ratio": 12.975121557656863,
+        "required": 4.5
+      },
+      {
+        "text": "OpenStreetMap contributors · ODbL",
+        "selector": "a.",
+        "ratio": 17.45626158980669,
+        "required": 4.5
+      },
+      {
+        "text": "text",
+        "selector": "input.",
+        "ratio": 17.45626158980669,
+        "required": 4.5
+      },
+      {
+        "text": "placeholder",
+        "selector": "input.",
+        "ratio": 12.975121557656863,
+        "required": 4.5
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.appearance-button",
+        "ratio": 17.45626158980669,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.appearance-button",
+        "ratio": 17.45626158980669,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.appearance-button",
+        "ratio": 17.45626158980669,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "label.palette-option",
+        "ratio": 17.45626158980669,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "label.palette-option",
+        "ratio": 17.45626158980669,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "label.palette-option",
+        "ratio": 17.45626158980669,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "label.palette-option",
+        "ratio": 14.78075415661305,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.circle-handle center-handle center-lock",
+        "ratio": 12.975121557656863,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.circle-handle start-handle ",
+        "ratio": 17.45626158980669,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.circle-handle size-handle ",
+        "ratio": 17.45626158980669,
+        "required": 3
+      }
+    ]
+  },
+  {
+    "theme": "dark",
+    "palette": "standard",
+    "text": [
+      {
+        "text": "great circle",
+        "selector": "a.brand",
+        "ratio": 14.329780406541092,
+        "required": 4.5
+      },
+      {
+        "text": "Accessibility",
+        "selector": "h2.",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "Choose a palette for easier distinction. These options change interface colors, not map tiles. Label",
+        "selector": "p.",
+        "ratio": 7.714118742650063,
+        "required": 4.5
+      },
+      {
+        "text": "Color presentation",
+        "selector": "legend.",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "Standard",
+        "selector": "span.",
+        "ratio": 8.449000849846746,
+        "required": 4.5
+      },
+      {
+        "text": "Red–green friendly (protan/deutan)",
+        "selector": "span.",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "Blue–yellow friendly (tritan)",
+        "selector": "span.",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "High contrast",
+        "selector": "span.",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "Use device theme",
+        "selector": "button.device-theme-button",
+        "ratio": 9.640654577588036,
+        "required": 4.5
+      },
+      {
+        "text": "Light and dark mode are independent of your palette choice.",
+        "selector": "p.appearance-note",
+        "ratio": 7.714118742650063,
+        "required": 4.5
+      },
+      {
+        "text": "Source",
+        "selector": "a.header-link",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "S",
+        "selector": "span.",
+        "ratio": 7.629449602037562,
+        "required": 4.5
+      },
+      {
+        "text": "Start",
+        "selector": "small.",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "↔",
+        "selector": "span.",
+        "ratio": 8.143304538616988,
+        "required": 4.5
+      },
+      {
+        "text": "Size",
+        "selector": "small.",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "1 km",
+        "selector": "div.leaflet-control-scale-line",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "+",
+        "selector": "span.",
+        "ratio": 12.14833385992095,
+        "required": 3
+      },
+      {
+        "text": "−",
+        "selector": "span.",
+        "ratio": 12.14833385992095,
+        "required": 3
+      },
+      {
+        "text": "Leaflet | © OpenStreetMap contributors",
+        "selector": "div.leaflet-control-attribution leaflet-control",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "Leaflet",
+        "selector": "a.",
+        "ratio": 8.143304538616988,
+        "required": 4.5
+      },
+      {
+        "text": "|",
+        "selector": "span.",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "OpenStreetMap",
+        "selector": "a.",
+        "ratio": 8.143304538616988,
+        "required": 4.5
+      },
+      {
+        "text": "Size the circle, then drag S to choose a start.",
+        "selector": "span.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "Generate loop",
+        "selector": "button.primary",
+        "ratio": 8.907261893600047,
+        "required": 4.5
+      },
+      {
+        "text": "Settings",
+        "selector": "button.settings-button",
+        "ratio": 9.640654577588036,
+        "required": 4.5
+      },
+      {
+        "text": "Route variation",
+        "selector": "label.",
+        "ratio": 7.714118742650063,
+        "required": 4.5
+      },
+      {
+        "text": "Circle size",
+        "selector": "span.radius-label",
+        "ratio": 7.714118742650063,
+        "required": 4.5
+      },
+      {
+        "text": "1.59",
+        "selector": "span.",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "km radius",
+        "selector": "small.",
+        "ratio": 7.714118742650063,
+        "required": 4.5
+      },
+      {
+        "text": "DISTANCE",
+        "selector": "span.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "— km",
+        "selector": "strong.",
+        "ratio": 14.329780406541092,
+        "required": 3
+      },
+      {
+        "text": "km",
+        "selector": "small.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "FROM TARGET",
+        "selector": "span.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "— %",
+        "selector": "strong.",
+        "ratio": 14.329780406541092,
+        "required": 3
+      },
+      {
+        "text": "%",
+        "selector": "small.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "REPEATED",
+        "selector": "span.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "— %",
+        "selector": "strong.",
+        "ratio": 14.329780406541092,
+        "required": 3
+      },
+      {
+        "text": "%",
+        "selector": "small.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "Your loop will appear here.",
+        "selector": "h2.",
+        "ratio": 14.329780406541092,
+        "required": 4.5
+      },
+      {
+        "text": "Vancouver example",
+        "selector": "button.text-button",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "Approximate routes. Check access and conditions before riding.",
+        "selector": "p.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "About routes",
+        "selector": "summary.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "Loops won’t be perfect circles. Map errors, missing tags and closures can affect access. Some restri",
+        "selector": "p.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "Locate me is temporarily unavailable; this app does not access your device location. Place searches ",
+        "selector": "p.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "Data © OpenStreetMap contributors · ODbL.",
+        "selector": "p.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "OpenStreetMap contributors · ODbL",
+        "selector": "a.",
+        "ratio": 9.60557778272404,
+        "required": 4.5
+      },
+      {
+        "text": "text",
+        "selector": "input.",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "placeholder",
+        "selector": "input.",
+        "ratio": 7.714118742650063,
+        "required": 4.5
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.appearance-button",
+        "ratio": 4.530886457128531,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.appearance-button",
+        "ratio": 4.530886457128531,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.appearance-button",
+        "ratio": 4.530886457128531,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "label.palette-option",
+        "ratio": 3.151169861501252,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "label.palette-option",
+        "ratio": 4.530886457128531,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "label.palette-option",
+        "ratio": 4.530886457128531,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "label.palette-option",
+        "ratio": 4.530886457128531,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.circle-handle center-handle center-lock",
+        "ratio": 6.121757520489392,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.circle-handle start-handle ",
+        "ratio": 7.629449602037562,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.circle-handle size-handle ",
+        "ratio": 8.143304538616988,
+        "required": 3
+      }
+    ]
+  },
+  {
+    "theme": "dark",
+    "palette": "red-green",
+    "text": [
+      {
+        "text": "great circle",
+        "selector": "a.brand",
+        "ratio": 14.329780406541092,
+        "required": 4.5
+      },
+      {
+        "text": "Accessibility",
+        "selector": "h2.",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "Choose a palette for easier distinction. These options change interface colors, not map tiles. Label",
+        "selector": "p.",
+        "ratio": 7.714118742650063,
+        "required": 4.5
+      },
+      {
+        "text": "Color presentation",
+        "selector": "legend.",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "Standard",
+        "selector": "span.",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "Red–green friendly (protan/deutan)",
+        "selector": "span.",
+        "ratio": 9.790681352657911,
+        "required": 4.5
+      },
+      {
+        "text": "Blue–yellow friendly (tritan)",
+        "selector": "span.",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "High contrast",
+        "selector": "span.",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "Use device theme",
+        "selector": "button.device-theme-button",
+        "ratio": 9.640654577588036,
+        "required": 4.5
+      },
+      {
+        "text": "Light and dark mode are independent of your palette choice.",
+        "selector": "p.appearance-note",
+        "ratio": 7.714118742650063,
+        "required": 4.5
+      },
+      {
+        "text": "Source",
+        "selector": "a.header-link",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "S",
+        "selector": "span.",
+        "ratio": 8.673105230702559,
+        "required": 4.5
+      },
+      {
+        "text": "Start",
+        "selector": "small.",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "↔",
+        "selector": "span.",
+        "ratio": 8.199657105443935,
+        "required": 4.5
+      },
+      {
+        "text": "Size",
+        "selector": "small.",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "1 km",
+        "selector": "div.leaflet-control-scale-line",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "+",
+        "selector": "span.",
+        "ratio": 12.14833385992095,
+        "required": 3
+      },
+      {
+        "text": "−",
+        "selector": "span.",
+        "ratio": 12.14833385992095,
+        "required": 3
+      },
+      {
+        "text": "Leaflet | © OpenStreetMap contributors",
+        "selector": "div.leaflet-control-attribution leaflet-control",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "Leaflet",
+        "selector": "a.",
+        "ratio": 8.199657105443935,
+        "required": 4.5
+      },
+      {
+        "text": "|",
+        "selector": "span.",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "OpenStreetMap",
+        "selector": "a.",
+        "ratio": 8.199657105443935,
+        "required": 4.5
+      },
+      {
+        "text": "Size the circle, then drag S to choose a start.",
+        "selector": "span.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "Generate loop",
+        "selector": "button.primary",
+        "ratio": 9.60557778272404,
+        "required": 4.5
+      },
+      {
+        "text": "Settings",
+        "selector": "button.settings-button",
+        "ratio": 9.640654577588036,
+        "required": 4.5
+      },
+      {
+        "text": "Route variation",
+        "selector": "label.",
+        "ratio": 7.714118742650063,
+        "required": 4.5
+      },
+      {
+        "text": "Circle size",
+        "selector": "span.radius-label",
+        "ratio": 7.714118742650063,
+        "required": 4.5
+      },
+      {
+        "text": "1.59",
+        "selector": "span.",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "km radius",
+        "selector": "small.",
+        "ratio": 7.714118742650063,
+        "required": 4.5
+      },
+      {
+        "text": "DISTANCE",
+        "selector": "span.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "— km",
+        "selector": "strong.",
+        "ratio": 14.329780406541092,
+        "required": 3
+      },
+      {
+        "text": "km",
+        "selector": "small.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "FROM TARGET",
+        "selector": "span.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "— %",
+        "selector": "strong.",
+        "ratio": 14.329780406541092,
+        "required": 3
+      },
+      {
+        "text": "%",
+        "selector": "small.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "REPEATED",
+        "selector": "span.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "— %",
+        "selector": "strong.",
+        "ratio": 14.329780406541092,
+        "required": 3
+      },
+      {
+        "text": "%",
+        "selector": "small.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "Your loop will appear here.",
+        "selector": "h2.",
+        "ratio": 14.329780406541092,
+        "required": 4.5
+      },
+      {
+        "text": "Vancouver example",
+        "selector": "button.text-button",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "Approximate routes. Check access and conditions before riding.",
+        "selector": "p.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "About routes",
+        "selector": "summary.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "Loops won’t be perfect circles. Map errors, missing tags and closures can affect access. Some restri",
+        "selector": "p.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "Locate me is temporarily unavailable; this app does not access your device location. Place searches ",
+        "selector": "p.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "Data © OpenStreetMap contributors · ODbL.",
+        "selector": "p.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "OpenStreetMap contributors · ODbL",
+        "selector": "a.",
+        "ratio": 9.672049441906804,
+        "required": 4.5
+      },
+      {
+        "text": "text",
+        "selector": "input.",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "placeholder",
+        "selector": "input.",
+        "ratio": 7.714118742650063,
+        "required": 4.5
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.appearance-button",
+        "ratio": 4.530886457128531,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.appearance-button",
+        "ratio": 4.530886457128531,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.appearance-button",
+        "ratio": 4.530886457128531,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "label.palette-option",
+        "ratio": 4.530886457128531,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "label.palette-option",
+        "ratio": 3.651567865875826,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "label.palette-option",
+        "ratio": 4.530886457128531,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "label.palette-option",
+        "ratio": 4.530886457128531,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.circle-handle center-handle center-lock",
+        "ratio": 6.121757520489392,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.circle-handle start-handle ",
+        "ratio": 8.673105230702559,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.circle-handle size-handle ",
+        "ratio": 8.199657105443935,
+        "required": 3
+      }
+    ]
+  },
+  {
+    "theme": "dark",
+    "palette": "blue-yellow",
+    "text": [
+      {
+        "text": "great circle",
+        "selector": "a.brand",
+        "ratio": 14.329780406541092,
+        "required": 4.5
+      },
+      {
+        "text": "Accessibility",
+        "selector": "h2.",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "Choose a palette for easier distinction. These options change interface colors, not map tiles. Label",
+        "selector": "p.",
+        "ratio": 7.714118742650063,
+        "required": 4.5
+      },
+      {
+        "text": "Color presentation",
+        "selector": "legend.",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "Standard",
+        "selector": "span.",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "Red–green friendly (protan/deutan)",
+        "selector": "span.",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "Blue–yellow friendly (tritan)",
+        "selector": "span.",
+        "ratio": 9.9515460434043,
+        "required": 4.5
+      },
+      {
+        "text": "High contrast",
+        "selector": "span.",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "Use device theme",
+        "selector": "button.device-theme-button",
+        "ratio": 9.640654577588036,
+        "required": 4.5
+      },
+      {
+        "text": "Light and dark mode are independent of your palette choice.",
+        "selector": "p.appearance-note",
+        "ratio": 7.714118742650063,
+        "required": 4.5
+      },
+      {
+        "text": "Source",
+        "selector": "a.header-link",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "S",
+        "selector": "span.",
+        "ratio": 8.659556674062776,
+        "required": 4.5
+      },
+      {
+        "text": "Start",
+        "selector": "small.",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "↔",
+        "selector": "span.",
+        "ratio": 8.169869579317895,
+        "required": 4.5
+      },
+      {
+        "text": "Size",
+        "selector": "small.",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "1 km",
+        "selector": "div.leaflet-control-scale-line",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "+",
+        "selector": "span.",
+        "ratio": 12.14833385992095,
+        "required": 3
+      },
+      {
+        "text": "−",
+        "selector": "span.",
+        "ratio": 12.14833385992095,
+        "required": 3
+      },
+      {
+        "text": "Leaflet | © OpenStreetMap contributors",
+        "selector": "div.leaflet-control-attribution leaflet-control",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "Leaflet",
+        "selector": "a.",
+        "ratio": 8.169869579317895,
+        "required": 4.5
+      },
+      {
+        "text": "|",
+        "selector": "span.",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "OpenStreetMap",
+        "selector": "a.",
+        "ratio": 8.169869579317895,
+        "required": 4.5
+      },
+      {
+        "text": "Size the circle, then drag S to choose a start.",
+        "selector": "span.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "Generate loop",
+        "selector": "button.primary",
+        "ratio": 9.629270994462336,
+        "required": 4.5
+      },
+      {
+        "text": "Settings",
+        "selector": "button.settings-button",
+        "ratio": 9.640654577588036,
+        "required": 4.5
+      },
+      {
+        "text": "Route variation",
+        "selector": "label.",
+        "ratio": 7.714118742650063,
+        "required": 4.5
+      },
+      {
+        "text": "Circle size",
+        "selector": "span.radius-label",
+        "ratio": 7.714118742650063,
+        "required": 4.5
+      },
+      {
+        "text": "1.59",
+        "selector": "span.",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "km radius",
+        "selector": "small.",
+        "ratio": 7.714118742650063,
+        "required": 4.5
+      },
+      {
+        "text": "DISTANCE",
+        "selector": "span.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "— km",
+        "selector": "strong.",
+        "ratio": 14.329780406541092,
+        "required": 3
+      },
+      {
+        "text": "km",
+        "selector": "small.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "FROM TARGET",
+        "selector": "span.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "— %",
+        "selector": "strong.",
+        "ratio": 14.329780406541092,
+        "required": 3
+      },
+      {
+        "text": "%",
+        "selector": "small.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "REPEATED",
+        "selector": "span.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "— %",
+        "selector": "strong.",
+        "ratio": 14.329780406541092,
+        "required": 3
+      },
+      {
+        "text": "%",
+        "selector": "small.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "Your loop will appear here.",
+        "selector": "h2.",
+        "ratio": 14.329780406541092,
+        "required": 4.5
+      },
+      {
+        "text": "Vancouver example",
+        "selector": "button.text-button",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "Approximate routes. Check access and conditions before riding.",
+        "selector": "p.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "About routes",
+        "selector": "summary.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "Loops won’t be perfect circles. Map errors, missing tags and closures can affect access. Some restri",
+        "selector": "p.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "Locate me is temporarily unavailable; this app does not access your device location. Place searches ",
+        "selector": "p.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "Data © OpenStreetMap contributors · ODbL.",
+        "selector": "p.",
+        "ratio": 9.099324144922502,
+        "required": 4.5
+      },
+      {
+        "text": "OpenStreetMap contributors · ODbL",
+        "selector": "a.",
+        "ratio": 9.636913042696662,
+        "required": 4.5
+      },
+      {
+        "text": "text",
+        "selector": "input.",
+        "ratio": 12.14833385992095,
+        "required": 4.5
+      },
+      {
+        "text": "placeholder",
+        "selector": "input.",
+        "ratio": 7.714118742650063,
+        "required": 4.5
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.appearance-button",
+        "ratio": 4.530886457128531,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.appearance-button",
+        "ratio": 4.530886457128531,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.appearance-button",
+        "ratio": 4.530886457128531,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "label.palette-option",
+        "ratio": 4.530886457128531,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "label.palette-option",
+        "ratio": 4.530886457128531,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "label.palette-option",
+        "ratio": 3.711564541727615,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "label.palette-option",
+        "ratio": 4.530886457128531,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.circle-handle center-handle center-lock",
+        "ratio": 6.121757520489392,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.circle-handle start-handle ",
+        "ratio": 8.659556674062776,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.circle-handle size-handle ",
+        "ratio": 8.169869579317895,
+        "required": 3
+      }
+    ]
+  },
+  {
+    "theme": "dark",
+    "palette": "high-contrast",
+    "text": [
+      {
+        "text": "great circle",
+        "selector": "a.brand",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "Accessibility",
+        "selector": "h2.",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "Choose a palette for easier distinction. These options change interface colors, not map tiles. Label",
+        "selector": "p.",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "Color presentation",
+        "selector": "legend.",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "Standard",
+        "selector": "span.",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "Red–green friendly (protan/deutan)",
+        "selector": "span.",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "Blue–yellow friendly (tritan)",
+        "selector": "span.",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "High contrast",
+        "selector": "span.",
+        "ratio": 12.975121557656863,
+        "required": 4.5
+      },
+      {
+        "text": "Use device theme",
+        "selector": "button.device-theme-button",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "Light and dark mode are independent of your palette choice.",
+        "selector": "p.appearance-note",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "Source",
+        "selector": "a.header-link",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "S",
+        "selector": "span.",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "Start",
+        "selector": "small.",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "↔",
+        "selector": "span.",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "Size",
+        "selector": "small.",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "1 km",
+        "selector": "div.leaflet-control-scale-line",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "+",
+        "selector": "span.",
+        "ratio": 18.564019916436504,
+        "required": 3
+      },
+      {
+        "text": "−",
+        "selector": "span.",
+        "ratio": 18.564019916436504,
+        "required": 3
+      },
+      {
+        "text": "Leaflet | © OpenStreetMap contributors",
+        "selector": "div.leaflet-control-attribution leaflet-control",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "Leaflet",
+        "selector": "a.",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "|",
+        "selector": "span.",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "OpenStreetMap",
+        "selector": "a.",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "Size the circle, then drag S to choose a start.",
+        "selector": "span.",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "Generate loop",
+        "selector": "button.primary",
+        "ratio": 11.334182552310098,
+        "required": 4.5
+      },
+      {
+        "text": "Settings",
+        "selector": "button.settings-button",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "Route variation",
+        "selector": "label.",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "Circle size",
+        "selector": "span.radius-label",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "1.59",
+        "selector": "span.",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "km radius",
+        "selector": "small.",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "DISTANCE",
+        "selector": "span.",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "— km",
+        "selector": "strong.",
+        "ratio": 18.564019916436504,
+        "required": 3
+      },
+      {
+        "text": "km",
+        "selector": "small.",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "FROM TARGET",
+        "selector": "span.",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "— %",
+        "selector": "strong.",
+        "ratio": 18.564019916436504,
+        "required": 3
+      },
+      {
+        "text": "%",
+        "selector": "small.",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "REPEATED",
+        "selector": "span.",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "— %",
+        "selector": "strong.",
+        "ratio": 18.564019916436504,
+        "required": 3
+      },
+      {
+        "text": "%",
+        "selector": "small.",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "Your loop will appear here.",
+        "selector": "h2.",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "Vancouver example",
+        "selector": "button.text-button",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "Approximate routes. Check access and conditions before riding.",
+        "selector": "p.",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "About routes",
+        "selector": "summary.",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "Loops won’t be perfect circles. Map errors, missing tags and closures can affect access. Some restri",
+        "selector": "p.",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "Locate me is temporarily unavailable; this app does not access your device location. Place searches ",
+        "selector": "p.",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "Data © OpenStreetMap contributors · ODbL.",
+        "selector": "p.",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "OpenStreetMap contributors · ODbL",
+        "selector": "a.",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "text",
+        "selector": "input.",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "placeholder",
+        "selector": "input.",
+        "ratio": 18.564019916436504,
+        "required": 4.5
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.appearance-button",
+        "ratio": 18.564019916436504,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.appearance-button",
+        "ratio": 18.564019916436504,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.appearance-button",
+        "ratio": 18.564019916436504,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "label.palette-option",
+        "ratio": 18.564019916436504,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "label.palette-option",
+        "ratio": 18.564019916436504,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "label.palette-option",
+        "ratio": 18.564019916436504,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "label.palette-option",
+        "ratio": 12.975121557656863,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.circle-handle center-handle center-lock",
+        "ratio": 18.564019916436504,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.circle-handle start-handle ",
+        "ratio": 18.564019916436504,
+        "required": 3
+      },
+      {
+        "text": "control boundary",
+        "selector": "button.circle-handle size-handle ",
+        "ratio": 18.564019916436504,
+        "required": 3
+      }
+    ]
+  }
+]

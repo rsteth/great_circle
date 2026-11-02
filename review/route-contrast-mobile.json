@@ -1,0 +1,50 @@
+[
+  {
+    "theme": "light",
+    "palette": "standard",
+    "routeCasingContrast": 13.849121330118509,
+    "required": 3
+  },
+  {
+    "theme": "light",
+    "palette": "red-green",
+    "routeCasingContrast": 8.882720395195033,
+    "required": 3
+  },
+  {
+    "theme": "light",
+    "palette": "blue-yellow",
+    "routeCasingContrast": 9.243569873869186,
+    "required": 3
+  },
+  {
+    "theme": "light",
+    "palette": "high-contrast",
+    "routeCasingContrast": 17.45626158980669,
+    "required": 3
+  },
+  {
+    "theme": "dark",
+    "palette": "standard",
+    "routeCasingContrast": 13.849121330118509,
+    "required": 3
+  },
+  {
+    "theme": "dark",
+    "palette": "red-green",
+    "routeCasingContrast": 8.882720395195033,
+    "required": 3
+  },
+  {
+    "theme": "dark",
+    "palette": "blue-yellow",
+    "routeCasingContrast": 9.243569873869186,
+    "required": 3
+  },
+  {
+    "theme": "dark",
+    "palette": "high-contrast",
+    "routeCasingContrast": 17.45626158980669,
+    "required": 3
+  }
+]

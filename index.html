@@ -3,7 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#09090b" />
+    <meta name="theme-color" content="#f6f3eb" />
+    <script>(()=>{const r=document.documentElement;let t,p;try{t=localStorage.getItem('great-circle.appearance.v1.theme');p=localStorage.getItem('great-circle.appearance.v1.palette')}catch{}const explicit=t==='light'||t==='dark';r.dataset.theme=explicit?t:matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';r.dataset.themeExplicit=String(explicit);r.dataset.palette=['standard','red-green','blue-yellow','high-contrast'].includes(p)?p:'standard';document.querySelector('meta[name="theme-color"]').content=r.dataset.theme==='dark'?'#20231f':'#f6f3eb'})()</script>
     <meta name="description" content="Create near-circular cycling routes and download GPX tracks." />
     <link rel="icon" type="image/svg+xml" href="./circle.svg" />
     <title>Great Circle · Cycling loops</title>
