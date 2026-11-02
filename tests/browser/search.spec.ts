@@ -24,5 +24,5 @@ test('search errors, empty response, cancel and no accidental map changes',async
 test('location control remains disabled and cannot disclose device coordinates',async({page})=>{
   await page.addInitScript(()=>{Object.defineProperty(navigator,'geolocation',{configurable:true,get(){throw new Error('Unexpected location access');}});});
   await page.goto('/');const locate=page.getByRole('button',{name:'Locate me (temporarily unavailable)',exact:true});await expect(locate).toBeDisabled();
-  const zoom=(await page.getByRole('button',{name:'Zoom in',exact:true}).boundingBox())!,b=(await locate.boundingBox())!;expect(b.y+b.height).toBeLessThanOrEqual(zoom.y);
+  const zoom=(await page.locator('.leaflet-control-zoom').boundingBox())!,b=(await locate.boundingBox())!;expect(b.x<zoom.x+zoom.width&&b.x+b.width>zoom.x&&b.y<zoom.y+zoom.height&&b.y+b.height>zoom.y).toBe(false);await expect(locate).toHaveCSS('pointer-events','none');
 });

@@ -7,7 +7,7 @@ test.beforeEach(async ({page}) => {
 });
 test('all eight appearance combinations retain circle state and meet rendered text contrast', async ({page}, info) => {
  await page.goto('/');
- for(const selector of ['.leaflet-control-zoom','.map-topline .map-button']) {const a=(await page.locator('.locate-button').boundingBox())!,b=(await page.locator(selector).boundingBox())!;expect(a.x<b.x+b.width&&a.x+a.width>b.x&&a.y<b.y+b.height&&a.y+a.height>b.y).toBe(false);}
+ for(const selector of ['.leaflet-control-zoom','.map-topline .map-button','.size-handle','.start-handle']) {const a=(await page.locator('.locate-button').boundingBox())!,b=(await page.locator(selector).boundingBox())!;expect(a.x<b.x+b.width&&a.x+a.width>b.x&&a.y<b.y+b.height&&a.y+a.height>b.y).toBe(false);}
  const report: unknown[] = [];
  const radius = await page.getByRole('slider',{name:'Circle radius',exact:true}).getAttribute('aria-valuenow');
  for (const theme of ['light','dark']) {
@@ -81,4 +81,34 @@ test('generated route survives every palette with contrasting casing and GPX ava
   if(theme==='light'&&palette==='red-green')await page.screenshot({path:`review/route-red-green-${info.project.name}.png`,fullPage:true});
  }
  await writeFile(`review/route-contrast-${info.project.name}.json`,JSON.stringify(report,null,2));
+});
+
+test('default circle handles clear disabled locate, Fit and zoom before any radius editing',async({page},info)=>{
+ for(const [width,height] of [[390,844],[320,568],[844,390]]){
+  await page.setViewportSize({width,height});await page.goto('/');await page.evaluate(()=>localStorage.clear());await page.reload();
+  await expect(page.getByRole('slider',{name:'Circle radius',exact:true})).toBeVisible();
+  const locate=page.locator('.locate-button');await expect(locate).toBeDisabled();await expect(locate).toHaveCSS('pointer-events','none');
+  const a=(await locate.boundingBox())!;
+  for(const selector of ['.size-handle','.start-handle','.center-lock','.map-topline .map-button','.leaflet-control-zoom']){
+   const b=(await page.locator(selector).boundingBox())!;
+   expect(a.x<b.x+b.width&&a.x+a.width>b.x&&a.y<b.y+b.height&&a.y+a.height>b.y,JSON.stringify({width,height,selector,locate:a,other:b})).toBe(false);
+  }
+  if(width===390){await page.getByRole('button',{name:'Dark mode'}).click();await page.screenshot({path:`review/default-control-clearance-${info.project.name}.png`,fullPage:true});}
+ }
+});
+
+test('theme and palette transitions retain primary contrast in the same event task',async({page})=>{
+ await page.emulateMedia({reducedMotion:'no-preference',colorScheme:'light'});await page.goto('/');
+ const immediate = async(selector:string) => page.evaluate(selector=>{
+  const primary=document.querySelector<HTMLElement>('.primary')!;getComputedStyle(primary).backgroundColor;
+  document.querySelector<HTMLElement>(selector)!.click();
+  const style=getComputedStyle(primary);
+  const luminance=(value:string)=>{const channels=(value.match(/[\d.]+/g)??[]).map(Number).slice(0,3).map(v=>{v/=255;return v<=.04045?v/12.92:((v+.055)/1.055)**2.4;});return channels[0]*.2126+channels[1]*.7152+channels[2]*.0722;};
+  const a=luminance(style.color),b=luminance(style.backgroundColor);return(Math.max(a,b)+.05)/(Math.min(a,b)+.05);
+ },selector);
+ for(const palette of palettes){
+  await page.getByRole('button',{name:'Accessibility',exact:true}).click();expect(await immediate(`input[value="${palette}"]`)).toBeGreaterThanOrEqual(4.5);await page.keyboard.press('Escape');
+  expect(await immediate('button[aria-label="Dark mode"]')).toBeGreaterThanOrEqual(4.5);
+  expect(await immediate('button[aria-label="Dark mode"]')).toBeGreaterThanOrEqual(4.5);
+ }
 });
