@@ -1,0 +1,59 @@
+{
+  "before": {
+    "circle": {
+      "x": 195.35914611816406,
+      "y": 253.36639404296875
+    },
+    "button": {
+      "x": 195.34375,
+      "y": 253.359375
+    },
+    "preview": null,
+    "camera": "translate3d(0px, 0px, 0px)",
+    "radius": "1592",
+    "bearing": "180"
+  },
+  "grab": {
+    "x": 15,
+    "y": 10
+  },
+  "move": {
+    "x": 70,
+    "y": 40
+  },
+  "held": {
+    "circle": {
+      "x": 265.34375,
+      "y": 293.359375
+    },
+    "button": {
+      "x": 265.34375,
+      "y": 293.359375
+    },
+    "preview": {
+      "x": 265.34375,
+      "y": 293.359375
+    },
+    "camera": "translate3d(0px, 0px, 0px)",
+    "radius": "1592",
+    "bearing": "180"
+  },
+  "after": {
+    "circle": {
+      "x": 265.34375,
+      "y": 293.359375
+    },
+    "button": {
+      "x": 265.34375,
+      "y": 293.359375
+    },
+    "preview": null,
+    "camera": "translate3d(0px, 0px, 0px)",
+    "radius": "1592",
+    "bearing": "180"
+  },
+  "heldCircleButtonGap": 0,
+  "heldCirclePreviewGap": 0,
+  "releaseJumpFromVisiblePreview": 0,
+  "circleReleaseJump": 0
+}

@@ -8,7 +8,7 @@ import type { Point, Settings } from './routing/types';
 export const CENTER_HOLD_MS = 600;
 const MOTION_PX = 8;
 type Visual = { x: number; y: number; progress: number; unlocked: boolean; keyboard: boolean };
-type Hold = { pointer: number; source: 'handle' | 'map'; originX: number; originY: number; x: number; y: number; since: number | null; bounds: DOMRect; unlocked: boolean; offset: Point; before: Settings; capture: HTMLElement; handlers: { handler: L.Handler; enabled: boolean }[]; raf: number };
+type Hold = { pointer: number; source: 'handle' | 'map'; originX: number; originY: number; x: number; y: number; since: number | null; bounds: DOMRect; unlocked: boolean; proposed: Point; offset: { x: number; y: number }; before: Settings; capture: HTMLElement; handlers: { handler: L.Handler; enabled: boolean }[]; raf: number };
 type Props = { map: L.Map; settings: Settings; busy: boolean; position: L.Point; onPreview: (point?: Point) => void; onCommit: (point: Point) => void; onSuppressClick: () => void };
 /** Circle projection follows an unlocked drag; settings/route commit only on release. */
 export default function CenterLock({ map, settings, busy, position, onPreview, onCommit, onSuppressClick }: Props) {
@@ -23,30 +23,37 @@ export default function CenterLock({ map, settings, busy, position, onPreview, o
     active.handlers = [map.dragging, map.touchZoom, map.doubleClickZoom, map.scrollWheelZoom, map.boxZoom, map.keyboard].map(handler => ({ handler, enabled: handler.enabled() }));
     active.handlers.forEach(({ handler }) => handler.disable());
   }
-  function point(x: number, y: number, offset = { lat: 0, lon: 0 }): Point {
+  function point(x: number, y: number): Point {
     const bounds = container.getBoundingClientRect(), p = map.containerPointToLatLng([x - bounds.left, y - bounds.top]);
-    return { lat: Math.max(-75, Math.min(75, p.lat + offset.lat)), lon: ((p.lng + offset.lon + 540) % 360) - 180 };
+    return { lat: Math.max(-75, Math.min(75, p.lat)), lon: ((p.lng + 540) % 360) - 180 };
+  }
+  function proposedCenter(active: Hold): Point {
+    return point(active.x + active.offset.x, active.y + active.offset.y);
   }
   function preview(active: Hold) {
     if (active.since === null) return;
-    if (active.source === 'handle' && active.unlocked) latest.current.onPreview(point(active.x, active.y, active.offset));
-    const bounds = shell.getBoundingClientRect();
-    setVisual({ x: active.x - bounds.left, y: active.y - bounds.top, progress: Math.max(0, Math.min(1, (performance.now() - active.since) / CENTER_HOLD_MS)), unlocked: active.unlocked, keyboard: false });
+    if (active.unlocked) active.proposed = proposedCenter(active);
+    const proposed = active.source === 'handle' ? active.unlocked ? active.proposed : active.before.center : undefined;
+    if (proposed && active.unlocked) latest.current.onPreview(proposed);
+    const bounds = shell.getBoundingClientRect(), mapBounds = container.getBoundingClientRect();
+    // Match the circle's fractional layer projection, including map-pane translation.
+    const projected = proposed && map.layerPointToContainerPoint(map.project([proposed.lat, proposed.lon]).subtract(map.getPixelOrigin()));
+    setVisual({ x: projected ? projected.x + mapBounds.left - bounds.left : active.x - bounds.left, y: projected ? projected.y + mapBounds.top - bounds.top : active.y - bounds.top, progress: Math.max(0, Math.min(1, (performance.now() - active.since) / CENTER_HOLD_MS)), unlocked: active.unlocked, keyboard: false });
   }
   function finish(commit = false) {
     const active = hold.current; hold.current = null;
     if (active) {
       cancelAnimationFrame(active.raf);
-      if (active.source === 'handle' && active.unlocked) latest.current.onPreview();
       if (active.capture.hasPointerCapture(active.pointer)) active.capture.releasePointerCapture(active.pointer);
       active.handlers.forEach(({ handler, enabled }) => { if (enabled) handler.enable(); });
       if (active.source === 'handle' || active.unlocked) latest.current.onSuppressClick();
       const bounds = container.getBoundingClientRect();
       const inside = active.x >= bounds.left && active.x <= bounds.right && active.y >= bounds.top && active.y <= bounds.bottom;
-      if (commit && inside && active.unlocked && !latest.current.busy && latest.current.settings === active.before) {
-        const next = point(active.x, active.y, active.offset);
-        if (distance(next, active.before.center) > .01) latest.current.onCommit(next);
-      }
+      const next = commit && inside && active.unlocked && !latest.current.busy && latest.current.settings === active.before ? active.proposed : undefined;
+      if (next && distance(next, active.before.center) > .01) {
+        // Commit the same proposed center directly; do not briefly restore the old circle.
+        latest.current.onCommit(next);
+      } else if (active.source === 'handle' && active.unlocked) latest.current.onPreview();
     }
     keyboard.current = null; setVisual(undefined);
   }
@@ -62,8 +69,8 @@ export default function CenterLock({ map, settings, busy, position, onPreview, o
   function begin(event: PointerEvent | ReactPointerEvent<HTMLButtonElement>, source: Hold['source']) {
     if (latest.current.busy || event.button !== 0 || pointers.current.size > 1) return;
     finish();
-    const current = latest.current.settings, p = point(event.clientX, event.clientY);
-    const active: Hold = { pointer: event.pointerId, source, originX: event.clientX, originY: event.clientY, x: event.clientX, y: event.clientY, since: source === 'map' ? performance.now() : null, bounds: button.current!.getBoundingClientRect(), unlocked: false, offset: source === 'handle' ? { lat: current.center.lat - p.lat, lon: current.center.lon - p.lon } : { lat: 0, lon: 0 }, before: current, capture: source === 'handle' ? button.current! : container, handlers: [], raf: 0 };
+    const current = latest.current.settings, face = button.current!.getBoundingClientRect();
+    const active: Hold = { pointer: event.pointerId, source, originX: event.clientX, originY: event.clientY, x: event.clientX, y: event.clientY, since: source === 'map' ? performance.now() : null, bounds: button.current!.getBoundingClientRect(), unlocked: false, proposed: source === 'handle' ? current.center : point(event.clientX, event.clientY), offset: source === 'handle' ? { x: face.left + face.width / 2 - event.clientX, y: face.top + face.height / 2 - event.clientY } : { x: 0, y: 0 }, before: current, capture: source === 'handle' ? button.current! : container, handlers: [], raf: 0 };
     hold.current = active;
     if (source === 'handle') { disableMap(active); active.capture.setPointerCapture(active.pointer); }
     preview(active); active.raf = requestAnimationFrame(tick);
@@ -93,7 +100,7 @@ export default function CenterLock({ map, settings, busy, position, onPreview, o
     }
     function up(event: PointerEvent) {
       pointers.current.delete(event.pointerId);
-      if (hold.current?.pointer === event.pointerId) { hold.current.x = event.clientX; hold.current.y = event.clientY; if (hold.current.source === 'handle' || hold.current.unlocked) event.stopPropagation(); finish(hold.current.capture.hasPointerCapture(event.pointerId)); }
+      if (hold.current?.pointer === event.pointerId) { hold.current.x = event.clientX; hold.current.y = event.clientY; if (hold.current.source === 'handle' || hold.current.unlocked) event.stopPropagation(); if (hold.current.unlocked) preview(hold.current); finish(hold.current.capture.hasPointerCapture(event.pointerId)); }
     }
     function cancelled(event: PointerEvent) { pointers.current.delete(event.pointerId); if (hold.current?.pointer === event.pointerId) finish(); }
     function lost(event: PointerEvent) { if (hold.current?.pointer === event.pointerId) finish(); }

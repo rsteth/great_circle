@@ -1,0 +1,450 @@
+[
+  {
+    "setup": "normal",
+    "grab": {
+      "x": 18,
+      "y": 8
+    },
+    "move": {
+      "x": 12,
+      "y": 4
+    },
+    "before": {
+      "circle": {
+        "x": 879.7373657226562,
+        "y": 475.79913330078125
+      },
+      "button": {
+        "x": 879.734375,
+        "y": 475.796875
+      },
+      "preview": null,
+      "camera": "translate3d(0px, 0px, 0px)",
+      "radius": "1592",
+      "bearing": "180"
+    },
+    "held": {
+      "circle": {
+        "x": 891.734375,
+        "y": 479.796875
+      },
+      "button": {
+        "x": 891.734375,
+        "y": 479.796875
+      },
+      "preview": {
+        "x": 891.734375,
+        "y": 479.796875
+      },
+      "camera": "translate3d(0px, 0px, 0px)",
+      "radius": "1592",
+      "bearing": "180"
+    },
+    "after": {
+      "circle": {
+        "x": 891.734375,
+        "y": 479.796875
+      },
+      "button": {
+        "x": 891.734375,
+        "y": 479.796875
+      },
+      "preview": null,
+      "camera": "translate3d(0px, 0px, 0px)",
+      "radius": "1592",
+      "bearing": "180"
+    }
+  },
+  {
+    "setup": "normal",
+    "grab": {
+      "x": -18,
+      "y": -8
+    },
+    "move": {
+      "x": -12,
+      "y": -4
+    },
+    "before": {
+      "circle": {
+        "x": 891.734375,
+        "y": 479.796875
+      },
+      "button": {
+        "x": 891.734375,
+        "y": 479.796875
+      },
+      "preview": null,
+      "camera": "translate3d(0px, 0px, 0px)",
+      "radius": "1592",
+      "bearing": "180"
+    },
+    "held": {
+      "circle": {
+        "x": 879.734375,
+        "y": 475.796875
+      },
+      "button": {
+        "x": 879.734375,
+        "y": 475.796875
+      },
+      "preview": {
+        "x": 879.734375,
+        "y": 475.796875
+      },
+      "camera": "translate3d(0px, 0px, 0px)",
+      "radius": "1592",
+      "bearing": "180"
+    },
+    "after": {
+      "circle": {
+        "x": 879.734375,
+        "y": 475.796875
+      },
+      "button": {
+        "x": 879.734375,
+        "y": 475.796875
+      },
+      "preview": null,
+      "camera": "translate3d(0px, 0px, 0px)",
+      "radius": "1592",
+      "bearing": "180"
+    }
+  },
+  {
+    "setup": "normal",
+    "grab": {
+      "x": 0,
+      "y": 19
+    },
+    "move": {
+      "x": 90,
+      "y": 70
+    },
+    "before": {
+      "circle": {
+        "x": 879.734375,
+        "y": 475.796875
+      },
+      "button": {
+        "x": 879.734375,
+        "y": 475.796875
+      },
+      "preview": null,
+      "camera": "translate3d(0px, 0px, 0px)",
+      "radius": "1592",
+      "bearing": "180"
+    },
+    "held": {
+      "circle": {
+        "x": 969.734375,
+        "y": 545.796875
+      },
+      "button": {
+        "x": 969.734375,
+        "y": 545.796875
+      },
+      "preview": {
+        "x": 969.734375,
+        "y": 545.796875
+      },
+      "camera": "translate3d(0px, 0px, 0px)",
+      "radius": "1592",
+      "bearing": "180"
+    },
+    "after": {
+      "circle": {
+        "x": 969.734375,
+        "y": 545.796875
+      },
+      "button": {
+        "x": 969.734375,
+        "y": 545.796875
+      },
+      "preview": null,
+      "camera": "translate3d(0px, 0px, 0px)",
+      "radius": "1592",
+      "bearing": "180"
+    }
+  },
+  {
+    "setup": "normal",
+    "grab": {
+      "x": 0,
+      "y": -19
+    },
+    "move": {
+      "x": -90,
+      "y": -70
+    },
+    "before": {
+      "circle": {
+        "x": 969.734375,
+        "y": 545.796875
+      },
+      "button": {
+        "x": 969.734375,
+        "y": 545.796875
+      },
+      "preview": null,
+      "camera": "translate3d(0px, 0px, 0px)",
+      "radius": "1592",
+      "bearing": "180"
+    },
+    "held": {
+      "circle": {
+        "x": 879.734375,
+        "y": 475.796875
+      },
+      "button": {
+        "x": 879.734375,
+        "y": 475.796875
+      },
+      "preview": {
+        "x": 879.734375,
+        "y": 475.796875
+      },
+      "camera": "translate3d(0px, 0px, 0px)",
+      "radius": "1592",
+      "bearing": "180"
+    },
+    "after": {
+      "circle": {
+        "x": 879.734375,
+        "y": 475.796875
+      },
+      "button": {
+        "x": 879.734375,
+        "y": 475.796875
+      },
+      "preview": null,
+      "camera": "translate3d(0px, 0px, 0px)",
+      "radius": "1592",
+      "bearing": "180"
+    }
+  },
+  {
+    "setup": "zoom-pan",
+    "grab": {
+      "x": 18,
+      "y": 8
+    },
+    "move": {
+      "x": 12,
+      "y": 4
+    },
+    "before": {
+      "circle": {
+        "x": 907.8671875,
+        "y": 464.7421875
+      },
+      "button": {
+        "x": 907.859375,
+        "y": 464.734375
+      },
+      "preview": null,
+      "camera": "translate3d(28px, -17px, 0px)",
+      "radius": "1592",
+      "bearing": "180"
+    },
+    "held": {
+      "circle": {
+        "x": 919.859375,
+        "y": 468.734375
+      },
+      "button": {
+        "x": 919.859375,
+        "y": 468.734375
+      },
+      "preview": {
+        "x": 919.859375,
+        "y": 468.734375
+      },
+      "camera": "translate3d(28px, -17px, 0px)",
+      "radius": "1592",
+      "bearing": "180"
+    },
+    "after": {
+      "circle": {
+        "x": 919.859375,
+        "y": 468.734375
+      },
+      "button": {
+        "x": 919.859375,
+        "y": 468.734375
+      },
+      "preview": null,
+      "camera": "translate3d(28px, -17px, 0px)",
+      "radius": "1592",
+      "bearing": "180"
+    }
+  },
+  {
+    "setup": "zoom-pan",
+    "grab": {
+      "x": -18,
+      "y": -8
+    },
+    "move": {
+      "x": -12,
+      "y": -4
+    },
+    "before": {
+      "circle": {
+        "x": 919.859375,
+        "y": 468.734375
+      },
+      "button": {
+        "x": 919.859375,
+        "y": 468.734375
+      },
+      "preview": null,
+      "camera": "translate3d(28px, -17px, 0px)",
+      "radius": "1592",
+      "bearing": "180"
+    },
+    "held": {
+      "circle": {
+        "x": 907.859375,
+        "y": 464.734375
+      },
+      "button": {
+        "x": 907.859375,
+        "y": 464.734375
+      },
+      "preview": {
+        "x": 907.859375,
+        "y": 464.734375
+      },
+      "camera": "translate3d(28px, -17px, 0px)",
+      "radius": "1592",
+      "bearing": "180"
+    },
+    "after": {
+      "circle": {
+        "x": 907.859375,
+        "y": 464.734375
+      },
+      "button": {
+        "x": 907.859375,
+        "y": 464.734375
+      },
+      "preview": null,
+      "camera": "translate3d(28px, -17px, 0px)",
+      "radius": "1592",
+      "bearing": "180"
+    }
+  },
+  {
+    "setup": "zoom-pan",
+    "grab": {
+      "x": 0,
+      "y": 19
+    },
+    "move": {
+      "x": 90,
+      "y": 70
+    },
+    "before": {
+      "circle": {
+        "x": 907.859375,
+        "y": 464.734375
+      },
+      "button": {
+        "x": 907.859375,
+        "y": 464.734375
+      },
+      "preview": null,
+      "camera": "translate3d(28px, -17px, 0px)",
+      "radius": "1592",
+      "bearing": "180"
+    },
+    "held": {
+      "circle": {
+        "x": 997.859375,
+        "y": 534.734375
+      },
+      "button": {
+        "x": 997.859375,
+        "y": 534.734375
+      },
+      "preview": {
+        "x": 997.859375,
+        "y": 534.734375
+      },
+      "camera": "translate3d(28px, -17px, 0px)",
+      "radius": "1592",
+      "bearing": "180"
+    },
+    "after": {
+      "circle": {
+        "x": 997.859375,
+        "y": 534.734375
+      },
+      "button": {
+        "x": 997.859375,
+        "y": 534.734375
+      },
+      "preview": null,
+      "camera": "translate3d(28px, -17px, 0px)",
+      "radius": "1592",
+      "bearing": "180"
+    }
+  },
+  {
+    "setup": "zoom-pan",
+    "grab": {
+      "x": 0,
+      "y": -19
+    },
+    "move": {
+      "x": -90,
+      "y": -70
+    },
+    "before": {
+      "circle": {
+        "x": 997.859375,
+        "y": 534.734375
+      },
+      "button": {
+        "x": 997.859375,
+        "y": 534.734375
+      },
+      "preview": null,
+      "camera": "translate3d(28px, -17px, 0px)",
+      "radius": "1592",
+      "bearing": "180"
+    },
+    "held": {
+      "circle": {
+        "x": 907.859375,
+        "y": 464.734375
+      },
+      "button": {
+        "x": 907.859375,
+        "y": 464.734375
+      },
+      "preview": {
+        "x": 907.859375,
+        "y": 464.734375
+      },
+      "camera": "translate3d(28px, -17px, 0px)",
+      "radius": "1592",
+      "bearing": "180"
+    },
+    "after": {
+      "circle": {
+        "x": 907.859375,
+        "y": 464.734375
+      },
+      "button": {
+        "x": 907.859375,
+        "y": 464.734375
+      },
+      "preview": null,
+      "camera": "translate3d(28px, -17px, 0px)",
+      "radius": "1592",
+      "bearing": "180"
+    }
+  }
+]
