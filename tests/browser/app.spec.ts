@@ -30,7 +30,7 @@ test('one radius line, on-ring size selection, safe start exclusion and independ
   await page.goto('/');
   await expect(page.locator('.size-radius')).toHaveCount(1); await expect(page.locator('.clock-hand')).toHaveCount(0);
   await expect(page.locator('.size-arrow-guide')).toHaveAttribute('marker-start', 'url(#size-arrow)');
-  await expect(page.locator('.size-arrow-guide')).toHaveAttribute('marker-end', 'url(#size-arrow)');
+  expect(await page.locator('.size-arrow-guide').getAttribute('marker-end')).toBeNull();
   let f=await frame(page), b=(await size(page).boundingBox())!;
   expect(b.x+b.width/2).toBeGreaterThan(f.x); expect(b.y+b.height/2).toBeGreaterThan(f.y);
   // Geodesic/Mercator projection and integer layer pixels differ slightly by bearing.

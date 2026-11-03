@@ -6,7 +6,7 @@ The light interface uses warm ivory, charcoal, sage and restrained terracotta; a
 
 The Accessibility dialog uses native modal semantics, a named radio group, initial selected-option focus, bounded Tab/Shift+Tab cycling, Escape/Close dismissal and trigger focus return. New buttons have 44px targets. Reduced motion removes interface animation, and forced colors has explicit outlines.
 
-Map Start remains labeled S/Start with a double circular border. Size remains labeled with arrows/Size and now has a rounded square boundary. Center keeps its padlock icon and all shipped unlock/drag/keyboard behavior. Route strokes have a continuous light casing, a darker solid route and a dashed ideal-circle guide; CSS classes update their palette without rebuilding routes or changing map camera/settings. The target ring also has a light casing. Palette/theme switches do not invalidate generated routes or GPX.
+Map Start remains labeled S/Start with a double circular border. Size has an empty circular single-border target in its existing palette accent and a visible Size label below it; its accessible slider name remains Circle radius. There is no arrow glyph inside Size. The radial connector has exactly one chevron beside the center, pointing outward toward Size, with no marker at the Size end. Its orientation follows the center-to-Size vector even at small projected radii where existing line trims overlap; handle positions and hit targets are unchanged. Center keeps its padlock icon and all shipped unlock/drag/keyboard behavior. Route strokes have a continuous light casing, a darker solid route and a dashed ideal-circle guide; CSS classes update their palette without rebuilding routes or changing map camera/settings. The target ring also has a light casing. Palette/theme switches do not invalidate generated routes or GPX.
 
 ## Verification
 
@@ -19,3 +19,8 @@ Map Start remains labeled S/Start with a double circular border. Size remains la
 - `review/` contains actual Chromium captures at desktop and emulated iPhone dimensions. Map content is a labeled offline fixture, not a live map screenshot. The light/dark Standard and high-contrast views, generated red–green route, and accessibility dialog are represented.
 
 These checks do not replace physical-device or assistive-technology testing. Text zoom doubles computed text sizes in the browser. Browser page zoom and hardware/OS color rendering remain manual checks. No claim of complete WCAG conformance is made.
+
+
+## Local Size-control revision
+
+The circular Size / single outward center-side chevron revision is local only and has not been published. Build and the eight circle unit tests pass. Canonical-name app, center, radius and focused chevron browser tests pass: 32 passed with four expected desktop skips for touch-only cases. The focused checks cover all eight theme/palette combinations, 44px dimensions, Size/Start identity, absence of any directional glyph inside Size, up/right/down/left placement and outward marker orientation, including the 34–53px projected-radius case where the trimmed guide endpoints reverse. Synthetic offline captures are `review/size-chevron-{up,right,down,left,small}-{desktop,mobile}.png`. Very small projected circles retain existing handle overlap/guide occlusion behavior; no hit targets were moved to expose the chevron. Untracked duplicate `* 2.*` files were preserved and excluded from targeted checks.
