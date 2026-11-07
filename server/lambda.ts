@@ -3,21 +3,28 @@
 // work only. UI cancellation/stale-result guards remain a separate guarantee.
 import { createLoopPlanner } from './loop';
 import { createOrsProvider } from './ors';
+import { clientIdentity, normalizeClientIp, createRoutingGuard, type RoutingGuard } from './guard';
+import { createDynamoGuardStore } from './guard-store';
+import { createServiceReporter } from './service-events';
+import { ProviderFailure } from '../src/loop/types';
 import { validateSettings } from '../src/routing/solve';
 import type { LoopRequest, LoopResult, PreparedProvider } from '../src/loop/types';
 export const PARAMETER_NAME = '/great-circle/production/ors-api-key';
 export const ALLOWED_ORIGIN = 'https://stethem.com';
 const BODY_LIMIT = 16384, RESPONSE_LIMIT = 5 * 1024 * 1024, PLAN_MS = 20000;
-export type FunctionUrlEvent = { version?: string; rawPath?: string; rawQueryString?: string; headers?: Record<string, string | undefined>; body?: string | null; isBase64Encoded?: boolean; requestContext?: { http?: { method?: string } } };
+export type FunctionUrlEvent = { version?: string; rawPath?: string; rawQueryString?: string; headers?: Record<string, string | undefined>; body?: string | null; isBase64Encoded?: boolean; requestContext?: { http?: { method?: string; sourceIp?: string } } };
 export type LambdaContext = { getRemainingTimeInMillis(): number };
 type HttpResult = { statusCode: number; headers: Record<string, string>; body: string; isBase64Encoded: false };
-type Dependencies = { loadSecret(signal: AbortSignal): Promise<string>; client?: typeof fetch; makeProvider?: (key: string) => PreparedProvider };
+type Dependencies = { guard?: RoutingGuard; loadSecret(signal: AbortSignal): Promise<string>; client?: typeof fetch; makeProvider?: (key: string) => PreparedProvider };
 async function bounded<T>(task: Promise<T>, signal: AbortSignal): Promise<T> {
  let stop!: () => void;
  const aborted = new Promise<never>((_resolve, reject) => { stop = () => reject(signal.reason); signal.addEventListener('abort', stop, { once: true }); if (signal.aborted) stop(); });
  try { return await Promise.race([task, aborted]); } finally { signal.removeEventListener('abort', stop); }
 }
 export function createLambdaHandler(dependencies: Dependencies) {
+ const report = createServiceReporter();
+ const guard = dependencies.guard ?? createRoutingGuard(createDynamoGuardStore());
+ let identityKey: string | undefined, invocationDeadline = 0;
  let provider: PreparedProvider | undefined, active = false, nextSecretAt = 0;
  return async (event: FunctionUrlEvent, context: LambdaContext): Promise<HttpResult> => {
   const headers: Record<string, string> = { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store', 'x-content-type-options': 'nosniff' };
@@ -51,11 +58,13 @@ export function createLambdaHandler(dependencies: Dependencies) {
   try { input = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes)); } catch { return failure(400, 'Invalid JSON.'); }
   if (!input || typeof input.requestId !== 'string' || !/^[A-Za-z0-9_-]{1,80}$/.test(input.requestId)) return failure(400, 'Choose a valid request ID.');
   try { validateSettings(input.settings); if (!input.settings.circleRadiusM) throw new Error(); } catch { return failure(400, 'Choose a valid circle and route preferences.', input.requestId); }
+  if (!normalizeClientIp(event.requestContext?.http?.sourceIp)) return failure(503, 'Routing client could not be verified.', input.requestId, 30);
   if (active) return failure(429, 'Another route is running. Try again shortly.', input.requestId, 2);
   if (!provider && Date.now() < nextSecretAt) return failure(503, 'Routing secret is unavailable. Try later.', input.requestId, Math.ceil((nextSecretAt - Date.now()) / 1000));
   const remaining = context.getRemainingTimeInMillis();
   if (!Number.isFinite(remaining) || remaining < 2000) return failure(503, 'Not enough execution time remains. Try later.', input.requestId);
   const controller = new AbortController(), started = Date.now(), budget = Math.min(PLAN_MS, remaining - 1000);
+  invocationDeadline = started + budget;
   const timer = setTimeout(() => controller.abort(new Error('Routing time budget reached.')), budget); active = true;
   try {
    if (!provider) {
@@ -63,16 +72,19 @@ export function createLambdaHandler(dependencies: Dependencies) {
     try {
      key = await bounded(dependencies.loadSecret(controller.signal), controller.signal);
      if (typeof key !== 'string' || !key.trim() || Buffer.byteLength(key) > 4096) throw new Error();
-    } catch { nextSecretAt = Date.now() + 30000; return failure(503, controller.signal.aborted ? 'Routing time budget reached. Try later.' : 'Routing secret is unavailable. Check the server configuration.', input.requestId, 30); }
+    } catch { report('secret_unavailable'); nextSecretAt = Date.now() + 30000; return failure(503, controller.signal.aborted ? 'Routing time budget reached. Try later.' : 'Routing secret is unavailable. Check the server configuration.', input.requestId, 30); }
     controller.signal.throwIfAborted();
-    provider = dependencies.makeProvider?.(key.trim()) ?? createOrsProvider(key.trim(), dependencies.client);
+    identityKey = key.trim();
+    provider = dependencies.makeProvider?.(identityKey) ?? createOrsProvider(identityKey, dependencies.client, async signal => { if (Date.now() >= invocationDeadline) throw new ProviderFailure('unavailable', 'Routing time budget reached. Try later.'); const lease = await guard.reserve(signal); return { expiresAt: Math.min(lease.expiresAt, invocationDeadline) }; }, report);
    }
+   await guard.start(clientIdentity(event.requestContext?.http?.sourceIp, identityKey!)!, controller.signal);
+   const guardedProvider: PreparedProvider = dependencies.makeProvider ? { ...provider, route: async (coordinates, settings, signal) => { if (Date.now() >= invocationDeadline) throw new ProviderFailure('unavailable', 'Routing time budget reached. Try later.'); const lease = await guard.reserve(signal); signal.throwIfAborted(); if (Date.now() >= Math.min(lease.expiresAt, invocationDeadline)) throw new ProviderFailure('unavailable', 'Routing time budget reached. Try later.'); return provider!.route(coordinates, settings, signal); } } : provider;
    const timeLeft = budget - (Date.now() - started); if (timeLeft <= 0) return failure(503, 'Routing time budget reached. Try later.', input.requestId);
-   const result: LoopResult = await createLoopPlanner(provider, timeLeft)(input, controller.signal);
+   const result: LoopResult = await createLoopPlanner(guardedProvider, timeLeft)(input, controller.signal);
    // An invocation deadline is a service limit, not a browser cancellation.
-   if (controller.signal.aborted) return send(503, { status: 'unavailable', requestId: input.requestId, message: 'Routing time budget reached. Try later.', requests: result.requests, providerRequests: result.providerRequests });
+   if (controller.signal.aborted || Date.now() >= invocationDeadline) return send(503, { status: 'unavailable', requestId: input.requestId, message: 'Routing time budget reached. Try later.', requests: result.requests, providerRequests: result.providerRequests });
    return send(result.status === 'ok' ? 200 : result.status === 'invalid-request' ? 400 : result.status === 'unavailable' ? 503 : 422, result, result.status === 'unavailable' ? result.retryAfterSeconds : undefined);
-  } catch { return failure(503, controller.signal.aborted ? 'Routing time budget reached. Try later.' : 'Routing service is unavailable.', input.requestId); }
+  } catch (error) { if (error instanceof ProviderFailure) return failure(503, error.message, input.requestId, error.retryAfterSeconds); return failure(503, controller.signal.aborted ? 'Routing time budget reached. Try later.' : 'Routing service is unavailable.', input.requestId); }
   finally { clearTimeout(timer); active = false; }
  };
 }

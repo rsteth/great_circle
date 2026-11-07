@@ -1,0 +1,135 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "LOCAL PROPOSAL ONLY: one shared operational-alert destination for Great Circle, Reads and Bandit. No app code, runtime roles, billing budgets, public access or credentials changed.",
+  "Parameters": {
+    "ExpectedAccountId": {
+      "Type": "String",
+      "AllowedValues": [
+        "089089716476"
+      ],
+      "Description": "Explicit target account confirmation."
+    },
+    "AlertEmail": {
+      "Type": "String",
+      "AllowedPattern": "[^@\\s]+@[^@\\s]+\\.[^@\\s]+",
+      "Description": "Explicitly approved operational-alert recipient. No default; SNS email confirmation is required."
+    }
+  },
+  "Conditions": {
+    "TargetConfirmed": {
+      "Fn::And": [
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "AWS::AccountId"
+            },
+            {
+              "Ref": "ExpectedAccountId"
+            }
+          ]
+        },
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "AWS::Region"
+            },
+            "us-east-1"
+          ]
+        }
+      ]
+    }
+  },
+  "Resources": {
+    "AlertTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Condition": "TargetConfirmed",
+      "DeletionPolicy": "Retain",
+      "UpdateReplacePolicy": "Retain",
+      "Properties": {
+        "TopicName": "stethem-app-alerts",
+        "Tags": [
+          {
+            "Key": "Purpose",
+            "Value": "approved-app-operational-alerts"
+          }
+        ]
+      }
+    },
+    "AlertTopicPolicy": {
+      "Type": "AWS::SNS::TopicPolicy",
+      "Condition": "TargetConfirmed",
+      "DeletionPolicy": "Retain",
+      "UpdateReplacePolicy": "Retain",
+      "Properties": {
+        "Topics": [
+          {
+            "Ref": "AlertTopic"
+          }
+        ],
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "AllowOnlyApprovedAppAlarms",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "cloudwatch.amazonaws.com"
+              },
+              "Action": "sns:Publish",
+              "Resource": {
+                "Ref": "AlertTopic"
+              },
+              "Condition": {
+                "StringEquals": {
+                  "aws:SourceAccount": {
+                    "Ref": "AWS::AccountId"
+                  }
+                },
+                "ArnLike": {
+                  "aws:SourceArn": [
+                    {
+                      "Fn::Sub": "arn:${AWS::Partition}:cloudwatch:${AWS::Region}:${AWS::AccountId}:alarm:great-circle-routing-*"
+                    },
+                    {
+                      "Fn::Sub": "arn:${AWS::Partition}:cloudwatch:${AWS::Region}:${AWS::AccountId}:alarm:reads-alerts-*"
+                    },
+                    {
+                      "Fn::Sub": "arn:${AWS::Partition}:cloudwatch:${AWS::Region}:${AWS::AccountId}:alarm:bandit-alerts-*"
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "AlertSubscription": {
+      "Type": "AWS::SNS::Subscription",
+      "Condition": "TargetConfirmed",
+      "DeletionPolicy": "Retain",
+      "UpdateReplacePolicy": "Retain",
+      "Properties": {
+        "TopicArn": {
+          "Ref": "AlertTopic"
+        },
+        "Protocol": "email",
+        "Endpoint": {
+          "Ref": "AlertEmail"
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "AlertTopicArn": {
+      "Condition": "TargetConfirmed",
+      "Value": {
+        "Ref": "AlertTopic"
+      }
+    },
+    "Readiness": {
+      "Condition": "TargetConfirmed",
+      "Value": "Destination is operational only after email confirmation and a verified non-sensitive test delivery. No app alarms or cost budgets are created here."
+    }
+  }
+}

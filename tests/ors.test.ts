@@ -78,3 +78,32 @@ it('retains a failed HTTP status and cooldown even when its response body stream
 it('bounds malformed large geometry before unbounded angular scoring work',()=>{
  const a=pointOnCircle(settings.center,300000,0),b=pointOnCircle(settings.center,300000,180),points=Array.from({length:200},(_,i)=>i%2?a:b);points.push(points[0]);expect(()=>scoreGeometry(points,settings,new AbortController().signal)).toThrow('scoring budget');
 });
+it('checks shared protection before each send, does not reserve on cooldown, and forbids redirects', async () => {
+ const reserve = vi.fn(async () => ({ expiresAt: Date.now() + 20_000 })), client = vi.fn().mockResolvedValue(Response.json({}, { status: 429 })), provider = createOrsProvider('unit-test-only', client, reserve);
+ await createLoopPlanner(provider)({ requestId: 'guarded', settings }, new AbortController().signal);
+ await createLoopPlanner(provider)({ requestId: 'cooling', settings }, new AbortController().signal);
+ expect(reserve).toHaveBeenCalledTimes(1); expect(client).toHaveBeenCalledTimes(1); expect(client.mock.calls[0][1].redirect).toBe('error');
+});
+it('quota/auth failures cannot become retryable unroutable errors through an error code', async () => {
+ for (const status of [401, 403, 429, 503]) {
+  const client = vi.fn().mockResolvedValue(Response.json({ error: { code: 2010 } }, { status }));
+  const result = await createLoopPlanner(createOrsProvider('unit-test-only', client))({ requestId: 'quota', settings }, new AbortController().signal);
+  expect(result.status).toBe('unavailable'); expect(client).toHaveBeenCalledTimes(1);
+  if (status === 403 && result.status === 'unavailable') expect(result.message).toContain('quota or credentials');
+ }
+});
+it('expired send lease denies synchronously even before abort timer fires', async () => {
+ vi.useFakeTimers(); vi.setSystemTime(100_000);
+ const controller = new AbortController(), client = vi.fn();
+ const provider = createOrsProvider('fake-only', client, async () => { vi.setSystemTime(120_000); return { expiresAt: 120_000 }; });
+ await expect(provider.route([settings.start], settings, controller.signal)).rejects.toThrow('time budget');
+ expect(controller.signal.aborted).toBe(false); expect(client).not.toHaveBeenCalled(); expect(provider.requestCount!()).toBe(0);
+});
+it('both direction attempts require a distinct valid lease before their sends', async () => {
+ vi.useFakeTimers();
+ const client = vi.fn().mockImplementation(async () => Response.json({ error: { code: 2010 } }, { status: 404 })), reserve = vi.fn(async () => ({ expiresAt: Date.now() + 20_000 }));
+ const pending = createLoopPlanner(createOrsProvider('fake-only', client, reserve))({ requestId: 'two-leases', settings }, new AbortController().signal);
+ await vi.advanceTimersByTimeAsync(1600); const result = await pending;
+ expect(result.status).toBe('unroutable'); expect(client).toHaveBeenCalledTimes(2); expect(reserve).toHaveBeenCalledTimes(2);
+ expect(reserve.mock.invocationCallOrder[0]).toBeLessThan(client.mock.invocationCallOrder[0]); expect(client.mock.invocationCallOrder[0]).toBeLessThan(reserve.mock.invocationCallOrder[1]); expect(reserve.mock.invocationCallOrder[1]).toBeLessThan(client.mock.invocationCallOrder[1]);
+});

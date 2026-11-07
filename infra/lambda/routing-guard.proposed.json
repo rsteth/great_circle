@@ -1,0 +1,273 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "LOCAL PROPOSAL ONLY: Great Circle anonymous routing protection and operational alarms. Requires approval before infrastructure/runtime IAM/control/code rollout. References a separately approved shared alert destination; never modifies the ORS secret or public URL.",
+  "Parameters": {
+    "ExpectedAccountId": {
+      "Type": "String",
+      "AllowedValues": [
+        "089089716476"
+      ],
+      "Description": "Explicit target account confirmation."
+    },
+    "AlertTopicArn": {
+      "Type": "String",
+      "AllowedValues": [
+        "arn:aws:sns:us-east-1:089089716476:stethem-app-alerts"
+      ],
+      "Description": "Verified shared operational-alert topic ARN, created and confirmed separately. This app never owns its subscription or policy."
+    }
+  },
+  "Conditions": {
+    "TargetConfirmed": {
+      "Fn::And": [
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "AWS::AccountId"
+            },
+            {
+              "Ref": "ExpectedAccountId"
+            }
+          ]
+        },
+        {
+          "Fn::Equals": [
+            {
+              "Ref": "AWS::Region"
+            },
+            "us-east-1"
+          ]
+        }
+      ]
+    }
+  },
+  "Resources": {
+    "RoutingGuardTable": {
+      "Type": "AWS::DynamoDB::Table",
+      "Condition": "TargetConfirmed",
+      "Properties": {
+        "TableName": "great-circle-prod-routing-guard",
+        "BillingMode": "PAY_PER_REQUEST",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "pk",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "pk",
+            "KeyType": "HASH"
+          }
+        ],
+        "TimeToLiveSpecification": {
+          "AttributeName": "expiresAt",
+          "Enabled": true
+        },
+        "SSESpecification": {
+          "SSEEnabled": true
+        },
+        "DeletionProtectionEnabled": true,
+        "OnDemandThroughput": {
+          "MaxReadRequestUnits": 20,
+          "MaxWriteRequestUnits": 20
+        },
+        "Tags": [
+          {
+            "Key": "Application",
+            "Value": "great-circle"
+          },
+          {
+            "Key": "Purpose",
+            "Value": "anonymous-routing-admission"
+          }
+        ]
+      },
+      "DeletionPolicy": "Retain",
+      "UpdateReplacePolicy": "Retain"
+    },
+    "RuntimeGuardPolicy": {
+      "Type": "AWS::IAM::Policy",
+      "Condition": "TargetConfirmed",
+      "Properties": {
+        "PolicyName": "great-circle-routing-guard-only",
+        "Roles": [
+          "great-circle-prod-runtime"
+        ],
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "ReadAndCasExactGuardTable",
+              "Effect": "Allow",
+              "Action": [
+                "dynamodb:GetItem",
+                "dynamodb:PutItem"
+              ],
+              "Resource": {
+                "Fn::GetAtt": [
+                  "RoutingGuardTable",
+                  "Arn"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "BudgetMetric": {
+      "Type": "AWS::Logs::MetricFilter",
+      "Condition": "TargetConfirmed",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/great-circle-api",
+        "FilterPattern": "{ $.message.event = \"routing_guard\" && $.message.scope = \"global\" && ($.message.reason = \"near_budget\" || $.message.reason = \"budget_block\") }",
+        "MetricTransformations": [
+          {
+            "MetricNamespace": "GreatCircle/RoutingGuard",
+            "MetricName": "BudgetWarnings",
+            "MetricValue": "1",
+            "Unit": "Count"
+          }
+        ]
+      }
+    },
+    "ErrorMetric": {
+      "Type": "AWS::Logs::MetricFilter",
+      "Condition": "TargetConfirmed",
+      "Properties": {
+        "LogGroupName": "/aws/lambda/great-circle-api",
+        "FilterPattern": "{ ($.message.event = \"routing_guard\" && $.message.reason = \"guard_error\") || ($.message.event = \"routing_service\" && ($.message.reason = \"secret_unavailable\" || $.message.reason = \"ors_unavailable\" || $.message.reason = \"ors_timeout\")) }",
+        "MetricTransformations": [
+          {
+            "MetricNamespace": "GreatCircle/RoutingGuard",
+            "MetricName": "RoutingErrors",
+            "MetricValue": "1",
+            "Unit": "Count"
+          }
+        ]
+      }
+    },
+    "BudgetAlarm": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Condition": "TargetConfirmed",
+      "Properties": {
+        "AlarmName": "great-circle-routing-budget",
+        "AlarmDescription": "Global ORS budget reached 80% or blocked a request. Routing pauses automatically at its cap; this alarm is not an AWS spending cap.",
+        "Namespace": "GreatCircle/RoutingGuard",
+        "MetricName": "BudgetWarnings",
+        "Statistic": "Sum",
+        "Period": 300,
+        "EvaluationPeriods": 1,
+        "DatapointsToAlarm": 1,
+        "Threshold": 1,
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "TreatMissingData": "notBreaching",
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "AlertTopicArn"
+          }
+        ]
+      }
+    },
+    "GuardErrorAlarm": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Condition": "TargetConfirmed",
+      "Properties": {
+        "AlarmName": "great-circle-routing-errors",
+        "AlarmDescription": "Handled routing protection, secret-load or upstream ORS failures. Events include only allowlisted static labels, never credentials or route details.",
+        "Namespace": "GreatCircle/RoutingGuard",
+        "MetricName": "RoutingErrors",
+        "Statistic": "Sum",
+        "Period": 300,
+        "EvaluationPeriods": 1,
+        "DatapointsToAlarm": 1,
+        "Threshold": 1,
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "TreatMissingData": "notBreaching",
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "AlertTopicArn"
+          }
+        ]
+      }
+    },
+    "LambdaErrorAlarm": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Condition": "TargetConfirmed",
+      "Properties": {
+        "AlarmName": "great-circle-routing-lambda-errors",
+        "AlarmDescription": "Unhandled Great Circle Lambda invocation errors.",
+        "Namespace": "AWS/Lambda",
+        "MetricName": "Errors",
+        "Statistic": "Sum",
+        "Period": 300,
+        "EvaluationPeriods": 1,
+        "DatapointsToAlarm": 1,
+        "Threshold": 1,
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "TreatMissingData": "notBreaching",
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "AlertTopicArn"
+          }
+        ],
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": "great-circle-api"
+          }
+        ]
+      }
+    },
+    "LambdaThrottleAlarm": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Condition": "TargetConfirmed",
+      "Properties": {
+        "AlarmName": "great-circle-routing-lambda-throttles",
+        "AlarmDescription": "Great Circle Lambda invocations are throttled by AWS.",
+        "Namespace": "AWS/Lambda",
+        "MetricName": "Throttles",
+        "Statistic": "Sum",
+        "Period": 300,
+        "EvaluationPeriods": 1,
+        "DatapointsToAlarm": 1,
+        "Threshold": 1,
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "TreatMissingData": "notBreaching",
+        "ActionsEnabled": true,
+        "AlarmActions": [
+          {
+            "Ref": "AlertTopicArn"
+          }
+        ],
+        "Dimensions": [
+          {
+            "Name": "FunctionName",
+            "Value": "great-circle-api"
+          }
+        ]
+      }
+    }
+  },
+  "Outputs": {
+    "RoutingGuardTableName": {
+      "Condition": "TargetConfirmed",
+      "Value": {
+        "Ref": "RoutingGuardTable"
+      }
+    },
+    "AlertTopicArn": {
+      "Condition": "TargetConfirmed",
+      "Value": {
+        "Ref": "AlertTopicArn"
+      }
+    },
+    "DeploymentStatus": {
+      "Condition": "TargetConfirmed",
+      "Value": "App infrastructure only. Shared destination confirmation, quota-baselined control initialization, guard validation and Lambda rollout remain separate approved steps."
+    }
+  }
+}

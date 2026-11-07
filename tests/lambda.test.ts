@@ -1,12 +1,13 @@
 import { afterEach, expect, it, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { createLambdaHandler, ALLOWED_ORIGIN, PARAMETER_NAME, type FunctionUrlEvent } from '../server/lambda';
+import { createLambdaHandler as createGuardedLambdaHandler, ALLOWED_ORIGIN, PARAMETER_NAME, type FunctionUrlEvent } from '../server/lambda';
 import { exampleSettings } from '../src/selection';
 import { pointOnCircle, bearingTo } from '../src/circle';
 import { trackLength } from '../src/routing/geo';
 import { ORS_ENDPOINT } from '../server/ors';
+const createLambdaHandler: typeof createGuardedLambdaHandler = dependencies => createGuardedLambdaHandler({ guard: { start: async () => {}, reserve: async () => ({ expiresAt: Date.now() + 20_000 }) }, ...dependencies });
 const settings = exampleSettings(), context = { getRemainingTimeInMillis: () => 30000 };
-const event = (patch: Partial<FunctionUrlEvent> = {}): FunctionUrlEvent => ({ version: '2.0', rawPath: '/api/loop', rawQueryString: '', headers: { origin: ALLOWED_ORIGIN, 'content-type': 'application/json' }, requestContext: { http: { method: 'POST' } }, body: JSON.stringify({ requestId: 'lambda-test', settings }), isBase64Encoded: false, ...patch });
+const event = (patch: Partial<FunctionUrlEvent> = {}): FunctionUrlEvent => ({ version: '2.0', rawPath: '/api/loop', rawQueryString: '', headers: { origin: ALLOWED_ORIGIN, 'content-type': 'application/json' }, requestContext: { http: { method: 'POST', sourceIp: '192.0.2.1' } }, body: JSON.stringify({ requestId: 'lambda-test', settings }), isBase64Encoded: false, ...patch });
 function geometry() { const points = Array.from({ length: 65 }, (_, i) => pointOnCircle(settings.center, settings.circleRadiusM!, bearingTo(settings.center, settings.start) + i * 360 / 64)); points[64] = { ...points[0] }; return { points, distanceM: trackLength(points), waypoints: Array.from({ length: 9 }, (_, i) => i * 8), surface: [[0, 64, 3]] as [number, number, number][] }; }
 afterEach(() => { vi.useRealTimers(); vi.restoreAllMocks(); vi.unstubAllGlobals(); });
 it('health/preflight/invalid requests never load a secret or provider, and CORS headers belong to AWS', async () => {
