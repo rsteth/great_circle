@@ -1,6 +1,6 @@
-# Great Circle routing protection: local proposal
+# Great Circle routing protection: staged rollout
 
-Status: source and infrastructure preparation only. Nothing in this document or the accompanying template has been applied to AWS. Main, the public site, the existing ORS secret, and the design-foundation worktree remain unchanged.
+Status, November 7, 2026: infrastructure has been applied and verified: the DynamoDB table, exact runtime table policy, four alarms and shared alert topic exist. Control is seeded with enabled=false and revision 0. The production alias still serves version 2; guarded runtime publication and enablement remain pending provider-usage baseline verification. Subscription confirmation and notification delivery verification are pending. Main, the public site, the existing ORS secret and the design-foundation worktree remain unchanged by this staged source integration. The steps below remain the rollout/rollback reference, not a claim that every step is complete.
 
 ## Intended behavior
 

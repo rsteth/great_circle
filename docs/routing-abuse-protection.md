@@ -1,10 +1,12 @@
-# Anonymous routing guard (local proposal, not deployed)
+# Anonymous routing guard (runtime rollout pending)
+
+Status, November 7, 2026: the table, scoped runtime policy, four alarms and shared alert topic are created and verified. Control is seeded disabled at revision 0. The production alias remains version 2, without this guarded runtime. Provider-usage baseline verification, guarded code publication/enablement, subscription confirmation and alert delivery verification remain pending.
 
 The ORS key remains server-only in the existing encrypted SSM parameter. It is neither rotated nor copied into configuration, responses, persisted rate-limit records or logs. Anonymous routing is retained. CORS is a browser policy, not authentication or an abuse budget.
 
 ## Limits and algorithm
 
-Production Lambda uses the fixed `great-circle-prod-routing-guard` DynamoDB table in `us-east-1`. A strongly consistent read plus conditional PutItem reserves each outbound ORS call globally, across cold starts and instances. Four CAS attempts maximum, AWS automatic retries disabled, 1.5-second per-operation timeout, and the existing 20-second aggregate request deadline bound work. Unknown write outcomes fail closed without retry/refund.
+The guarded Lambda implementation uses the fixed `great-circle-prod-routing-guard` DynamoDB table in `us-east-1`. A strongly consistent read plus conditional PutItem reserves each outbound ORS call globally, across cold starts and instances. Four CAS attempts maximum, AWS automatic retries disabled, 1.5-second per-operation timeout, and the existing 20-second aggregate request deadline bound work. Unknown write outcomes fail closed without retry/refund.
 
 - Global: 36 reservations per sliding 80 seconds, 1,800 per conservative rolling day. Each reservation permits a local send only before its recorded timestamp plus 20 seconds. Retaining 60 seconds plus the 20-second send lease bounds local fetch starts conservatively to 36 per sliding 60 seconds, despite delayed CAS acknowledgments.
 - Client: three generation starts per sliding 60 seconds, 60 per conservative rolling day.
@@ -20,11 +22,11 @@ Missing/uninitialized control, malformed state, backwards clocks, throttling, ex
 
 Control is `pk=control`, with `revision` (number), `enabled` (boolean), and `state` (JSON string containing `lastAt`, `minute`, `hours`). It has **no TTL**. Client records use `pk=client:<scoped HMAC>`, revision and state, plus `expiresAt` at least 26 hours after last counted use. DynamoDB TTL expiry is cleanup, not the rate-limit decision. Counters are bounded to 36 global / 3 client short-window timestamps and 26 global / 25 client hourly bins.
 
-Operators disable by atomically setting `enabled=false` and incrementing `revision`. Runtime reservations require the previously read revision **and enabled=true**; a stale writer cannot turn routing back on. Already acquired/in-flight work may finish. Preserve counters on disable/re-enable. Do not delete or reset control to restore service: doing so defeats the rolling budget. New setup seeds disabled; rollout and initialization need a separate approval and quota-baseline plan. See the infrastructure proposal/runbook.
+Operators disable by atomically setting `enabled=false` and incrementing `revision`. Runtime reservations require the previously read revision **and enabled=true**; a stale writer cannot turn routing back on. Already acquired/in-flight work may finish. Preserve counters on disable/re-enable. Do not delete or reset control to restore service: doing so defeats the rolling budget. The approved staged rollout has seeded control disabled; enabling still requires a verified provider-usage baseline and draining old unguarded work. See the infrastructure proposal/runbook.
 
 Warnings are structured objects `{event: 'routing_guard', reason, scope}`. Reasons are `near_budget` (at least 80% daily usage), `budget_block`, `guard_error`, `disabled`; scope is `global`, `client` or `store`. Each reason/scope logs at most once per minute per warm process. Logs contain no exception text, IP, identifier or key. Multiple processes may each log, so this is not a fleetwide log quota.
 
-This is a conservative reservation/local-send control, not an exact guarantee of ORS arrival timing: network delay can shift arrivals after a local fetch starts. Explicit wall-clock checks enforce the send lease and aggregate invocation deadline even if abort timer callbacks are delayed. This reduces provider quota exposure, not Lambda/DynamoDB denial-of-wallet: rejected public traffic still incurs invocation/read costs. Per-client writes are avoided during known global exhaustion/disable, but the public endpoint remains reachable. Stronger perimeter filtering/authentication would be separate work. No AWS table, IAM policy, alarm, deployment, secret operation or live ORS call was performed by these local edits.
+This is a conservative reservation/local-send control, not an exact guarantee of ORS arrival timing: network delay can shift arrivals after a local fetch starts. Explicit wall-clock checks enforce the send lease and aggregate invocation deadline even if abort timer callbacks are delayed. This reduces provider quota exposure, not Lambda/DynamoDB denial-of-wallet: rejected public traffic still incurs invocation/read costs. Per-client writes are avoided during known global exhaustion/disable, but the public endpoint remains reachable. Stronger perimeter filtering/authentication would be separate work. Guard infrastructure has now been applied separately; guarded runtime publication and enablement remain pending as stated above.
 
 ## Local verification
 

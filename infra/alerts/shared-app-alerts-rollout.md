@@ -1,6 +1,6 @@
 # Shared operational-alert destination proposal
 
-Status: local preparation only. No topic, subscription, topic policy or notification has been created.
+Status, November 7, 2026: the shared alert infrastructure has been created and verified. Email subscription confirmation and notification delivery verification remain pending; alerts must not yet be described as reaching their destination. The approved recipient remains a deployment parameter, not a source default.
 
 ## Ownership and scope
 
