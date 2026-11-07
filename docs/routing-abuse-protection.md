@@ -1,6 +1,6 @@
 # Anonymous routing guard (runtime rollout pending)
 
-Status, November 7, 2026: the table, scoped runtime policy, four alarms and shared alert topic are created and verified. Control is seeded disabled at revision 0. The production alias remains version 2, without this guarded runtime. Provider-usage baseline verification, guarded code publication/enablement, subscription confirmation and alert delivery verification remain pending.
+Status, November 7, 2026: the table, scoped runtime policy, four alarms and shared alert topic are created and verified. Control is seeded disabled at revision 0. The production alias remains version 2, without this guarded runtime. The shared SNS subscription is confirmed, and CloudWatch successfully published one setup test at 2026-11-07 03:37:44 UTC. Mailbox delivery has not been verified. Guarded code publication/enablement remains blocked pending the user’s HeiGIT sign-in and current provider-usage baseline; the latest check still showed the login page. Main remains at f84c7f8.
 
 The ORS key remains server-only in the existing encrypted SSM parameter. It is neither rotated nor copied into configuration, responses, persisted rate-limit records or logs. Anonymous routing is retained. CORS is a browser policy, not authentication or an abuse budget.
 
