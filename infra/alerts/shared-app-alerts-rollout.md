@@ -1,6 +1,6 @@
 # Shared operational-alert destination proposal
 
-Status, November 7, 2026: the shared alert infrastructure has been created and verified. The shared SNS subscription is confirmed, and CloudWatch successfully published one setup test at 2026-11-07 03:37:44 UTC. Mailbox delivery has not been verified. The approved recipient remains a deployment parameter, not a source default.
+Status, November 7, 2026: the shared alert infrastructure has been created and verified. The shared SNS subscription is confirmed, and CloudWatch successfully published one setup test at 2026-11-07 03:37:44 UTC. Mailbox delivery has not been verified. Great Circle now serves guarded runtime version 3; its actual structured disabled-guard warning and safe filter extraction were verified. No synthetic log or further alert was published during those checks. The approved recipient remains a deployment parameter, not a source default.
 
 ## Ownership and scope
 

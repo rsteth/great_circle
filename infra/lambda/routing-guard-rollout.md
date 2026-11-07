@@ -1,6 +1,10 @@
-# Great Circle routing protection: staged rollout
+# Great Circle routing protection: deployed operations
 
-Status, November 7, 2026: infrastructure has been applied and verified: the DynamoDB table, exact runtime table policy, four alarms and shared alert topic exist. Control is seeded with enabled=false and revision 0. The production alias still serves version 2; guarded runtime publication and enablement remain pending provider-usage baseline verification. The shared SNS subscription is confirmed, and CloudWatch successfully published one setup test at 2026-11-07 03:37:44 UTC. Mailbox delivery has not been verified. Cutover remains blocked pending the user’s HeiGIT sign-in and current provider-usage baseline; the latest check still showed the login page. Main remains at f84c7f8. Main, the public site, the existing ORS secret and the design-foundation worktree remain unchanged by this staged source integration. The steps below remain the rollout/rollback reference, not a claim that every step is complete.
+**Verified deployment, November 7, 2026:** production serves guarded Lambda version 3 from source `e2e90c7cbe022e077c0ed44e8e5fe75862089e83`. [Workflow 42335394534](https://github.com/rsteth/great_circle/actions/runs/42335394534) passed backend verification, all frontend checks and Pages publication. The table, scoped runtime policy, four alarms and shared alert topic are active. Before enablement, a disabled route returned HTTP 503 with zero provider requests; old-version work was drained for over 30 seconds. HeiGIT showed 2,000/2,000 Directions requests remaining before enablement. One bounded public canary then returned HTTP 200/ok, a closed 432-point route and two provider requests in about 3.1 seconds, with the expected origin-restricted CORS. Afterward, control was enabled at revision 3 with exactly two global reservations, and HeiGIT showed 1,998/2,000 remaining. These are point-in-time observations, not ongoing usage guarantees.
+
+The shared SNS subscription is confirmed; CloudWatch successfully published one setup test at 2026-11-07 03:37:44 UTC. Mailbox delivery has not been verified. Actual Lambda JSON warning shape was checked with the disabled-guard event. AWS log-filter tests matched near-budget warnings and handled ORS/secret errors, excluded the disabled event from errors, and published no synthetic log or additional alert.
+
+The ORS secret and design-foundation worktree were not changed. The steps below remain the operational rollout and rollback reference.
 
 ## Intended behavior
 
@@ -104,10 +108,10 @@ Do not roll back to an unguarded older Lambda while assuming the DynamoDB flag s
 - SNS pricing context: https://aws.amazon.com/sns/faqs/
 - Lambda pricing: https://aws.amazon.com/lambda/pricing/
 
-## Read-only AWS verification, November 7, 2026
+## Historical pre-rollout AWS snapshot, November 7, 2026
 
-Using a separate temporary AWS login, verified the expected account and these live facts without reading the ORS secret value:
-- prod currently points to Lambda version 2, Node24/ARM64, 512 MiB, 30-second timeout; JSON logs at WARN/INFO.
+Before this rollout, read-only checks recorded the following facts without reading the ORS secret value. This historical snapshot is superseded by the verified deployment status above:
+- Before rollout, prod pointed to Lambda version 2, Node24/ARM64, 512 MiB, 30-second timeout; JSON logs at WARN/INFO.
 - Function URL remains anonymous (AuthType NONE), buffered, with CORS restricted to https://stethem.com and no credentialed browser requests. Public invocation policy is limited to the prod alias and URL invocation.
 - SSM parameter is Standard SecureString, version 1, encrypted with alias/aws/ssm.
 - Runtime has one inline policy: GetParameter on that exact secret and writes to its own log group. No attached managed policies.
@@ -116,4 +120,4 @@ Using a separate temporary AWS login, verified the expected account and these li
 - Regional concurrency is 10 with all 10 unreserved; no function reservation is set.
 - CloudWatch reported 15 invocations in the sampled preceding seven days, zero reported function errors/throttles, maximum duration about 3.05 seconds. Health checks are included; these metrics are not an exact ORS-quota baseline.
 
-These reads do not approve or perform infrastructure changes. Provider plan/account-specific remaining quota, notification recipient/delivery, log-filter extraction and the proposed table remain rollout verification gates.
+The subsequent approved rollout completed table/policy/alarm creation, provider-baseline verification, runtime deployment and log-filter checks. Subscription confirmation and CloudWatch setup-test publication are verified; mailbox delivery remains unverified. No billing cap is provided.
